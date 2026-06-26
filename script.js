@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		hu: {
 			'lang.toggle': 'HU',
 			'hero.pill': 'Az új platform fejlesztés alatt',
-			'hero.title': 'Éppen egy erős adatelemzési platformot építek.',
+			'hero.title': 'Egy rendkívül hatékony adatelemző platformot építek.',
 			'hero.lead':
 				'Az AnomInsight hamarosan elérhető lesz gyakorlati AI-elemzéssel, anomália-felismeréssel és átlátható dashboardokkal a gyorsabb döntésekhez.',
 			'hero.contactEmail': 'Írj e-mailt',
