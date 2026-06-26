@@ -45,10 +45,11 @@ body {
   z-index: 999;
   background: rgba(9, 8, 6, 0.92);
   backdrop-filter: blur(14px);
+  padding: 0 1rem;
 }
 
 .nav-inner {
-  width: min(1320px, calc(100% - 2rem));
+  width: min(2000px, calc(100% - 2rem));
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -89,7 +90,7 @@ body {
 
 .nav-links {
   display: flex;
-  gap: 1.2rem;
+  gap: 1.5rem;
   color: var(--muted);
 }
 
