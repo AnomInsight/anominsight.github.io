@@ -288,6 +288,15 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   margin-top: 0;
 }
 
+.section .price-note {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  color: rgba(209,181,140, 0.8);
+  opacity: 0.95;
+}
+
 .plan-card ul {
   padding-left: 1.1rem;
   margin: 0;
