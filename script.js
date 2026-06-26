@@ -85,6 +85,7 @@
       'plans.card3.item1': 'Custom analytics systems',
       'plans.card3.item2': 'Model monitoring and refinement',
       'plans.card3.item3': 'Strategic opportunity analysis',
+      'plans.priceNote': '*Prices converted using 310 HUF/USD.',
       'contact.eyebrow': 'Contact',
       'contact.heading': 'Let’s turn your data into a real advantage.',
       'contact.copy': 'I’m available for data science consulting, anomaly detection projects, ML/AI development, data audits, and business opportunity analysis. Send a message and I’ll get back to you soon.',
@@ -153,6 +154,7 @@
       'plans.card3.item1': 'Egyedi elemzési rendszerek',
       'plans.card3.item2': 'Modellfigyelés és finomhangolás',
       'plans.card3.item3': 'Stratégiai lehetőség-elemzés',
+      'plans.priceNote': '*Az árfolyam átváltásához 310 HUF/USD értéket használtunk.',
       'contact.eyebrow': 'Kapcsolat',
       'contact.heading': 'Tegyük adataidat valódi előnnyé.',
       'contact.copy': 'Elérhető vagyok adattudományi tanácsadásra, anomáliafelismerési projektekre, ML/AI fejlesztésre, adatelemzésre és üzleti lehetőség feltárására. Küldj üzenetet, és hamarosan válaszolok.',
@@ -189,6 +191,17 @@
       const key = el.getAttribute('data-i18n-html');
       if (key && translations[lang][key]) {
         el.innerHTML = translations[lang][key];
+      }
+    });
+    document.querySelectorAll('.price[data-price-usd]').forEach((el) => {
+      const usd = Number(el.getAttribute('data-price-usd'));
+      if (!Number.isNaN(usd)) {
+        if (lang === 'hu') {
+          const huf = Math.round(usd * 310);
+          el.textContent = `${huf.toLocaleString('hu-HU')} Ft*`;
+        } else {
+          el.textContent = `$${usd.toLocaleString('en-US')}`;
+        }
       }
     });
     updateYear();
