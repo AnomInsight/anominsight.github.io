@@ -1,0 +1,333 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="AnomInsight is a modern brand and portfolio page for showcasing projects, services, pricing plans, and contact details." />
+    <title>AnomInsight | Portfolio & Brand</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="hero" id="top">
+      <nav class="nav">
+        <div class="container nav-inner">
+          <a class="brand" href="#top">
+            <span class="brand-logo"><img src="images/Logo_small_2.png" alt="AnomInsight Logo" /></span>
+            <span>AnomInsight</span>
+          </a>
+          <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <div class="nav-actions">
+            <div class="nav-links">
+              <a href="#services" data-i18n="nav.services">Services</a>
+              <a href="#howitworks" data-i18n="nav.projects">Services</a>
+              <a href="#howitworks" data-i18n="nav.plans">How It Works</a>
+              <a href="#contact" data-i18n="nav.contact">Contact</a>
+            </div>
+            <button class="lang-toggle" type="button" aria-label="Switch language" data-i18n="langToggle">HU</button>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container hero-grid">
+        <div>
+          <h1 data-i18n="hero.heading">AI-Powered Data Analytics That Turns Your Data Into Business Decisions</h1>
+          <p class="hero-copy" data-i18n="hero.copy">We help companies understand their data, detect anomalies, and predict future outcomes using modern machine learning and interactive dashboards.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#contact" data-i18n="hero.ctaPrimary">Get a Free Data Audit</a>
+            <a class="btn btn-secondary" href="#howitworks" data-i18n="hero.ctaSecondary">See Example Dashboard</a>
+          </div>
+          <p class="hero-trust" data-i18n="hero.trust">No setup required. Start with your existing Excel, SQL, or API data.</p>
+        </div>
+
+        <div class="panel-card">
+          <p class="panel-label" data-i18n="panel.label">Why companies trust us</p>
+          <div class="score" data-i18n="panel.score">Custom AI Solutions</div>
+          <p class="panel-text" data-i18n="panel.text">Tailored analytics for your business.</p>
+          <ul class="panel-highlights">
+            <li>
+              <div class="panel-row">
+                <span class="panel-icon" aria-hidden="true">✓</span>
+                <strong data-i18n="panel.item1.title">4+ Years</strong>
+              </div>
+              <small data-i18n="panel.item1.text">Working with production and industrial data</small>
+            </li>
+            <li>
+              <div class="panel-row">
+                <span class="panel-icon" aria-hidden="true">✓</span>
+                <strong data-i18n="panel.item2.title">Industrial Focus</strong>
+              </div>
+              <small data-i18n="panel.item2.text">Manufacturing process analytics</small>
+            </li>
+            <li>
+              <div class="panel-row">
+                <span class="panel-icon" aria-hidden="true">✓</span>
+                <strong data-i18n="panel.item3.title">Custom AI Solutions</strong>
+              </div>
+              <small data-i18n="panel.item3.text">Built for your business needs</small>
+            </li>
+            <li>
+              <div class="panel-row">
+                <span class="panel-icon" aria-hidden="true">✓</span>
+                <strong data-i18n="panel.item4.title">Continuous Development</strong>
+              </div>
+              <small data-i18n="panel.item4.text">New analytics features coming soon</small>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="section section-problem" id="problem">
+        <div class="container">
+          <div class="section-heading">
+            <h2 data-i18n="problem.title">Most companies have data — but no clarity.</h2>
+            <p class="section-subtitle" data-i18n="problem.text">Businesses collect large amounts of data every day, but struggle to turn it into actionable insights. Errors, inconsistencies, and hidden patterns often go unnoticed.</p>
+          </div>
+          <div class="problem-grid">
+            <div class="problem-item">
+              <div class="problem-icon">⚡</div>
+              <p data-i18n="problem.issue1">Unexpected downtime</p>
+            </div>
+            <div class="problem-item">
+              <div class="problem-icon">💰</div>
+              <p data-i18n="problem.issue2">Revenue loss from inefficiencies</p>
+            </div>
+            <div class="problem-item">
+              <div class="problem-icon">📉</div>
+              <p data-i18n="problem.issue3">Poor forecasting</p>
+            </div>
+            <div class="problem-item">
+              <div class="problem-icon">🐢</div>
+              <p data-i18n="problem.issue4">Slow decision-making</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-solution" id="solution">
+        <div class="container">
+          <div class="section-heading">
+            <h2 data-i18n="solution.title">We turn raw data into actionable intelligence.</h2>
+            <p class="section-subtitle" data-i18n="solution.text">Our system analyzes your data and transforms it into clear, interactive insights that help you make better decisions faster.</p>
+          </div>
+          <div class="solution-features">
+            <div class="feature">
+              <div class="feature-icon">🔧</div>
+              <p data-i18n="solution.feature1">Data engineering</p>
+            </div>
+            <div class="feature">
+              <div class="feature-icon">🤖</div>
+              <p data-i18n="solution.feature2">Machine learning</p>
+            </div>
+            <div class="feature">
+              <div class="feature-icon">📊</div>
+              <p data-i18n="solution.feature3">Visualization</p>
+            </div>
+            <div class="feature">
+              <div class="feature-icon">🔮</div>
+              <p data-i18n="solution.feature4">Predictive analytics</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section container" id="services">
+        <div class="section-heading">
+          <p class="eyebrow" data-i18n="services.eyebrow">Services</p>
+          <h2 data-i18n="services.heading">Core Services</h2>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <div class="card-icon">📊</div>
+            <h3 data-i18n="services.card1.title">Data Audit & Quality Assessment</h3>
+            <p data-i18n="services.card1.text">We analyze your datasets to identify missing values, inconsistencies, and structural issues.</p>
+          </article>
+          <article class="card">
+            <div class="card-icon">📈</div>
+            <h3 data-i18n="services.card2.title">Interactive Dashboards</h3>
+            <p data-i18n="services.card2.text">Custom dashboards with real-time charts and KPIs for full business visibility.</p>
+          </article>
+          <article class="card">
+            <div class="card-icon">📄</div>
+            <h3 data-i18n="services.card3.title">Automated Reporting</h3>
+            <p data-i18n="services.card3.text">Scheduled PDF or email reports summarizing key insights and performance metrics.</p>
+          </article>
+        </div>
+        <div class="section-cta">
+          <a class="btn btn-primary" href="#contact" data-i18n="services.cta">Start with a Data Audit</a>
+        </div>
+      </section>
+
+      <section class="section section-alt container" id="advanced">
+        <div class="section-heading">
+          <h2 data-i18n="advanced.title">Advanced Analytics</h2>
+          <p class="section-subtitle" data-i18n="advanced.subtitle">Available on request</p>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <div class="card-icon">⚠️</div>
+            <h3 data-i18n="advanced.card1.title">Anomaly Detection</h3>
+            <p data-i18n="advanced.card1.text">Automatically detect unusual patterns in your operational or business data.</p>
+          </article>
+          <article class="card">
+            <div class="card-icon">🔮</div>
+            <h3 data-i18n="advanced.card2.title">Forecasting Models</h3>
+            <p data-i18n="advanced.card2.text">Predict future trends in sales, production, or operational metrics.</p>
+          </article>
+          <article class="card">
+            <div class="card-icon">🛠</div>
+            <h3 data-i18n="advanced.card3.title">Predictive Maintenance</h3>
+            <p data-i18n="advanced.card3.text">Identify potential failures before they happen using historical and real-time data.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section container" id="howitworks">
+        <div class="section-heading">
+          <h2 data-i18n="howitworks.title">How It Works</h2>
+        </div>
+        <div class="steps-grid">
+          <div class="step">
+            <div class="step-number">1</div>
+            <h3 data-i18n="howitworks.step1.title">Data Input</h3>
+            <p data-i18n="howitworks.step1.text">Upload your Excel file or connect your database (SQL / API).</p>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <h3 data-i18n="howitworks.step2.title">Analysis</h3>
+            <p data-i18n="howitworks.step2.text">We process and clean your data using advanced analytics and ML models.</p>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <h3 data-i18n="howitworks.step3.title">Insights</h3>
+            <p data-i18n="howitworks.step3.text">You receive dashboards, reports, and actionable recommendations.</p>
+          </div>
+          <div class="step">
+            <div class="step-number">4</div>
+            <h3 data-i18n="howitworks.step4.title">Continuous Improvement</h3>
+            <p data-i18n="howitworks.step4.text">Optional ongoing monitoring and model updates.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-alt container" id="usecases">
+        <div class="section-heading">
+          <h2 data-i18n="usecases.title">Who is this for?</h2>
+        </div>
+        <div class="usecases-list">
+          <div class="usecase-item" data-i18n="usecases.item1">Manufacturing companies</div>
+          <div class="usecase-item" data-i18n="usecases.item2">Logistics & supply chain businesses</div>
+          <div class="usecase-item" data-i18n="usecases.item3">E-commerce companies</div>
+          <div class="usecase-item" data-i18n="usecases.item4">Energy & utilities</div>
+          <div class="usecase-item" data-i18n="usecases.item5">Any data-driven organization</div>
+        </div>
+      </section>
+
+      <section class="section container" id="value">
+        <div class="section-heading">
+          <h2 data-i18n="value.title">What you gain</h2>
+        </div>
+        <div class="value-grid">
+          <div class="value-item">
+            <div class="value-icon">✓</div>
+            <p data-i18n="value.item1">Better decision-making</p>
+          </div>
+          <div class="value-item">
+            <div class="value-icon">✓</div>
+            <p data-i18n="value.item2">Reduced operational costs</p>
+          </div>
+          <div class="value-item">
+            <div class="value-icon">✓</div>
+            <p data-i18n="value.item3">Early detection of problems</p>
+          </div>
+          <div class="value-item">
+            <div class="value-icon">✓</div>
+            <p data-i18n="value.item4">Clear visibility into business performance</p>
+          </div>
+          <div class="value-item">
+            <div class="value-icon">✓</div>
+            <p data-i18n="value.item5">Data-driven strategy instead of guesswork</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-alt container" id="roadmap">
+        <div class="section-heading">
+          <h2 data-i18n="roadmap.title">Platform Evolution</h2>
+          <p class="section-subtitle" data-i18n="roadmap.subtitle">We are continuously expanding our capabilities</p>
+        </div>
+        <div class="roadmap-grid">
+          <div class="roadmap-column">
+            <h3 data-i18n="roadmap.available">Currently available</h3>
+            <ul>
+              <li data-i18n="roadmap.item1">Data Audit</li>
+              <li data-i18n="roadmap.item2">Dashboards</li>
+              <li data-i18n="roadmap.item3">Automated Reporting</li>
+            </ul>
+          </div>
+          <div class="roadmap-column">
+            <h3 data-i18n="roadmap.developing">In development</h3>
+            <ul>
+              <li data-i18n="roadmap.item4">Real-time anomaly detection</li>
+              <li data-i18n="roadmap.item5">Predictive analytics</li>
+              <li data-i18n="roadmap.item6">API integrations (SQL, ERP, IoT)</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-alt container" id="final-cta">
+        <div class="container contact-grid">
+          <div>
+            <h2 data-i18n="finalcta.title">Ready to understand your data?</h2>
+            <p data-i18n="finalcta.text">Start with a free data audit and discover what your data is really telling you.</p>
+            <p class="cta-note" data-i18n="finalcta.note">No long-term commitment required.</p>
+          </div>
+          <div>
+            <a class="btn btn-primary large" href="#contact" data-i18n="finalcta.cta">Request Free Audit</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-alt container" id="contact">
+        <div class="container contact-grid">
+          <div>
+            <p class="eyebrow" data-i18n="contact.eyebrow">Contact</p>
+            <h2 data-i18n="contact.heading">Get in touch</h2>
+            <p data-i18n="contact.copy">Have questions? I'm here to help. GitHub Pages can't receive form submissions, so email me directly and I'll get back to you within 24 hours.</p>
+            <div class="contact-info">
+              <p data-i18n="contact.email">Email: info@anominsight.com</p>
+              <p data-i18n="contact.location">Location: Remote / Worldwide</p>
+            </div>
+          </div>
+
+          <div class="contact-card">
+            <p class="eyebrow" data-i18n="contact.directLabel">Direct contact</p>
+            <h3 data-i18n="contact.directHeading">Email me directly</h3>
+            <p class="contact-note" data-i18n="contact.directCopy">The site is static, so email is the fastest way to reach me.</p>
+            <div class="contact-actions">
+              <a class="btn btn-primary large" href="mailto:info@anominsight.com?subject=AnomInsight%20Project%20Inquiry" data-i18n="contact.directButton">Send email</a>
+              <a class="btn btn-secondary" href="mailto:info@anominsight.com">info@anominsight.com</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-content">
+        <p data-i18n-html="footer.text">© <span id="year"></span> AnomInsight. AI-powered data analytics for modern businesses.</p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
