@@ -23,38 +23,41 @@
             <span></span>
             <span></span>
           </button>
-          <div class="nav-links">
-            <a href="#services">Services</a>
-            <a href="#projects">Projects</a>
-            <a href="#plans">Plans</a>
-            <a href="#contact">Contact</a>
+          <div class="nav-actions">
+            <div class="nav-links">
+              <a href="#services" data-i18n="nav.services">Services</a>
+              <a href="#projects" data-i18n="nav.projects">Projects</a>
+              <a href="#plans" data-i18n="nav.plans">Plans</a>
+              <a href="#contact" data-i18n="nav.contact">Contact</a>
+            </div>
+            <button class="lang-toggle" type="button" aria-label="Switch language" data-i18n="langToggle">HU</button>
           </div>
         </div>
       </nav>
 
       <div class="container hero-grid">
         <div>
-          <p class="eyebrow">Data Science • ML/AI • Analytics</p>
-          <h1>Turning complex data into clear insight, smarter decisions, and measurable impact.</h1>
-          <p class="hero-copy">
+          <p class="eyebrow" data-i18n="hero.eyebrow">Data Science • ML/AI • Analytics</p>
+          <h1 data-i18n="hero.heading">Turning complex data into clear insight, smarter decisions, and measurable impact.</h1>
+          <p class="hero-copy" data-i18n="hero.copy">
             I build data-driven solutions for anomaly detection, predictive modeling, business intelligence, and AI-powered analysis that help teams act faster and with confidence.
           </p>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="#contact">Let’s work together</a>
-            <a class="btn btn-secondary" href="#projects">Explore my projects</a>
+            <a class="btn btn-primary" href="#contact" data-i18n="hero.ctaPrimary">Let’s work together</a>
+            <a class="btn btn-secondary" href="#projects" data-i18n="hero.ctaSecondary">Explore my projects</a>
           </div>
           <ul class="highlights">
-            <li>Anomaly detection</li>
-            <li>ML/AI projects</li>
-            <li>Data audits & insights</li>
-            <li>Basic web development</li>
+            <li data-i18n="hero.highlight1">Anomaly detection</li>
+            <li data-i18n="hero.highlight2">ML/AI projects</li>
+            <li data-i18n="hero.highlight3">Data audits & insights</li>
+            <li data-i18n="hero.highlight4">Basic web development</li>
           </ul>
         </div>
 
         <div class="panel-card">
-          <p class="panel-label">Core strengths</p>
-          <div class="score">AI</div>
-          <p class="panel-text">From data preparation and exploration to modeling, validation, and actionable reporting.</p>
+          <p class="panel-label" data-i18n="panel.label">Core strengths</p>
+          <div class="score" data-i18n="panel.score">AI</div>
+          <p class="panel-text" data-i18n="panel.text">From data preparation and exploration to modeling, validation, and actionable reporting.</p>
           <div class="mini-stats">
             <div>
               <strong>Data</strong>
@@ -72,8 +75,8 @@
     <main>
       <section class="section container" id="services">
         <div class="section-heading">
-          <p class="eyebrow">Services</p>
-          <h2>Data science and AI solutions tailored to real business needs.</h2>
+          <p class="eyebrow" data-i18n="services.eyebrow">Services</p>
+          <h2 data-i18n="services.heading">Data science and AI solutions tailored to real business needs.</h2>
         </div>
         <div class="cards">
           <article class="card">
@@ -98,24 +101,24 @@
       <section class="section section-alt" id="projects">
         <div class="container">
           <div class="section-heading">
-            <p class="eyebrow">Portfolio</p>
-            <h2>Selected work in analytics, forecasting, and intelligent systems.</h2>
+            <p class="eyebrow" data-i18n="projects.eyebrow">Portfolio</p>
+            <h2 data-i18n="projects.heading">Selected work in analytics, forecasting, and intelligent systems.</h2>
           </div>
           <div class="project-grid">
             <article class="project-card">
-              <h3>Anomaly Detection System</h3>
-              <p>Developed models to identify unusual behavior and highlight important deviations in complex datasets.</p>
-              <span>ML • Detection • Monitoring</span>
+              <h3 data-i18n="projects.card1.title">Anomaly Detection System</h3>
+              <p data-i18n="projects.card1.text">Developed models to identify unusual behavior and highlight important deviations in complex datasets.</p>
+              <span data-i18n="projects.card1.tag">ML • Detection • Monitoring</span>
             </article>
             <article class="project-card">
-              <h3>Data Analysis Pipeline</h3>
-              <p>Built end-to-end analysis workflows for cleaning, transforming, and extracting insights from raw data.</p>
-              <span>Data Science • BI • Reporting</span>
+              <h3 data-i18n="projects.card2.title">Data Analysis Pipeline</h3>
+              <p data-i18n="projects.card2.text">Built end-to-end analysis workflows for cleaning, transforming, and extracting insights from raw data.</p>
+              <span data-i18n="projects.card2.tag">Data Science • BI • Reporting</span>
             </article>
             <article class="project-card">
-              <h3>Opportunity & Risk Analysis</h3>
-              <p>Delivered structured analysis to uncover potential growth paths, hidden risks, and data-backed recommendations.</p>
-              <span>Audit • Strategy • Insight</span>
+              <h3 data-i18n="projects.card3.title">Opportunity & Risk Analysis</h3>
+              <p data-i18n="projects.card3.text">Delivered structured analysis to uncover potential growth paths, hidden risks, and data-backed recommendations.</p>
+              <span data-i18n="projects.card3.tag">Audit • Strategy • Insight</span>
             </article>
           </div>
         </div>
@@ -123,35 +126,35 @@
 
       <section class="section container" id="plans">
         <div class="section-heading">
-          <p class="eyebrow">Plans</p>
-          <h2>Flexible engagement options for analytics, automation, and AI-driven growth.</h2>
+          <p class="eyebrow" data-i18n="plans.eyebrow">Plans</p>
+          <h2 data-i18n="plans.heading">Flexible engagement options for analytics, automation, and AI-driven growth.</h2>
         </div>
         <div class="plans-grid">
           <article class="plan-card">
-            <h3>Discovery</h3>
+            <h3 data-i18n="plans.card1.title">Discovery</h3>
             <p class="price">$499</p>
             <ul>
-              <li>Data review and problem framing</li>
-              <li>Initial analysis recommendations</li>
-              <li>Roadmap for next steps</li>
+              <li data-i18n="plans.card1.item1">Data review and problem framing</li>
+              <li data-i18n="plans.card1.item2">Initial analysis recommendations</li>
+              <li data-i18n="plans.card1.item3">Roadmap for next steps</li>
             </ul>
           </article>
           <article class="plan-card featured">
-            <h3>Delivery</h3>
+            <h3 data-i18n="plans.card2.title">Delivery</h3>
             <p class="price">$1,199</p>
             <ul>
-              <li>ML/AI solution development</li>
-              <li>Data audit and insight reporting</li>
-              <li>Implementation support</li>
+              <li data-i18n="plans.card2.item1">ML/AI solution development</li>
+              <li data-i18n="plans.card2.item2">Data audit and insight reporting</li>
+              <li data-i18n="plans.card2.item3">Implementation support</li>
             </ul>
           </article>
           <article class="plan-card">
-            <h3>Advanced</h3>
+            <h3 data-i18n="plans.card3.title">Advanced</h3>
             <p class="price">$2,499</p>
             <ul>
-              <li>Custom analytics systems</li>
-              <li>Model monitoring and refinement</li>
-              <li>Strategic opportunity analysis</li>
+              <li data-i18n="plans.card3.item1">Custom analytics systems</li>
+              <li data-i18n="plans.card3.item2">Model monitoring and refinement</li>
+              <li data-i18n="plans.card3.item3">Strategic opportunity analysis</li>
             </ul>
           </article>
         </div>
@@ -160,30 +163,30 @@
       <section class="section section-alt" id="contact">
         <div class="container contact-grid">
           <div>
-            <p class="eyebrow">Contact</p>
-            <h2>Let’s turn your data into a real advantage.</h2>
-            <p>I’m available for data science consulting, anomaly detection projects, ML/AI development, data audits, and business opportunity analysis. Send a message and I’ll get back to you soon.</p>
+            <p class="eyebrow" data-i18n="contact.eyebrow">Contact</p>
+            <h2 data-i18n="contact.heading">Let’s turn your data into a real advantage.</h2>
+            <p data-i18n="contact.copy">I’m available for data science consulting, anomaly detection projects, ML/AI development, data audits, and business opportunity analysis. Send a message and I’ll get back to you soon.</p>
             <div class="contact-info">
-              <p>Email: hello@anominsight.dev</p>
-              <p>Location: Remote / Worldwide</p>
+              <p data-i18n="contact.email">Email: hello@anominsight.dev</p>
+              <p data-i18n="contact.location">Location: Remote / Worldwide</p>
             </div>
           </div>
 
           <form class="contact-form" id="contactForm">
             <label>
-              Name
-              <input type="text" name="name" placeholder="Your name" required />
+              <span data-i18n="contact.form.name">Name</span>
+              <input type="text" name="name" placeholder="Your name" data-i18n-placeholder="contact.form.placeholderName" required />
             </label>
             <label>
-              Email
-              <input type="email" name="email" placeholder="you@example.com" required />
+              <span data-i18n="contact.form.email">Email</span>
+              <input type="email" name="email" placeholder="you@example.com" data-i18n-placeholder="contact.form.placeholderEmail" required />
             </label>
             <label>
-              Project details
-              <textarea name="message" rows="5" placeholder="Tell me about your idea, goals, and timeline." required></textarea>
+              <span data-i18n="contact.form.details">Project details</span>
+              <textarea name="message" rows="5" placeholder="Tell me about your idea, goals, and timeline." data-i18n-placeholder="contact.form.placeholderDetails" required></textarea>
             </label>
-            <button class="btn btn-primary" type="submit">Send Message</button>
-            <p class="form-note" id="formNote">Thanks! Your message is ready to send.</p>
+            <button class="btn btn-primary" type="submit" data-i18n="contact.form.submit">Send Message</button>
+            <p class="form-note" id="formNote" data-i18n="contact.form.note">Thanks! Your message is ready to send.</p>
           </form>
         </div>
       </section>
@@ -191,7 +194,7 @@
 
     <footer class="footer">
       <div class="container footer-content">
-        <p>© <span id="year"></span> AnomInsight. Built for modern brands.</p>
+        <p data-i18n-html="footer.text">© <span id="year"></span> AnomInsight. Built for modern brands.</p>
       </div>
     </footer>
 
