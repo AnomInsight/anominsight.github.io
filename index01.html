@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style01.css" />
   </head>
   <body>
     <header class="hero" id="top">
@@ -26,7 +26,7 @@
           <div class="nav-actions">
             <div class="nav-links">
               <a href="#services" data-i18n="nav.services">Services</a>
-              <a href="#howitworks" data-i18n="nav.projects">Services</a>
+              <a href="#projects" data-i18n="nav.projects">Projects</a>
               <a href="#howitworks" data-i18n="nav.plans">How It Works</a>
               <a href="#contact" data-i18n="nav.contact">Contact</a>
             </div>
@@ -88,24 +88,24 @@
       <section class="section section-problem" id="problem">
         <div class="container">
           <div class="section-heading">
-            <h2 data-i18n="problem.title">Most companies have data — but no clarity.</h2>
+            <h2 class="problem-title" data-i18n="problem.title">Most companies have data — but no clarity.</h2>
             <p class="section-subtitle" data-i18n="problem.text">Businesses collect large amounts of data every day, but struggle to turn it into actionable insights. Errors, inconsistencies, and hidden patterns often go unnoticed.</p>
           </div>
           <div class="problem-grid">
             <div class="problem-item">
-              <div class="problem-icon">⚡</div>
+              <div class="problem-icon"><img src="images/bolt.png" alt="" /></div>
               <p data-i18n="problem.issue1">Unexpected downtime</p>
             </div>
             <div class="problem-item">
-              <div class="problem-icon">💰</div>
+              <div class="problem-icon"><img src="images/cheap-dollar.png" alt="" /></div>
               <p data-i18n="problem.issue2">Revenue loss from inefficiencies</p>
             </div>
             <div class="problem-item">
-              <div class="problem-icon">📉</div>
+              <div class="problem-icon"><img src="images/chat-arrow-down.png" alt="" /></div>
               <p data-i18n="problem.issue3">Poor forecasting</p>
             </div>
             <div class="problem-item">
-              <div class="problem-icon">🐢</div>
+              <div class="problem-icon"><img src="images/snail.png" alt="" /></div>
               <p data-i18n="problem.issue4">Slow decision-making</p>
             </div>
           </div>
@@ -120,19 +120,19 @@
           </div>
           <div class="solution-features">
             <div class="feature">
-              <div class="feature-icon">🔧</div>
+              <div class="feature-icon"><img src="images/data-report.png" alt="" /></div>
               <p data-i18n="solution.feature1">Data engineering</p>
             </div>
             <div class="feature">
-              <div class="feature-icon">🤖</div>
+              <div class="feature-icon"><img src="images/brain-circuit.png" alt="" /></div>
               <p data-i18n="solution.feature2">Machine learning</p>
             </div>
             <div class="feature">
-              <div class="feature-icon">📊</div>
+              <div class="feature-icon"><img src="images/chart-simple.png" alt="" /></div>
               <p data-i18n="solution.feature3">Visualization</p>
             </div>
             <div class="feature">
-              <div class="feature-icon">🔮</div>
+              <div class="feature-icon"><img src="images/crystal-ball.png" alt="" /></div>
               <p data-i18n="solution.feature4">Predictive analytics</p>
             </div>
           </div>
@@ -146,17 +146,17 @@
         </div>
         <div class="cards">
           <article class="card">
-            <div class="card-icon">📊</div>
+            <div class="card-icon"><img src="images/chart-simple.png" alt="" /></div>
             <h3 data-i18n="services.card1.title">Data Audit & Quality Assessment</h3>
             <p data-i18n="services.card1.text">We analyze your datasets to identify missing values, inconsistencies, and structural issues.</p>
           </article>
           <article class="card">
-            <div class="card-icon">📈</div>
+            <div class="card-icon"><img src="images/dashboard-monitor.png" alt="" /></div>
             <h3 data-i18n="services.card2.title">Interactive Dashboards</h3>
             <p data-i18n="services.card2.text">Custom dashboards with real-time charts and KPIs for full business visibility.</p>
           </article>
           <article class="card">
-            <div class="card-icon">📄</div>
+            <div class="card-icon"><img src="images/data-report.png" alt="" /></div>
             <h3 data-i18n="services.card3.title">Automated Reporting</h3>
             <p data-i18n="services.card3.text">Scheduled PDF or email reports summarizing key insights and performance metrics.</p>
           </article>
@@ -173,20 +173,35 @@
         </div>
         <div class="cards">
           <article class="card">
-            <div class="card-icon">⚠️</div>
+            <div class="card-icon"><img src="images/triangle-warning.png" alt="" /></div>
             <h3 data-i18n="advanced.card1.title">Anomaly Detection</h3>
             <p data-i18n="advanced.card1.text">Automatically detect unusual patterns in your operational or business data.</p>
           </article>
           <article class="card">
-            <div class="card-icon">🔮</div>
+            <div class="card-icon"><img src="images/crystal-ball.png" alt="" /></div>
             <h3 data-i18n="advanced.card2.title">Forecasting Models</h3>
             <p data-i18n="advanced.card2.text">Predict future trends in sales, production, or operational metrics.</p>
           </article>
           <article class="card">
-            <div class="card-icon">🛠</div>
+            <div class="card-icon"><img src="images/tools.png" alt="" /></div>
             <h3 data-i18n="advanced.card3.title">Predictive Maintenance</h3>
             <p data-i18n="advanced.card3.text">Identify potential failures before they happen using historical and real-time data.</p>
           </article>
+        </div>
+      </section>
+
+      <section class="section container portfolio-section" id="projects">
+        <div class="portfolio-shell">
+          <div class="portfolio-sticky">
+            <p class="eyebrow" data-i18n="portfolio.eyebrow">Portfolio</p>
+            <h2 data-i18n="portfolio.heading">Selected Projects</h2>
+            <p class="section-subtitle" data-i18n="portfolio.subtitle">A light, scrollable showcase. New projects can be added from a single collection in script01.js.</p>
+            <p class="portfolio-filter-title" data-i18n="portfolio.filtersTitle">Browse by category</p>
+            <div class="portfolio-filters" id="portfolioFilters" aria-label="Project category filters" data-i18n-aria="portfolio.filtersAria"></div>
+            <p class="portfolio-focus-hint" data-i18n="portfolio.focusHint">Click any card to bring it to focus.</p>
+            <p class="portfolio-note" data-i18n="portfolio.note">Tip: categories are already supported in data, so filtering can be added later without redesign.</p>
+          </div>
+          <div class="portfolio-rotator" id="portfolioTrack" aria-label="Portfolio projects" data-i18n-aria="portfolio.trackAria"></div>
         </div>
       </section>
 
@@ -328,6 +343,7 @@
       </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="translations01.js"></script>
+    <script src="script01.js"></script>
   </body>
 </html>
