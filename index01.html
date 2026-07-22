@@ -5,9 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="AnomInsight is a modern brand and portfolio page for showcasing projects, services, pricing plans, and contact details." />
     <title>AnomInsight | Portfolio & Brand</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-circle-32.png?v=4" />
+    <link rel="icon" type="image/png" sizes="192x192" href="images/favicon-circle-192.png?v=4" />
+    <link rel="apple-touch-icon" href="images/favicon-circle-512.png?v=4" />
+    <link rel="shortcut icon" href="images/favicon-circle-32.png?v=4" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style01.css" />
   </head>
   <body>
@@ -195,7 +199,7 @@
           <div class="portfolio-sticky">
             <p class="eyebrow" data-i18n="portfolio.eyebrow">Portfolio</p>
             <h2 data-i18n="portfolio.heading">Selected Projects</h2>
-            <p class="section-subtitle" data-i18n="portfolio.subtitle">A light, scrollable showcase. New projects can be added from a single collection in script01.js.</p>
+            <p class="section-subtitle" data-i18n="portfolio.subtitle">A light, scrollable showcase. New projects can be added from a single collection in js/portfolio.js.</p>
             <p class="portfolio-filter-title" data-i18n="portfolio.filtersTitle">Browse by category</p>
             <div class="portfolio-filters" id="portfolioFilters" aria-label="Project category filters" data-i18n-aria="portfolio.filtersAria"></div>
             <p class="portfolio-focus-hint" data-i18n="portfolio.focusHint">Click any card to bring it to focus.</p>
@@ -204,6 +208,20 @@
           <div class="portfolio-rotator" id="portfolioTrack" aria-label="Portfolio projects" data-i18n-aria="portfolio.trackAria"></div>
         </div>
       </section>
+
+      <div class="portfolio-detail-modal" id="portfolioDetailModal" aria-hidden="true">
+        <div class="portfolio-detail-backdrop" data-close-portfolio-detail="true"></div>
+        <article class="portfolio-detail-dialog" role="dialog" aria-modal="true" aria-labelledby="portfolioDetailTitle" aria-describedby="portfolioDetailText">
+          <div class="portfolio-detail-top">
+            <p class="portfolio-kind" id="portfolioDetailKind"></p>
+            <span class="portfolio-stage" id="portfolioDetailStage"></span>
+          </div>
+          <h3 id="portfolioDetailTitle">Project overview</h3>
+          <p id="portfolioDetailText"></p>
+          <div class="portfolio-detail-meta" id="portfolioDetailMeta"></div>
+          <button type="button" class="btn btn-secondary portfolio-detail-close" id="portfolioDetailCloseBtn" data-i18n="portfolio.detailsClose">Close</button>
+        </article>
+      </div>
 
       <section class="section container" id="howitworks">
         <div class="section-heading">
@@ -274,64 +292,70 @@
         </div>
       </section>
 
-      <section class="section section-alt container" id="roadmap">
-        <div class="section-heading">
-          <h2 data-i18n="roadmap.title">Platform Evolution</h2>
-          <p class="section-subtitle" data-i18n="roadmap.subtitle">We are continuously expanding our capabilities</p>
-        </div>
-        <div class="roadmap-grid">
-          <div class="roadmap-column">
-            <h3 data-i18n="roadmap.available">Currently available</h3>
-            <ul>
-              <li data-i18n="roadmap.item1">Data Audit</li>
-              <li data-i18n="roadmap.item2">Dashboards</li>
-              <li data-i18n="roadmap.item3">Automated Reporting</li>
-            </ul>
-          </div>
-          <div class="roadmap-column">
-            <h3 data-i18n="roadmap.developing">In development</h3>
-            <ul>
-              <li data-i18n="roadmap.item4">Real-time anomaly detection</li>
-              <li data-i18n="roadmap.item5">Predictive analytics</li>
-              <li data-i18n="roadmap.item6">API integrations (SQL, ERP, IoT)</li>
-            </ul>
-          </div>
-        </div>
-      </section>
+      <section class="section container closing-rotor-section" id="roadmap">
+        <div class="closing-rotor-shell" id="closingRotorShell">
+          <div class="closing-rotor-stage" id="closingRotorStage" aria-live="polite">
+            <article class="closing-panel" data-rotor-index="0">
+              <div class="section-heading">
+                <h2 data-i18n="roadmap.title">Platform Evolution</h2>
+                <p class="section-subtitle" data-i18n="roadmap.subtitle">We are continuously expanding our capabilities</p>
+              </div>
+              <div class="roadmap-grid">
+                <div class="roadmap-column" data-roadmap-stage="available">
+                  <h3 data-i18n="roadmap.available">Currently available</h3>
+                  <ul class="roadmap-list">
+                    <li data-i18n="roadmap.item1">Data Audit</li>
+                    <li data-i18n="roadmap.item2">Dashboards</li>
+                    <li data-i18n="roadmap.item3">Automated Reporting</li>
+                  </ul>
+                </div>
+                <div class="roadmap-column" data-roadmap-stage="developing">
+                  <h3 data-i18n="roadmap.developing">In development</h3>
+                  <ul class="roadmap-list">
+                    <li data-i18n="roadmap.item4">Real-time anomaly detection</li>
+                    <li data-i18n="roadmap.item5">Predictive analytics</li>
+                    <li data-i18n="roadmap.item6">API integrations (SQL, ERP, IoT)</li>
+                  </ul>
+                </div>
+              </div>
+            </article>
 
-      <section class="section section-alt container" id="final-cta">
-        <div class="container contact-grid">
-          <div>
-            <h2 data-i18n="finalcta.title">Ready to understand your data?</h2>
-            <p data-i18n="finalcta.text">Start with a free data audit and discover what your data is really telling you.</p>
-            <p class="cta-note" data-i18n="finalcta.note">No long-term commitment required.</p>
-          </div>
-          <div>
-            <a class="btn btn-primary large" href="#contact" data-i18n="finalcta.cta">Request Free Audit</a>
-          </div>
-        </div>
-      </section>
+            <article class="closing-panel" id="final-cta" data-rotor-index="1">
+              <div class="contact-grid">
+                <div>
+                  <h2 data-i18n="finalcta.title">Ready to understand your data?</h2>
+                  <p data-i18n="finalcta.text">Start with a free data audit and discover what your data is really telling you.</p>
+                  <p class="cta-note" data-i18n="finalcta.note">No long-term commitment required.</p>
+                </div>
+                <div>
+                  <a class="btn btn-primary large" href="#contact" data-i18n="finalcta.cta">Request Free Audit</a>
+                </div>
+              </div>
+            </article>
 
-      <section class="section section-alt container" id="contact">
-        <div class="container contact-grid">
-          <div>
-            <p class="eyebrow" data-i18n="contact.eyebrow">Contact</p>
-            <h2 data-i18n="contact.heading">Get in touch</h2>
-            <p data-i18n="contact.copy">Have questions? I'm here to help. GitHub Pages can't receive form submissions, so email me directly and I'll get back to you within 24 hours.</p>
-            <div class="contact-info">
-              <p data-i18n="contact.email">Email: info@anominsight.com</p>
-              <p data-i18n="contact.location">Location: Remote / Worldwide</p>
-            </div>
-          </div>
+            <article class="closing-panel" id="contact" data-rotor-index="2">
+              <div class="contact-grid">
+                <div>
+                  <p class="eyebrow" data-i18n="contact.eyebrow">Contact</p>
+                  <h2 data-i18n="contact.heading">Get in touch</h2>
+                  <p data-i18n="contact.copy">Have questions? I'm here to help. GitHub Pages can't receive form submissions, so email me directly and I'll get back to you within 24 hours.</p>
+                  <div class="contact-info">
+                    <p data-i18n="contact.email">Email: info@anominsight.com</p>
+                    <p data-i18n="contact.location">Location: Remote / Worldwide</p>
+                  </div>
+                </div>
 
-          <div class="contact-card">
-            <p class="eyebrow" data-i18n="contact.directLabel">Direct contact</p>
-            <h3 data-i18n="contact.directHeading">Email me directly</h3>
-            <p class="contact-note" data-i18n="contact.directCopy">The site is static, so email is the fastest way to reach me.</p>
-            <div class="contact-actions">
-              <a class="btn btn-primary large" href="mailto:info@anominsight.com?subject=AnomInsight%20Project%20Inquiry" data-i18n="contact.directButton">Send email</a>
-              <a class="btn btn-secondary" href="mailto:info@anominsight.com">info@anominsight.com</a>
-            </div>
+                <div class="contact-card">
+                  <p class="eyebrow" data-i18n="contact.directLabel">Direct contact</p>
+                  <h3 data-i18n="contact.directHeading">Email me directly</h3>
+                  <p class="contact-note" data-i18n="contact.directCopy">The site is static, so email is the fastest way to reach me.</p>
+                  <div class="contact-actions">
+                    <a class="btn btn-primary large" href="mailto:info@anominsight.com?subject=AnomInsight%20Project%20Inquiry" data-i18n="contact.directButton">Send email</a>
+                    <a class="btn btn-secondary" href="mailto:info@anominsight.com">info@anominsight.com</a>
+                  </div>
+                </div>
+              </div>
+            </article>
           </div>
         </div>
       </section>
@@ -343,7 +367,6 @@
       </div>
     </footer>
 
-    <script src="translations01.js"></script>
-    <script src="script01.js"></script>
+    <script type="module" src="js/main.js"></script>
   </body>
 </html>

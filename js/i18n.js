@@ -1,4 +1,7 @@
-window.ANOM_TRANSLATIONS = {
+// Translation dictionary and DOM text application for the AnomInsight brand/portfolio page.
+// Replaces translations01.js — now a proper ES module instead of a window global.
+
+export const translations = {
   en: {
     'nav.services': 'Services',
     'nav.projects': 'Projects',
@@ -7,7 +10,7 @@ window.ANOM_TRANSLATIONS = {
     'langToggle': 'EN',
     'portfolio.eyebrow': 'Portfolio',
     'portfolio.heading': 'Selected Projects',
-    'portfolio.subtitle': 'A light, scrollable showcase. New projects can be added from a single collection in script01.js.',
+    'portfolio.subtitle': 'A light, scrollable showcase. New projects can be added from a single collection in js/portfolio.js.',
     'portfolio.filtersTitle': 'Browse by category',
     'portfolio.filtersAria': 'Project category filters',
     'portfolio.filterAll': 'All',
@@ -16,6 +19,8 @@ window.ANOM_TRANSLATIONS = {
     'portfolio.trackAria': 'Portfolio projects',
     'portfolio.metaPrefix': 'Categories',
     'portfolio.empty': 'No projects in this category yet.',
+    'portfolio.expand': 'Expand overview',
+    'portfolio.detailsClose': 'Close',
     'hero.heading': 'AI-Powered Data Analytics That Turns Your Data Into Business Decisions',
     'hero.copy': 'I help companies understand their data, detect anomalies, and predict future outcomes using modern machine learning and interactive dashboards.',
     'hero.ctaPrimary': 'Get a Free Data Audit',
@@ -115,7 +120,7 @@ window.ANOM_TRANSLATIONS = {
     'langToggle': 'HU',
     'portfolio.eyebrow': 'Portfólió',
     'portfolio.heading': 'Kiemelt Projektek',
-    'portfolio.subtitle': 'Finom, vízszintesen görgethető bemutató. Az új projekteket egyetlen gyűjteményben lehet felvenni a script01.js fájlban.',
+    'portfolio.subtitle': 'Finom, vízszintesen görgethető bemutató. Az új projekteket egyetlen gyűjteményben lehet felvenni a js/portfolio.js fájlban.',
     'portfolio.filtersTitle': 'Böngészés kategória szerint',
     'portfolio.filtersAria': 'Projekt kategória szűrők',
     'portfolio.filterAll': 'Összes',
@@ -124,6 +129,8 @@ window.ANOM_TRANSLATIONS = {
     'portfolio.trackAria': 'Portfólió projektek',
     'portfolio.metaPrefix': 'Kategóriák',
     'portfolio.empty': 'Ebben a kategóriában még nincs projekt.',
+    'portfolio.expand': 'Részletes áttekintés',
+    'portfolio.detailsClose': 'Bezárás',
     'hero.heading': 'AI-alapú adatelemzés, amely adataidat üzleti döntésekké alakítja',
     'hero.copy': 'Segítek a vállalatoknak megérteni adataikat, anomáliákat felismerni és jövőbeli eredményeket megjósolni modern gépi tanulás és interaktív irányítópultok segítségével.',
     'hero.ctaPrimary': 'Ingyenes adatellenőrzés kérése',
@@ -216,3 +223,50 @@ window.ANOM_TRANSLATIONS = {
     'footer.text': '© <span id="year"></span> AnomInsight. AI-alapú adatelemzés modern vállalatok számára.',
   },
 };
+
+// Applies the current language to every element carrying a data-i18n* attribute.
+// Does not know about the portfolio carousel or detail modal — those re-render
+// themselves via portfolio.js's setPortfolioLanguage().
+export function applyTranslations(lang) {
+  document.documentElement.lang = lang;
+
+  document.querySelectorAll('[data-i18n]').forEach((el) => {
+    const key = el.getAttribute('data-i18n');
+    if (key && translations[lang][key]) {
+      el.textContent = translations[lang][key];
+    }
+  });
+
+  document.querySelectorAll('[data-i18n-aria]').forEach((el) => {
+    const key = el.getAttribute('data-i18n-aria');
+    if (key && translations[lang][key]) {
+      el.setAttribute('aria-label', translations[lang][key]);
+    }
+  });
+
+  document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (key && translations[lang][key]) {
+      el.setAttribute('placeholder', translations[lang][key]);
+    }
+  });
+
+  document.querySelectorAll('[data-i18n-html]').forEach((el) => {
+    const key = el.getAttribute('data-i18n-html');
+    if (key && translations[lang][key]) {
+      el.innerHTML = translations[lang][key];
+    }
+  });
+
+  document.querySelectorAll('.price[data-price-usd]').forEach((el) => {
+    const usd = Number(el.getAttribute('data-price-usd'));
+    if (!Number.isNaN(usd)) {
+      if (lang === 'hu') {
+        const huf = Math.round(usd * 310);
+        el.textContent = `${huf.toLocaleString('hu-HU')} Ft*`;
+      } else {
+        el.textContent = `$${usd.toLocaleString('en-US')}`;
+      }
+    }
+  });
+}
