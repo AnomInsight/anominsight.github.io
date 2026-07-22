@@ -1,4 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
+	const navigationEntry = performance.getEntriesByType('navigation')[0];
+	const isReload = navigationEntry ? navigationEntry.type === 'reload' : false;
+
+	if ('scrollRestoration' in window.history) {
+		window.history.scrollRestoration = 'manual';
+	}
+	if (isReload) {
+		window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+	}
+
 	const yearEl = document.getElementById('year');
 	if (yearEl) {
 		yearEl.textContent = String(new Date().getFullYear());
