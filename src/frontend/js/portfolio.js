@@ -19,6 +19,20 @@ const portfolioProjects = [
     categories: ['anomalyDetection', 'timeSeries', 'operations'],
   },
   {
+    kind: { en: 'Manufacturing', hu: 'Gyártás' },
+    stage: { en: 'Pilot', hu: 'Pilot' },
+    title: { en: 'Predictive Maintenance for CNC Operations', hu: 'Prediktív karbantartás CNC-üzemekhez' },
+    description: {
+      en: 'An interpretable LightGBM decision-support model identified short-term CNC failure risk with 96.1% recall on the holdout set.',
+      hu: 'Egy értelmezhető LightGBM döntéstámogató modell 96,1%-os recall értékkel jelezte előre a rövid távú CNC-meghibásodási kockázatot a holdout adathalmazon.',
+    },
+    overview: {
+      en: 'This CRISP-DM case study turns CNC sensor data into a daily, prioritized maintenance-review list for a 24/7 manufacturing operation. The leakage-safe pipeline excludes failure-cause columns and identifiers, engineers temperature, power, and wear-load features, and uses stratified splits to handle the 3.39% failure rate. A tuned LightGBM model, retrained on the full development set, achieved 96.1% recall, 39.8% precision, and 0.936 PR-AUC on the frozen holdout set at its OOF-selected operating threshold. The simulated client decision was a Conditional Go for a pilot: use high-recall alerts as decision support, retain maintenance-engineer authority, and manage false-alert workload with capacity-aware threshold modes and ongoing drift monitoring.',
+      hu: 'Ez a CRISP-DM esettanulmány CNC-szenzoradatokból készít napi, priorizált karbantartási felülvizsgálati listát egy folyamatos üzemű gyártási környezethez. Az adatszivárgást kizáró folyamat eltávolítja a meghibásodási okokat és az azonosítókat, hőmérséklet-, teljesítmény- és kopás-terhelési jellemzőket képez, valamint rétegzett felosztással kezeli a 3,39%-os meghibásodási arányt. A teljes fejlesztési adathalmazon újratanított, hangolt LightGBM modell az OOF alapján választott küszöbnél a befagyasztott holdout adathalmazon 96,1%-os recall, 39,8%-os precision és 0,936-os PR-AUC értéket ért el. A szimulált ügyféldöntés feltételes pilotindítás: a magas recall értékű riasztások döntéstámogatásként működnek, a végső döntés a karbantartó mérnököknél marad, a téves riasztások terhelését pedig kapacitásalapú küszöbökkel és folyamatos driftfigyeléssel kell kezelni.',
+    },
+    categories: ['predictiveMaintenance', 'anomalyDetection', 'decisionSupport'],
+  },
+  {
     kind: { en: 'Energy', hu: 'Energia' },
     stage: { en: 'Pilot', hu: 'Pilot' },
     title: { en: 'Utility Demand Forecast Stack', hu: 'Közmű kereslet-előrejelző rendszer' },
@@ -47,6 +61,20 @@ const portfolioProjects = [
     categories: ['alerts', 'visualization', 'supplyChain'],
   },
   {
+    kind: { en: 'Logistics', hu: 'Logisztika' },
+    stage: { en: 'Case Study', hu: 'Esettanulmány' },
+    title: { en: 'Handwritten Digit Classifier for Mail Sorting', hu: 'Kézzel írt számjegyek osztályozása levélválogatáshoz' },
+    description: {
+      en: 'Built and compared five ML models for automated ZIP-code digit recognition; the selected CNN reached 99.27% test accuracy.',
+      hu: 'Öt ML-modellt hasonlítottam össze irányítószámok automatikus felismeréséhez; a kiválasztott CNN 99,27%-os tesztpontosságot ért el.',
+    },
+    overview: {
+      en: 'This CRISP-DM case study examines how a mail-sorting operation could automate handwritten ZIP-code reading. Starting with baseline, logistic-regression, random-forest, and SVM models, the project selected a CNN that achieved 99.27% accuracy on the held-out MNIST test set. Evaluation went beyond accuracy with confusion analysis, high-confidence error review, confidence-gate recommendations, and robustness tests for rotation, noise, and brightness changes. The key operational recommendation is to send lower-confidence predictions to manual review and monitor confusion patterns and high-confidence errors after deployment.',
+      hu: 'Ez a CRISP-DM esettanulmány azt vizsgálja, hogyan automatizálható a kézzel írt irányítószámok olvasása egy levélválogató folyamatban. Az alapmodell, a logisztikus regresszió, a random forest és az SVM után egy CNN-t választottam, amely a független MNIST teszthalmazon 99,27%-os pontosságot ért el. Az értékelés a pontosságon túl a tévesztési mintákat, a magas bizalmú hibákat, a bizalmi küszöb alkalmazását és a forgatással, zajjal, illetve fényerő-változással szembeni robusztusságot is vizsgálta. A fő operatív javaslat az alacsonyabb bizalmú előrejelzések manuális ellenőrzésre küldése, valamint a tévesztési minták és a magas bizalmú hibák folyamatos monitorozása.',
+    },
+    categories: ['imageClassification', 'deepLearning', 'computerVision'],
+  },
+  {
     kind: { en: 'E-commerce', hu: 'E-kereskedelem' },
     stage: { en: 'Prototype', hu: 'Prototípus' },
     title: { en: 'Revenue Outlier Insight Feed', hu: 'Bevételi kiugrásokat vizsgáló feed' },
@@ -63,6 +91,7 @@ const portfolioProjects = [
 ];
 
 const portfolioCategoryLabels = {
+  predictiveMaintenance: { en: 'Predictive Maintenance', hu: 'Prediktív karbantartás' },
   anomalyDetection: { en: 'Anomaly Detection', hu: 'Anomáliafelismerés' },
   timeSeries: { en: 'Time Series', hu: 'Idősorok' },
   operations: { en: 'Operations', hu: 'Operáció' },
@@ -75,6 +104,9 @@ const portfolioCategoryLabels = {
   revenue: { en: 'Revenue', hu: 'Bevétel' },
   outliers: { en: 'Outliers', hu: 'Kiugró értékek' },
   decisionSupport: { en: 'Decision Support', hu: 'Döntéstámogatás' },
+  imageClassification: { en: 'Image Classification', hu: 'Képosztályozás' },
+  deepLearning: { en: 'Deep Learning', hu: 'Mélytanulás' },
+  computerVision: { en: 'Computer Vision', hu: 'Számítógépes látás' },
 };
 
 let activePortfolioIndex = 0;
@@ -315,7 +347,7 @@ const renderPortfolio = (lang, options = {}) => {
           <div class="portfolio-top-actions">
             <span class="portfolio-stage">${stage}</span>
             <button type="button" class="portfolio-expand-btn" aria-label="${expandLabel}" title="${expandLabel}">
-              <img src="images/expand-arrows.png" alt="" />
+              <img src="../../images/expand-arrows.png" alt="" />
             </button>
           </div>
         </div>
