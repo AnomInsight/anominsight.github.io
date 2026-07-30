@@ -6,7 +6,7 @@ import { translations } from './i18n.js';
 const portfolioProjects = [
   {
     kind: { en: 'Manufacturing', hu: 'Gyártás' },
-    stage: { en: 'Live', hu: 'Aktív' },
+    status: 'live',
     title: { en: 'Machine Downtime Early Warning', hu: 'Gépleállás korai figyelmeztetés' },
     description: {
       en: 'Streaming telemetry was used to detect anomalies before stoppages, reducing unplanned downtime windows.',
@@ -20,7 +20,7 @@ const portfolioProjects = [
   },
   {
     kind: { en: 'Manufacturing', hu: 'Gyártás' },
-    stage: { en: 'Pilot', hu: 'Pilot' },
+    status: 'caseStudy',
     title: { en: 'Predictive Maintenance for CNC Operations', hu: 'Prediktív karbantartás CNC-üzemekhez' },
     description: {
       en: 'An interpretable LightGBM decision-support model identified short-term CNC failure risk with 96.1% recall on the holdout set.',
@@ -34,7 +34,7 @@ const portfolioProjects = [
   },
   {
     kind: { en: 'Energy', hu: 'Energia' },
-    stage: { en: 'Pilot', hu: 'Pilot' },
+    status: 'pilot',
     title: { en: 'Utility Demand Forecast Stack', hu: 'Közmű kereslet-előrejelző rendszer' },
     description: {
       en: 'Built a forecasting layer that compares model bands with actual usage to support staffing and procurement decisions.',
@@ -48,7 +48,7 @@ const portfolioProjects = [
   },
   {
     kind: { en: 'Logistics', hu: 'Logisztika' },
-    stage: { en: 'Live', hu: 'Aktív' },
+    status: 'live',
     title: { en: 'Delivery Risk Monitoring Board', hu: 'Szállítási kockázatfigyelő dashboard' },
     description: {
       en: 'Unified shipment events and alerts into one board so teams can react to route exceptions in minutes.',
@@ -62,7 +62,7 @@ const portfolioProjects = [
   },
   {
     kind: { en: 'Logistics', hu: 'Logisztika' },
-    stage: { en: 'Case Study', hu: 'Esettanulmány' },
+    status: 'caseStudy',
     title: { en: 'Handwritten Digit Classifier for Mail Sorting', hu: 'Kézzel írt számjegyek osztályozása levélválogatáshoz' },
     description: {
       en: 'Built and compared five ML models for automated ZIP-code digit recognition; the selected CNN reached 99.27% test accuracy.',
@@ -76,7 +76,7 @@ const portfolioProjects = [
   },
   {
     kind: { en: 'E-commerce', hu: 'E-kereskedelem' },
-    stage: { en: 'Prototype', hu: 'Prototípus' },
+    status: 'prototype',
     title: { en: 'Revenue Outlier Insight Feed', hu: 'Bevételi kiugrásokat vizsgáló feed' },
     description: {
       en: 'Daily outlier feed highlights unusual product and region behavior, making action planning significantly faster.',
@@ -109,9 +109,26 @@ const portfolioCategoryLabels = {
   computerVision: { en: 'Computer Vision', hu: 'Számítógépes látás' },
 };
 
+// Project status: the top-level "main type" filter. Only a subset of these
+// is used by the current projects below, but the full vocabulary is here so
+// new projects can pick up any of these statuses without touching this dict.
+const portfolioStatusLabels = {
+  live: { en: 'Live', hu: 'Aktív' },
+  pilot: { en: 'Pilot', hu: 'Próbaüzem' },
+  caseStudy: { en: 'Case Study', hu: 'Esettanulmány' },
+  prototype: { en: 'Prototype', hu: 'Prototípus' },
+  workInProgress: { en: 'Work in Progress', hu: 'Fejlesztés alatt' },
+  ongoing: { en: 'Ongoing', hu: 'Folyamatban' },
+  planned: { en: 'Planned', hu: 'Tervezett' },
+  testing: { en: 'Testing', hu: 'Tesztelés alatt' },
+};
+
 let activePortfolioIndex = 0;
 let portfolioAutoRotateTimer = null;
-let activePortfolioFilter = 'all';
+// Empty set means "All" — no filter narrows the results. Both rows support
+// selecting multiple chips at once (checkbox-style, not radio-style).
+let activePortfolioStatusFilters = new Set();
+let activePortfolioCategoryFilters = new Set();
 let currentLang = 'en';
 let portfolioFilterTransitionToken = 0;
 let activePortfolioDetailProject = null;
@@ -158,7 +175,7 @@ const openPortfolioDetails = (project, lang) => {
   modal.classList.remove('is-closing');
 
   const kind = project.kind[lang] || project.kind.en;
-  const stage = project.stage[lang] || project.stage.en;
+  const stage = getStatusLabel(project.status, lang);
   const title = project.title[lang] || project.title.en;
   const overview = (project.overview && (project.overview[lang] || project.overview.en))
     || project.description[lang]
@@ -207,13 +224,42 @@ const syncPortfolioDeckTarget = () => {
   track.style.setProperty('--deck-shift-y', `${shiftY}px`);
 };
 
-const getFilteredProjects = () => {
-  if (activePortfolioFilter === 'all') {
-    return portfolioProjects;
+// Reflects the full collection regardless of active filters, so the strip
+// reads as a stable portfolio-wide credibility signal rather than a filter count.
+const renderPortfolioStats = (lang) => {
+  const host = document.getElementById('portfolioStats');
+  if (!host) {
+    return;
   }
 
-  return portfolioProjects.filter((project) => project.categories.includes(activePortfolioFilter));
+  const projectCount = portfolioProjects.length;
+  const industryCount = new Set(portfolioProjects.map((project) => project.kind.en)).size;
+  const liveCount = portfolioProjects.filter((project) => project.status === 'live').length;
+
+  const stats = [
+    { value: projectCount, label: translations[lang]['portfolio.statLabelProjects'] },
+    { value: industryCount, label: translations[lang]['portfolio.statLabelIndustries'] },
+    { value: liveCount, label: translations[lang]['portfolio.statLabelLive'] },
+  ];
+
+  host.innerHTML = '';
+  stats.forEach((stat) => {
+    const tile = document.createElement('div');
+    tile.className = 'portfolio-stat';
+    tile.innerHTML = `
+      <span class="portfolio-stat-value">${stat.value}</span>
+      <span class="portfolio-stat-label">${stat.label}</span>
+    `;
+    host.appendChild(tile);
+  });
 };
+
+const getFilteredProjects = () => portfolioProjects.filter((project) => {
+  const matchesStatus = activePortfolioStatusFilters.size === 0 || activePortfolioStatusFilters.has(project.status);
+  const matchesCategory = activePortfolioCategoryFilters.size === 0
+    || project.categories.some((categoryId) => activePortfolioCategoryFilters.has(categoryId));
+  return matchesStatus && matchesCategory;
+});
 
 const getCategoryLabel = (categoryId, lang) => {
   const labels = portfolioCategoryLabels[categoryId];
@@ -223,45 +269,100 @@ const getCategoryLabel = (categoryId, lang) => {
   return labels[lang] || labels.en;
 };
 
-const renderPortfolioFilters = (lang) => {
-  const filtersHost = document.getElementById('portfolioFilters');
-  if (!filtersHost) {
-    return;
+const getStatusLabel = (statusId, lang) => {
+  const labels = portfolioStatusLabels[statusId];
+  if (!labels) {
+    return statusId;
   }
+  return labels[lang] || labels.en;
+};
 
-  const categoryIds = [...new Set(portfolioProjects.flatMap((project) => project.categories))];
-  filtersHost.innerHTML = '';
+const renderPortfolioFilterRow = (host, { activeSet, ids, getLabel, lang, onSelect, onClear }) => {
+  host.innerHTML = '';
 
   const allButton = document.createElement('button');
   allButton.type = 'button';
-  allButton.className = `portfolio-filter-chip${activePortfolioFilter === 'all' ? ' is-active' : ''}`;
+  allButton.className = `portfolio-filter-chip${activeSet.size === 0 ? ' is-active' : ''}`;
+  allButton.setAttribute('aria-pressed', activeSet.size === 0 ? 'true' : 'false');
   allButton.textContent = translations[lang]['portfolio.filterAll'];
-  allButton.addEventListener('click', () => {
-    setPortfolioFilter('all');
-  });
-  filtersHost.appendChild(allButton);
+  allButton.addEventListener('click', () => onClear());
+  host.appendChild(allButton);
 
-  categoryIds.forEach((categoryId) => {
+  ids.forEach((id) => {
     const chip = document.createElement('button');
     chip.type = 'button';
-    chip.className = `portfolio-filter-chip${activePortfolioFilter === categoryId ? ' is-active' : ''}`;
-    chip.textContent = getCategoryLabel(categoryId, lang);
-    chip.addEventListener('click', () => {
-      setPortfolioFilter(categoryId);
-    });
-    filtersHost.appendChild(chip);
+    const isActive = activeSet.has(id);
+    chip.className = `portfolio-filter-chip${isActive ? ' is-active' : ''}`;
+    chip.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    chip.textContent = getLabel(id, lang);
+    chip.addEventListener('click', () => onSelect(id));
+    host.appendChild(chip);
   });
 };
 
-const setPortfolioFilter = (filterId) => {
-  if (filterId === activePortfolioFilter) {
+// Drops any category selections that no longer belong to a currently
+// selected status, so the type row never highlights an option it isn't showing.
+const pruneCategoryFilters = () => {
+  const statusScopedProjects = activePortfolioStatusFilters.size === 0
+    ? portfolioProjects
+    : portfolioProjects.filter((project) => activePortfolioStatusFilters.has(project.status));
+  const validCategoryIds = new Set(statusScopedProjects.flatMap((project) => project.categories));
+  Array.from(activePortfolioCategoryFilters).forEach((categoryId) => {
+    if (!validCategoryIds.has(categoryId)) {
+      activePortfolioCategoryFilters.delete(categoryId);
+    }
+  });
+};
+
+const updatePortfolioClearAllButton = (lang) => {
+  const btn = document.getElementById('portfolioClearFilters');
+  if (!btn) {
+    return;
+  }
+  const hasActiveFilters = activePortfolioStatusFilters.size > 0 || activePortfolioCategoryFilters.size > 0;
+  btn.textContent = translations[lang]['portfolio.clearAllFilters'];
+  btn.disabled = !hasActiveFilters;
+};
+
+const renderPortfolioFilters = (lang) => {
+  const statusHost = document.getElementById('portfolioStatusFilters');
+  const categoryHost = document.getElementById('portfolioFilters');
+  if (!statusHost || !categoryHost) {
     return;
   }
 
+  const statusIds = [...new Set(portfolioProjects.map((project) => project.status))];
+  renderPortfolioFilterRow(statusHost, {
+    activeSet: activePortfolioStatusFilters,
+    ids: statusIds,
+    getLabel: getStatusLabel,
+    lang,
+    onSelect: toggleStatusFilter,
+    onClear: clearStatusFilters,
+  });
+
+  // The type row drills down into whatever the status row narrowed to.
+  const statusScopedProjects = activePortfolioStatusFilters.size === 0
+    ? portfolioProjects
+    : portfolioProjects.filter((project) => activePortfolioStatusFilters.has(project.status));
+  const categoryIds = [...new Set(statusScopedProjects.flatMap((project) => project.categories))];
+  renderPortfolioFilterRow(categoryHost, {
+    activeSet: activePortfolioCategoryFilters,
+    ids: categoryIds,
+    getLabel: getCategoryLabel,
+    lang,
+    onSelect: toggleCategoryFilter,
+    onClear: clearCategoryFilters,
+  });
+
+  updatePortfolioClearAllButton(lang);
+};
+
+const animatePortfolioFilterChange = (applyChange) => {
   const token = ++portfolioFilterTransitionToken;
   const track = document.getElementById('portfolioTrack');
   if (!track) {
-    activePortfolioFilter = filterId;
+    applyChange();
     renderPortfolio(currentLang);
     return;
   }
@@ -269,7 +370,7 @@ const setPortfolioFilter = (filterId) => {
   syncPortfolioDeckTarget();
 
   clearInterval(portfolioAutoRotateTimer);
-  activePortfolioFilter = filterId;
+  applyChange();
   renderPortfolioFilters(currentLang);
 
   const cards = Array.from(track.querySelectorAll('.portfolio-card'));
@@ -292,6 +393,85 @@ const setPortfolioFilter = (filterId) => {
   }, totalOutTime);
 };
 
+const toggleStatusFilter = (statusId) => {
+  animatePortfolioFilterChange(() => {
+    if (activePortfolioStatusFilters.has(statusId)) {
+      activePortfolioStatusFilters.delete(statusId);
+    } else {
+      activePortfolioStatusFilters.add(statusId);
+    }
+    // Narrowing (or widening) the status selection can invalidate previously
+    // picked types, so drop any that no longer belong to the current subset.
+    pruneCategoryFilters();
+  });
+};
+
+const clearStatusFilters = () => {
+  if (!activePortfolioStatusFilters.size) {
+    return;
+  }
+
+  animatePortfolioFilterChange(() => {
+    activePortfolioStatusFilters.clear();
+    pruneCategoryFilters();
+  });
+};
+
+const toggleCategoryFilter = (categoryId) => {
+  animatePortfolioFilterChange(() => {
+    if (activePortfolioCategoryFilters.has(categoryId)) {
+      activePortfolioCategoryFilters.delete(categoryId);
+    } else {
+      activePortfolioCategoryFilters.add(categoryId);
+    }
+  });
+};
+
+const clearCategoryFilters = () => {
+  if (!activePortfolioCategoryFilters.size) {
+    return;
+  }
+
+  animatePortfolioFilterChange(() => {
+    activePortfolioCategoryFilters.clear();
+  });
+};
+
+const clearAllPortfolioFilters = () => {
+  if (!activePortfolioStatusFilters.size && !activePortfolioCategoryFilters.size) {
+    return;
+  }
+
+  animatePortfolioFilterChange(() => {
+    activePortfolioStatusFilters.clear();
+    activePortfolioCategoryFilters.clear();
+  });
+};
+
+// Builds one dot per visible project so the deck can be browsed by clicking
+// a dot directly, as an alternative to clicking cards or the prev/next arrows.
+const renderPortfolioNavDots = (count, lang) => {
+  const nav = document.getElementById('portfolioNav');
+  const dotsHost = document.getElementById('portfolioNavDots');
+  if (!nav || !dotsHost) {
+    return;
+  }
+
+  nav.style.display = count > 1 ? '' : 'none';
+  dotsHost.innerHTML = '';
+
+  const labelTemplate = translations[lang]['portfolio.navDotLabel'] || 'Go to project {n}';
+  for (let i = 0; i < count; i += 1) {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'portfolio-nav-dot';
+    dot.setAttribute('role', 'tab');
+    dot.setAttribute('aria-label', labelTemplate.replace('{n}', String(i + 1)));
+    dot.addEventListener('click', () => setPortfolioFocus(i));
+    dotsHost.appendChild(dot);
+  }
+};
+
 const renderPortfolio = (lang, options = {}) => {
   const { animateIn = false } = options;
   const track = document.getElementById('portfolioTrack');
@@ -301,6 +481,7 @@ const renderPortfolio = (lang, options = {}) => {
 
   syncPortfolioDeckTarget();
 
+  renderPortfolioStats(lang);
   renderPortfolioFilters(lang);
   track.innerHTML = '';
   const projectsToRender = getFilteredProjects();
@@ -313,6 +494,7 @@ const renderPortfolio = (lang, options = {}) => {
       empty.classList.add('is-from-deck');
     }
     track.appendChild(empty);
+    renderPortfolioNavDots(0, lang);
     clearInterval(portfolioAutoRotateTimer);
 
     if (animateIn) {
@@ -333,7 +515,7 @@ const renderPortfolio = (lang, options = {}) => {
     }
 
     const kind = project.kind[lang] || project.kind.en;
-    const stage = project.stage[lang] || project.stage.en;
+    const stage = getStatusLabel(project.status, lang);
     const title = project.title[lang] || project.title.en;
     const description = project.description[lang] || project.description.en;
     const categoryLabels = project.categories.map((categoryId) => getCategoryLabel(categoryId, lang));
@@ -386,6 +568,7 @@ const renderPortfolio = (lang, options = {}) => {
   });
 
   activePortfolioIndex = 0;
+  renderPortfolioNavDots(projectsToRender.length, lang);
   updatePortfolioClasses();
 
   if (animateIn && !window.matchMedia('(max-width: 840px)').matches) {
@@ -394,11 +577,26 @@ const renderPortfolio = (lang, options = {}) => {
       cards.forEach((card) => {
         card.classList.remove('is-from-deck');
       });
+
+      // Once the staggered entrance has had time to finish, clear the delay
+      // so later interactions (hover, click, auto-rotate) aren't delayed too.
+      const entranceCards = Array.from(cards);
+      const maxDealDelay = (entranceCards.length - 1) * 55;
+      window.setTimeout(() => {
+        entranceCards.forEach((card) => {
+          card.style.setProperty('--deal-delay', '0ms');
+        });
+      }, maxDealDelay + 360);
     });
   }
 
   startPortfolioAutoRotate();
 };
+
+// Cards further than this many positions from the active card are fully
+// hidden (still in the DOM, but opacity 0 and untabbable) so a large "All"
+// deck doesn't pile every card into an unreadable stack.
+const PORTFOLIO_MAX_VISIBLE_DEPTH = 4;
 
 const updatePortfolioClasses = () => {
   const track = document.getElementById('portfolioTrack');
@@ -413,26 +611,40 @@ const updatePortfolioClasses = () => {
   }
 
   cards.forEach((card, index) => {
-    card.classList.remove('is-active', 'is-left', 'is-right', 'is-back');
+    // Signed distance from the active card, wrapped to the shorter direction
+    // around the deck (e.g. with 6 cards, index 5 vs active 0 is -1, not +5).
+    let distance = index - activePortfolioIndex;
+    if (distance > total / 2) {
+      distance -= total;
+    } else if (distance < -total / 2) {
+      distance += total;
+    }
 
-    if (index === activePortfolioIndex) {
-      card.classList.add('is-active');
+    const absDistance = Math.abs(distance);
+    const isActive = distance === 0;
+    const isBeyondDepth = absDistance > PORTFOLIO_MAX_VISIBLE_DEPTH;
+
+    card.classList.toggle('is-active', isActive);
+    card.classList.toggle('is-beyond-depth', isBeyondDepth);
+    card.style.setProperty('--distance', distance);
+    card.style.setProperty('--abs-distance', absDistance);
+
+    if (isActive) {
       card.setAttribute('aria-current', 'true');
-      return;
-    }
-
-    card.removeAttribute('aria-current');
-
-    const rightDistance = (index - activePortfolioIndex + total) % total;
-    const leftDistance = (activePortfolioIndex - index + total) % total;
-
-    if (rightDistance === 1) {
-      card.classList.add('is-right');
-    } else if (leftDistance === 1) {
-      card.classList.add('is-left');
     } else {
-      card.classList.add('is-back');
+      card.removeAttribute('aria-current');
     }
+
+    // Keep hidden-depth cards out of the tab order so keyboard focus can't
+    // land on a card the user can't see.
+    card.tabIndex = isBeyondDepth ? -1 : 0;
+  });
+
+  const dots = document.querySelectorAll('#portfolioNavDots .portfolio-nav-dot');
+  dots.forEach((dot, index) => {
+    const isActive = index === activePortfolioIndex;
+    dot.classList.toggle('is-active', isActive);
+    dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
   });
 };
 
@@ -493,6 +705,27 @@ export function initPortfolioInteraction() {
   const track = document.getElementById('portfolioTrack');
   const modal = document.getElementById('portfolioDetailModal');
   const closeBtn = document.getElementById('portfolioDetailCloseBtn');
+  const clearFiltersBtn = document.getElementById('portfolioClearFilters');
+  const prevBtn = document.getElementById('portfolioNavPrev');
+  const nextBtn = document.getElementById('portfolioNavNext');
+
+  if (clearFiltersBtn) {
+    clearFiltersBtn.addEventListener('click', () => {
+      clearAllPortfolioFilters();
+    });
+  }
+
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      setPortfolioFocus(activePortfolioIndex - 1);
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      setPortfolioFocus(activePortfolioIndex + 1);
+    });
+  }
 
   if (track) {
     track.addEventListener('mouseenter', () => {

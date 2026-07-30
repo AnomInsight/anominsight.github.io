@@ -318,9 +318,7 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   justify-content: center;
   width: 1.35rem;
   height: 1.35rem;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(217,163,107,0.35), rgba(240,200,130,0.2));
-  color: #fff;
+  color: var(--accent-2);
   font-weight: 800;
   flex-shrink: 0;
 }
@@ -952,6 +950,42 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   color: var(--muted);
 }
 
+.portfolio-filter-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.portfolio-filter-header .portfolio-filter-title {
+  margin-top: 0;
+}
+
+.portfolio-clear-filters-btn {
+  border: 1px solid rgba(217,163,107,0.4);
+  background: transparent;
+  color: var(--accent-2, #f0c882);
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 0.28rem 0.62rem;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 170ms ease, background-color 170ms ease, opacity 170ms ease;
+}
+
+.portfolio-clear-filters-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: rgba(217,163,107,0.16);
+}
+
+.portfolio-clear-filters-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+  border-color: rgba(217,163,107,0.18);
+}
+
 .portfolio-filters {
   display: flex;
   flex-wrap: wrap;
@@ -979,10 +1013,63 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   border-color: rgba(240,200,130,0.46);
 }
 
+.portfolio-status-filters .portfolio-filter-chip {
+  font-weight: 600;
+}
+
+.portfolio-type-filters .portfolio-filter-chip {
+  font-size: 0.72rem;
+  padding: 0.26rem 0.56rem;
+  opacity: 0.92;
+}
+
 .portfolio-focus-hint {
   margin: 1rem 0 0;
   color: var(--accent-2);
   font-size: 0.84rem;
+}
+
+.portfolio-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+  min-width: 0;
+}
+
+.portfolio-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.portfolio-stat {
+  flex: 0 1 auto;
+  min-width: 200px;
+  border: 1px solid rgba(217,163,107,0.18);
+  background: rgba(217,163,107,0.06);
+  border-radius: 0.9rem;
+  padding: 0.85rem 1.6rem;
+  text-align: center;
+}
+
+.portfolio-stat-value {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  line-height: 1.2;
+}
+
+.portfolio-stat-label {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.76rem;
+  color: var(--muted);
 }
 
 .portfolio-rotator {
@@ -990,25 +1077,128 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   --deck-shift-y: 0px;
   position: relative;
   min-height: 348px;
-  border-radius: 1rem;
+  border-radius: 1.6rem;
   overflow: hidden;
   perspective: 1100px;
 }
 
+.portfolio-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  /* Pulls the nav row closer to the deck than the parent's 2.4rem flex gap
+     would alone, since dots read best sitting right under the cards. */
+  margin-top: -1.4rem;
+}
+
+.portfolio-nav-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 1px solid rgba(217,163,107,0.3);
+  background: rgba(217,163,107,0.08);
+  color: var(--accent-2);
+  cursor: pointer;
+  transition: transform 170ms ease, background-color 170ms ease, border-color 170ms ease;
+}
+
+.portfolio-nav-arrow:hover {
+  transform: translateY(-1px);
+  background: rgba(217,163,107,0.18);
+  border-color: rgba(240,200,130,0.5);
+}
+
+.portfolio-nav-arrow:active {
+  transform: translateY(0);
+}
+
+.portfolio-nav-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.portfolio-nav-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(217,163,107,0.4);
+  background: rgba(217,163,107,0.18);
+  cursor: pointer;
+  transition: transform 170ms ease, background-color 170ms ease, width 170ms ease;
+}
+
+.portfolio-nav-dot:hover {
+  transform: scale(1.15);
+}
+
+.portfolio-nav-dot.is-active {
+  width: 1.35rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  border-color: rgba(240,200,130,0.5);
+}
+
+.portfolio-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  /* Combined with the parent's 2.4rem flex gap, this restores the ~4.5rem
+     separation the CTA had before the nav row was inserted above it. */
+  margin-top: 2.1rem;
+  border-top: 1px solid rgba(217,163,107,0.16);
+  padding-top: 1.6rem;
+}
+
+.portfolio-cta p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.portfolio-cta .btn {
+  padding: 0.6rem 1.1rem;
+  font-size: 0.86rem;
+  white-space: nowrap;
+}
+
 .portfolio-card {
+  --distance: 0;
+  --abs-distance: 0;
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(430px, calc(100% - 1rem));
+  width: min(480px, calc(100% - 1rem));
   min-height: 270px;
   display: grid;
   align-content: space-between;
   gap: 0.9rem;
-  opacity: 0.2;
   cursor: pointer;
-  transform: translate(-50%, -50%) scale(0.82) rotateY(0deg);
-  transition: opacity 330ms ease, transform 360ms ease, border-color 210ms ease;
+  border-radius: 1.6rem;
+  transform:
+    translate(-50%, -50%)
+    translateX(calc(var(--distance) * 120px))
+    translateY(calc(var(--abs-distance) * 14px))
+    scale(calc(1 - var(--abs-distance) * 0.08))
+    rotateY(calc(var(--distance) * -8deg));
+  opacity: calc(1 - var(--abs-distance) * 0.22);
+  z-index: calc(100 - var(--abs-distance));
+  transition: opacity 360ms ease, transform 360ms ease, border-color 210ms ease;
+  transition-delay: var(--deal-delay, 0ms);
   will-change: transform, opacity;
+}
+
+.portfolio-card.is-beyond-depth {
+  opacity: 0 !important;
+  pointer-events: none;
 }
 
 .portfolio-card.is-to-deck {
@@ -1030,50 +1220,17 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
 }
 
 .portfolio-card.is-active {
-  opacity: 1;
-  z-index: 4;
-  transform: translate(-50%, -50%) scale(1) rotateY(0deg);
   border-color: rgba(240,200,130,0.4);
 }
 
-.portfolio-card.is-left {
-  opacity: 0.68;
-  z-index: 3;
-  transform: translate(calc(-50% - 260px), calc(-50% + 12px)) scale(0.9) rotateY(22deg);
-}
-
-.portfolio-card.is-right {
-  opacity: 0.68;
-  z-index: 3;
-  transform: translate(calc(-50% + 260px), calc(-50% + 12px)) scale(0.9) rotateY(-22deg);
-}
-
-.portfolio-card.is-back {
-  opacity: 0.32;
-  z-index: 2;
-  transform: translate(-50%, calc(-50% + 20px)) scale(0.84);
-}
-
-.portfolio-rotator.is-all-projects {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.85rem;
-  min-height: 0;
-  overflow: visible;
-  perspective: none;
-}
-
-.portfolio-rotator.is-all-projects .portfolio-card,
-.portfolio-rotator.is-all-projects .portfolio-card.is-active,
-.portfolio-rotator.is-all-projects .portfolio-card.is-left,
-.portfolio-rotator.is-all-projects .portfolio-card.is-right,
-.portfolio-rotator.is-all-projects .portfolio-card.is-back {
-  position: static;
-  width: auto;
-  min-height: 270px;
-  opacity: 1;
-  cursor: default;
-  transform: none;
+.portfolio-card:hover {
+  transform:
+    translate(-50%, -50%)
+    translateX(calc(var(--distance) * 120px))
+    translateY(calc(var(--abs-distance) * 14px - 3px))
+    scale(calc(1 - var(--abs-distance) * 0.08))
+    rotateY(calc(var(--distance) * -8deg));
+  border-color: rgba(217,163,107,0.24);
 }
 
 .portfolio-top {
@@ -1368,8 +1525,30 @@ body.portfolio-detail-open {
     overflow: visible;
   }
 
-  .portfolio-rotator.is-all-projects {
-    grid-template-columns: 1fr;
+  .portfolio-stats {
+    gap: 0.5rem;
+  }
+
+  .portfolio-stat {
+    flex: 1 1 0;
+    padding: 0.6rem 0.5rem;
+  }
+
+  .portfolio-stat-value {
+    font-size: 1.2rem;
+  }
+
+  .portfolio-nav {
+    /* All cards are already visible as a stacked list at this width, so
+       "browse to the next card" has nothing meaningful left to do. */
+    display: none;
+  }
+
+  .portfolio-cta {
+    justify-content: flex-start;
+    /* Nav is hidden here, so restore the roomier gap it otherwise borrows
+       from (the desktop rule tightens this to make room for the nav row). */
+    margin-top: 4.5rem;
   }
 
   .portfolio-card {
@@ -1380,18 +1559,19 @@ body.portfolio-detail-open {
     cursor: default;
   }
 
+  .portfolio-card:hover {
+    transform: none;
+  }
+
   .portfolio-card.is-to-deck,
   .portfolio-card.is-from-deck {
     opacity: 1;
     transform: none;
   }
 
-  .portfolio-card.is-active,
-  .portfolio-card.is-left,
-  .portfolio-card.is-right,
-  .portfolio-card.is-back {
-    transform: none;
-    opacity: 1;
+  .portfolio-card.is-beyond-depth {
+    opacity: 1 !important;
+    pointer-events: auto;
   }
 
   .portfolio-top {
