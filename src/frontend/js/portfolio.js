@@ -6,107 +6,58 @@ import { translations } from './i18n.js';
 const portfolioProjects = [
   {
     kind: { en: 'Manufacturing', hu: 'Gyártás' },
-    status: 'live',
-    title: { en: 'Machine Downtime Early Warning', hu: 'Gépleállás korai figyelmeztetés' },
-    description: {
-      en: 'Streaming telemetry was used to detect anomalies before stoppages, reducing unplanned downtime windows.',
-      hu: 'Folyamatos telemetriai adatokkal azonosítottam az anomáliákat leállás előtt, csökkentve a nem tervezett kiesést.',
-    },
-    overview: {
-      en: 'This project combines sensor telemetry, event logs, and maintenance history to build an early-warning layer for downtime risk. The pipeline scores anomalies in near real time, highlights likely root-cause machines, and publishes prioritized alerts for operators. The result is faster intervention and shorter unplanned outage windows across shifts.',
-      hu: 'Ez a projekt szenzor telemetriát, eseménynaplókat és karbantartási előzményeket kapcsol össze, hogy korai figyelmeztető réteget adjon a leállási kockázatokhoz. A folyamat közel valós időben pontozza az anomáliákat, kiemeli a valószínű gyökérokot adó gépeket, és prioritásos riasztásokat ad az operátoroknak. Ennek eredménye a gyorsabb beavatkozás és a rövidebb, nem tervezett kiesés.',
-    },
-    categories: ['anomalyDetection', 'timeSeries', 'operations'],
-  },
-  {
-    kind: { en: 'Manufacturing', hu: 'Gyártás' },
     status: 'caseStudy',
     title: { en: 'Predictive Maintenance for CNC Operations', hu: 'Prediktív karbantartás CNC-üzemekhez' },
     description: {
-      en: 'An interpretable LightGBM decision-support model identified short-term CNC failure risk with 96.1% recall on the holdout set.',
-      hu: 'Egy értelmezhető LightGBM döntéstámogató modell 96,1%-os recall értékkel jelezte előre a rövid távú CNC-meghibásodási kockázatot a holdout adathalmazon.',
+      en: 'A machine learning model that watches CNC machine sensors and flags the ones likely to break down soon. In testing, it caught 96% of real failures before they happened.',
+      hu: 'Egy gépi tanulási modell, amely a CNC gépek szenzoradatait figyeli, és jelzi, melyik gép állhat le hamarosan. A tesztelés során a valós meghibásodások 96%-át időben elkapta.',
     },
     overview: {
-      en: 'This CRISP-DM case study turns CNC sensor data into a daily, prioritized maintenance-review list for a 24/7 manufacturing operation. The leakage-safe pipeline excludes failure-cause columns and identifiers, engineers temperature, power, and wear-load features, and uses stratified splits to handle the 3.39% failure rate. A tuned LightGBM model, retrained on the full development set, achieved 96.1% recall, 39.8% precision, and 0.936 PR-AUC on the frozen holdout set at its OOF-selected operating threshold. The simulated client decision was a Conditional Go for a pilot: use high-recall alerts as decision support, retain maintenance-engineer authority, and manage false-alert workload with capacity-aware threshold modes and ongoing drift monitoring.',
-      hu: 'Ez a CRISP-DM esettanulmány CNC-szenzoradatokból készít napi, priorizált karbantartási felülvizsgálati listát egy folyamatos üzemű gyártási környezethez. Az adatszivárgást kizáró folyamat eltávolítja a meghibásodási okokat és az azonosítókat, hőmérséklet-, teljesítmény- és kopás-terhelési jellemzőket képez, valamint rétegzett felosztással kezeli a 3,39%-os meghibásodási arányt. A teljes fejlesztési adathalmazon újratanított, hangolt LightGBM modell az OOF alapján választott küszöbnél a befagyasztott holdout adathalmazon 96,1%-os recall, 39,8%-os precision és 0,936-os PR-AUC értéket ért el. A szimulált ügyféldöntés feltételes pilotindítás: a magas recall értékű riasztások döntéstámogatásként működnek, a végső döntés a karbantartó mérnököknél marad, a téves riasztások terhelését pedig kapacitásalapú küszöbökkel és folyamatos driftfigyeléssel kell kezelni.',
+      en: 'Unplanned breakdowns are costly on a 24/7 CNC production line, so this project builds an early-warning system for machine failure. It looks at real sensor readings, such as temperature, power draw, and torque, to flag machines likely to fail within the next day or two, before anything actually breaks. After comparing a few different approaches, I settled on a LightGBM model (a fast, tree-based machine learning method) tuned to catch as many real failures as possible: in testing it caught 96% of actual breakdowns, at the cost of roughly two false alarms for every real one it found. The idea isn\'t to replace maintenance engineers. It\'s to hand them a prioritized daily list so they can focus their attention where it matters, with the alert sensitivity adjustable to match how many false alarms the team can realistically handle.',
+      hu: 'A váratlan leállások sokba kerülnek egy folyamatosan üzemelő CNC gyártásban, ezért ez a projekt egy korai figyelmeztető rendszert épít a gépleállások előrejelzésére. A modell valós szenzoradatokat figyel, például hőmérsékletet, teljesítményfelvételt és csavarónyomatékot, hogy jelezze, mely gépek állhatnak le a következő egy-két napban, még mielőtt bármi elromlana. Több módszer kipróbálása után egy LightGBM modell mellett döntöttem (ez egy gyors, fákra épülő gépi tanulási módszer), amelyet úgy hangoltam, hogy a lehető legtöbb valós meghibásodást elkapja: a tesztelés során az esetek 96%-ában időben jelzett, cserébe nagyjából két téves riasztás jutott minden valós találatra. A cél nem az, hogy kiváltsa a karbantartó mérnököket, hanem hogy egy priorizált napi listát adjon a kezükbe, amelyre érdemes figyelniük. A riasztási küszöb pedig állítható, hogy illeszkedjen ahhoz, mennyi téves riasztást bír el a csapat.',
     },
     categories: ['predictiveMaintenance', 'anomalyDetection', 'decisionSupport'],
-  },
-  {
-    kind: { en: 'Energy', hu: 'Energia' },
-    status: 'pilot',
-    title: { en: 'Utility Demand Forecast Stack', hu: 'Közmű kereslet-előrejelző rendszer' },
-    description: {
-      en: 'Built a forecasting layer that compares model bands with actual usage to support staffing and procurement decisions.',
-      hu: 'Előrejelző réteget építettem, amely a modell sávjait valós fogyasztással veti össze a tervezés támogatására.',
-    },
-    overview: {
-      en: 'The forecasting stack models demand at multiple horizons, from next-day planning to weekly capacity outlooks. Teams can compare actual usage against confidence bands and scenario assumptions in one place. This made staffing, procurement, and risk planning more predictable during volatile consumption periods.',
-      hu: 'Az előrejelző rendszer több időtávon modellezi a keresletet, a másnapi tervezéstől a heti kapacitás előretekintésig. A csapatok egy helyen vethetik össze a valós fogyasztást a konfidencia sávokkal és a forgatókönyvekkel. Ez kiszámíthatóbbá tette a létszám-, beszerzési és kockázati tervezést ingadozó fogyasztási időszakokban.',
-    },
-    categories: ['forecasting', 'planning', 'kpiDashboard'],
-  },
-  {
-    kind: { en: 'Logistics', hu: 'Logisztika' },
-    status: 'live',
-    title: { en: 'Delivery Risk Monitoring Board', hu: 'Szállítási kockázatfigyelő dashboard' },
-    description: {
-      en: 'Unified shipment events and alerts into one board so teams can react to route exceptions in minutes.',
-      hu: 'A szállítási eseményeket és riasztásokat egy nézetbe rendeztem, így az eltérésekre percek alatt lehet reagálni.',
-    },
-    overview: {
-      en: 'Shipment tracking signals, ETA drift, and operational alerts are merged into a single monitoring board. Dispatch teams get a prioritized view of route exceptions, including delay severity and likely impact. This reduced the time between issue detection and corrective action from hours to minutes.',
-      hu: 'A szállítmánykövetési jelek, az ETA eltérések és az operatív riasztások egyetlen monitorozó felületre kerültek. A diszpécser csapatok prioritás szerint látják az útvonal eltéréseket, a késés súlyosságával és várható hatásával együtt. Ez órákról percekre csökkentette a hibaészlelés és a beavatkozás közti időt.',
-    },
-    categories: ['alerts', 'visualization', 'supplyChain'],
   },
   {
     kind: { en: 'Logistics', hu: 'Logisztika' },
     status: 'caseStudy',
     title: { en: 'Handwritten Digit Classifier for Mail Sorting', hu: 'Kézzel írt számjegyek osztályozása levélválogatáshoz' },
     description: {
-      en: 'Built and compared five ML models for automated ZIP-code digit recognition; the selected CNN reached 99.27% test accuracy.',
-      hu: 'Öt ML-modellt hasonlítottam össze irányítószámok automatikus felismeréséhez; a kiválasztott CNN 99,27%-os tesztpontosságot ért el.',
+      en: 'Compared five different AI models for reading handwritten ZIP codes automatically. The best one, a neural network, got it right 99.27% of the time.',
+      hu: 'Öt különböző AI-modellt hasonlítottam össze kézzel írt irányítószámok automatikus felismerésére. A legjobb, egy neurális háló, az esetek 99,27%-ában helyesen ismerte fel a számjegyeket.',
     },
     overview: {
-      en: 'This CRISP-DM case study examines how a mail-sorting operation could automate handwritten ZIP-code reading. Starting with baseline, logistic-regression, random-forest, and SVM models, the project selected a CNN that achieved 99.27% accuracy on the held-out MNIST test set. Evaluation went beyond accuracy with confusion analysis, high-confidence error review, confidence-gate recommendations, and robustness tests for rotation, noise, and brightness changes. The key operational recommendation is to send lower-confidence predictions to manual review and monitor confusion patterns and high-confidence errors after deployment.',
-      hu: 'Ez a CRISP-DM esettanulmány azt vizsgálja, hogyan automatizálható a kézzel írt irányítószámok olvasása egy levélválogató folyamatban. Az alapmodell, a logisztikus regresszió, a random forest és az SVM után egy CNN-t választottam, amely a független MNIST teszthalmazon 99,27%-os pontosságot ért el. Az értékelés a pontosságon túl a tévesztési mintákat, a magas bizalmú hibákat, a bizalmi küszöb alkalmazását és a forgatással, zajjal, illetve fényerő-változással szembeni robusztusságot is vizsgálta. A fő operatív javaslat az alacsonyabb bizalmú előrejelzések manuális ellenőrzésre küldése, valamint a tévesztési minták és a magas bizalmú hibák folyamatos monitorozása.',
+      en: 'Sorting mail by handwritten ZIP code is slow and error-prone when done by hand at scale, so this project explores whether AI can take over that job reliably. Starting from a simple baseline and working up through logistic regression, random forests, and support vector machines, I landed on a convolutional neural network (a type of model built specifically for recognizing images), which correctly read digits 99.27% of the time. Beyond just accuracy, I checked which digits the model tends to confuse with each other, looked closely at its most confident mistakes, and tested how well it holds up against rotated, noisy, or poorly lit scans. The practical takeaway: send anything the model isn\'t confident about to a human for a second look, and keep monitoring its mistakes after it goes live.',
+      hu: 'A kézzel írt irányítószámok kézi feldolgozása lassú és hibalehetőségekkel teli, ha nagy mennyiségben kell csinálni. Ez a projekt azt vizsgálja, hogy egy AI megbízhatóan át tudja-e venni ezt a feladatot. Egy egyszerű alapmodellből kiindulva, logisztikus regresszión, random foreston és szupport vektor gépeken keresztül végül egy konvolúciós neurális hálónál kötöttem ki (ez egy kifejezetten képfelismerésre kitalált modelltípus), amely az esetek 99,27%-ában helyesen ismerte fel a számjegyeket. A pontosságon túl azt is megvizsgáltam, mely számjegyeket keveri össze a modell egymással, alaposan átnéztem a magabiztosan hozott hibáit, és teszteltem, hogyan teljesít elforgatott, zajos vagy rosszul megvilágított képeken. A gyakorlati tanulság: amiben a modell nem elég magabiztos, azt küldjük emberi ellenőrzésre, és élesben is érdemes folyamatosan figyelni a hibáit.',
     },
     categories: ['imageClassification', 'deepLearning', 'computerVision'],
   },
   {
-    kind: { en: 'E-commerce', hu: 'E-kereskedelem' },
-    status: 'prototype',
-    title: { en: 'Revenue Outlier Insight Feed', hu: 'Bevételi kiugrásokat vizsgáló feed' },
+    kind: { en: 'Hospitality', hu: 'Vendéglátás' },
+    status: 'caseStudy',
+    title: { en: 'AI Chatbot for Restaurant Ordering & Support', hu: 'AI chatbot éttermi rendeléshez és ügyfélszolgálathoz' },
     description: {
-      en: 'Daily outlier feed highlights unusual product and region behavior, making action planning significantly faster.',
-      hu: 'Napi kiugrási feed emeli ki a szokatlan termék- és régióviselkedést, gyorsítva az üzleti reakciót.',
+      en: 'Built an AI chat widget for a demo pizzeria website that answers questions about the menu, hours, and orders.</br>It\'s designed to stick to food that\'s actually on the menu.',
+      hu: 'Egy AI chat widgetet építettem egy demó pizzéria weboldalhoz, amely válaszol a menüvel, nyitvatartással és rendelésekkel kapcsolatos kérdésekre. </br>Úgy lett kialakítva, hogy csak a menüben ténylegesen szereplő ételekről beszéljen.',
     },
     overview: {
-      en: 'A daily insight feed flags unusual conversion, basket size, and regional revenue movements before they become major losses. Each outlier includes context and trend comparison so teams can quickly decide whether to launch a campaign, investigate operations, or adjust pricing. The workflow helps commercial teams move from raw metrics to action with less delay.',
-      hu: 'A napi insight feed jelzi a szokatlan konverziós, kosárérték és régiós bevételi mozgásokat, mielőtt komoly veszteséggé válnának. Minden kiugrás kontextust és trend összevetést kap, így gyorsan eldönthető, hogy kampány, operatív vizsgálat vagy árazási módosítás szükséges. A folyamat segít, hogy a kereskedelmi csapat gyorsabban jusson a nyers számoktól konkrét lépésekig.',
+      en: 'Small businesses often lose customers simply because nobody\'s around to answer a quick question like "are you open right now?" or "what\'s your best-selling pizza?". This project shows how a lightweight AI chatbot can fill that gap. I built a demo pizzeria website with a chat widget powered by a fast large language model (via Groq), and kept it honest by only letting it talk about real menu items, prices, and hours pulled straight from the business\'s own data, which keeps it grounded and much less likely to make up a dish that doesn\'t exist. It remembers the conversation while you\'re chatting, keeps track of which items get ordered most, and includes basic safeguards like rate limiting and API key protection. The widget itself is just plain HTML, CSS, and JavaScript, so it can be dropped into almost any existing website.',
+      hu: 'A kisvállalkozások gyakran veszítenek el ügyfeleket csak azért, mert senki sincs ott, hogy megválaszoljon egy egyszerű kérdést, mint például „nyitva vannak most?” vagy „melyik a legnépszerűbb pizzájuk?”. Ez a projekt azt mutatja be, hogyan tud egy könnyű AI chatbot pótolni ezt a hiányt. Egy demó pizzéria weboldalt építettem egy chat widgettel, amelyet egy gyors nagy nyelvi modell hajt meg (Groq-on keresztül), és úgy állítottam be, hogy csak a vállalkozás valós adataiból, menüből, árakból és nyitvatartásból, beszéljen, ami sokkal kisebb eséllyel eredményez kitalált, nem létező ételeket. A beszélgetés alatt emlékszik a korábbi üzenetekre, nyomon követi, mely termékeket rendelik a legtöbbször, és alapvető védelmi mechanizmusokat is tartalmaz, mint a kéréskorlátozás és az API-kulcsos védelem. Maga a widget egyszerű HTML, CSS és JavaScript, így szinte bármelyik meglévő weboldalba beilleszthető.',
     },
-    categories: ['revenue', 'outliers', 'decisionSupport'],
+    categories: ['chatbot', 'llmIntegration', 'customerExperience'],
   },
 ];
 
 const portfolioCategoryLabels = {
   predictiveMaintenance: { en: 'Predictive Maintenance', hu: 'Prediktív karbantartás' },
   anomalyDetection: { en: 'Anomaly Detection', hu: 'Anomáliafelismerés' },
-  timeSeries: { en: 'Time Series', hu: 'Idősorok' },
-  operations: { en: 'Operations', hu: 'Operáció' },
-  forecasting: { en: 'Forecasting', hu: 'Előrejelzés' },
-  planning: { en: 'Planning', hu: 'Tervezés' },
-  kpiDashboard: { en: 'KPI Dashboard', hu: 'KPI Dashboard' },
-  alerts: { en: 'Alerts', hu: 'Riasztások' },
-  visualization: { en: 'Visualization', hu: 'Vizualizáció' },
-  supplyChain: { en: 'Supply Chain', hu: 'Ellátási lánc' },
-  revenue: { en: 'Revenue', hu: 'Bevétel' },
-  outliers: { en: 'Outliers', hu: 'Kiugró értékek' },
   decisionSupport: { en: 'Decision Support', hu: 'Döntéstámogatás' },
   imageClassification: { en: 'Image Classification', hu: 'Képosztályozás' },
   deepLearning: { en: 'Deep Learning', hu: 'Mélytanulás' },
   computerVision: { en: 'Computer Vision', hu: 'Számítógépes látás' },
+  chatbot: { en: 'AI Chatbot', hu: 'AI chatbot' },
+  llmIntegration: { en: 'LLM Integration', hu: 'LLM integráció' },
+  customerExperience: { en: 'Customer Experience', hu: 'Ügyfélélmény' },
 };
 
 // Project status: the top-level "main type" filter. Only a subset of these
@@ -125,6 +76,9 @@ const portfolioStatusLabels = {
 
 let activePortfolioIndex = 0;
 let portfolioAutoRotateTimer = null;
+// Keeps setPortfolioFocus() (called on card click/focus) from restarting the
+// timer while the pointer is still resting on the deck.
+let isPortfolioTrackHovered = false;
 // Empty set means "All" — no filter narrows the results. Both rows support
 // selecting multiple chips at once (checkbox-style, not radio-style).
 let activePortfolioStatusFilters = new Set();
@@ -667,7 +621,7 @@ const setPortfolioFocus = (index) => {
 const startPortfolioAutoRotate = () => {
   clearInterval(portfolioAutoRotateTimer);
 
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (isPortfolioTrackHovered || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     return;
   }
 
@@ -729,10 +683,12 @@ export function initPortfolioInteraction() {
 
   if (track) {
     track.addEventListener('mouseenter', () => {
+      isPortfolioTrackHovered = true;
       clearInterval(portfolioAutoRotateTimer);
     });
 
     track.addEventListener('mouseleave', () => {
+      isPortfolioTrackHovered = false;
       startPortfolioAutoRotate();
     });
   }
