@@ -706,7 +706,7 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   border-radius: 50%;
   background: rgba(217,163,107,0.12);
   border: 1px solid rgba(217,163,107,0.18);
-  color: var(--accent);
+  color: #fff;
   font-size: 1.05rem;
   font-weight: 800;
 }
@@ -1452,6 +1452,10 @@ body.portfolio-detail-open {
 }
 
 /* Final CTA Section */
+#final-cta .btn {
+  margin-top: 1.5rem;
+}
+
 .cta-note {
   margin: 0.75rem 0 0;
   color: var(--muted);

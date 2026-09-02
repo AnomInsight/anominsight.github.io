@@ -1,0 +1,21 @@
+{
+  "name": "AnomInsight",
+  "short_name": "AnomInsight",
+  "description": "AI-powered analytics and anomaly detection for data-driven teams.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090806",
+  "theme_color": "#090806",
+  "icons": [
+    {
+      "src": "images/favicon-circle-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/favicon-circle-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
