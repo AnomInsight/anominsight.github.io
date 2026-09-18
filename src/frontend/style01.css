@@ -5,17 +5,66 @@
   --panel: #12100f;
   --panel-2: #1a1714;
   --text: #f7f2de;
-  --muted: #d1b58c;
+  --muted: #e3d2b3;
   --accent: #d9a36b;
   --accent-2: #f0c882;
+  --accent-rgb: 217, 163, 107;
+  --accent-2-rgb: 240, 200, 130;
+
+  /* Shape scale: chips/inputs use sm, cards use md, feature panels use lg,
+     large rotor/hero panels use xl. Pills and circles stay at 999px/50%. */
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.5rem;
+
+  /* Motion: a strong ease-out for anything entering, moving on press/hover,
+     or settling into place - built-in `ease`/`ease-out` read as weak at
+     these durations. Plain `ease` is kept (not tokenized) for simple color
+     transitions, where the built-in curve is already the right choice. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --duration-fast: 140ms;
+  --duration-base: 220ms;
+  --duration-slow: 320ms;
 }
 
 * { box-sizing: border-box; }
 
 html { scroll-behavior: smooth; }
 
+/* Reduced motion: collapse every CSS transition/animation to effectively
+   instant rather than removing them outright, so content still appears
+   and state still changes (opacity, color, layout) - it just doesn't move
+   to get there. JS-driven motion (the closing rotor, portfolio autoplay
+   and deal/stack stagger, scroll reveal below) has its own matchMedia
+   checks and is skipped entirely, not just sped up. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  html { scroll-behavior: auto; }
+}
+
 #services, #projects, #howitworks, #contact {
   scroll-margin-top: 20px; /* offset for fixed nav so anchor jumps land below it */
+}
+
+/* Scroll reveal: applied by main.js via IntersectionObserver, one fade-up
+   per section (not per card/item - the page shouldn't feel like it's
+   raining content in). `.reveal-pending` is only ever added by JS, so a
+   section is always visible by default; JS removes it once, permanently,
+   the first time the section enters the viewport. Skipped entirely under
+   reduced motion or without IntersectionObserver support - see main.js. */
+.reveal-section {
+  transition: opacity var(--duration-slow) var(--ease-out), transform var(--duration-slow) var(--ease-out);
+}
+
+.reveal-section.reveal-pending {
+  opacity: 0;
+  transform: translateY(16px);
 }
 
 body {
@@ -23,8 +72,8 @@ body {
   font-family: var(--font-body);
   color: var(--text);
   background:
-    radial-gradient(circle at top left, rgba(217,163,107,0.14), transparent 30%),
-    radial-gradient(circle at top right, rgba(240,200,130,0.08), transparent 24%),
+    radial-gradient(circle at top left, rgba(var(--accent-rgb),0.14), transparent 30%),
+    radial-gradient(circle at top right, rgba(var(--accent-2-rgb),0.08), transparent 24%),
     linear-gradient(135deg, #1d1811, #110e0d 55%, #1c1814);
   line-height: 1.6;
 }
@@ -53,7 +102,7 @@ body {
   inset: 3rem auto auto -6rem;
   width: 28rem;
   height: 28rem;
-  background: radial-gradient(circle, rgba(217,163,107,0.12), transparent 70%);
+  background: radial-gradient(circle, rgba(var(--accent-rgb),0.12), transparent 70%);
   pointer-events: none;
 }
 
@@ -66,7 +115,7 @@ body {
   background: rgba(9, 8, 6, 0.92);
   backdrop-filter: blur(14px);
   padding: 0 1rem;
-  border-bottom: 1px solid rgba(217,163,107,0.1);
+  border-bottom: 1px solid rgba(var(--accent-rgb),0.1);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
 }
 
@@ -82,7 +131,7 @@ body {
 .brand {
   font-weight: 800;
   letter-spacing: 0.04em;
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   display: inline-flex;
   align-items: center;
   gap: 0.85rem;
@@ -96,8 +145,8 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(217,163,107,0.3), rgba(240,200,130,0.15));
-  border: 1px solid rgba(217,163,107,0.35);
+  background: linear-gradient(135deg, rgba(var(--accent-rgb),0.3), rgba(var(--accent-2-rgb),0.15));
+  border: 1px solid rgba(var(--accent-rgb),0.35);
   flex-shrink: 0;
   padding: 2px;
 }
@@ -123,25 +172,34 @@ body {
 }
 
 .nav-links a {
-  transition: color 160ms ease;
+  transition: color var(--duration-fast) ease;
 }
 
-.nav-links a:hover {
-  color: var(--text);
+@media (hover: hover) and (pointer: fine) {
+  .nav-links a:hover {
+    color: var(--text);
+  }
 }
 
 .lang-toggle {
-  border: 1px solid rgba(217,163,107,0.35);
-  background: rgba(217,163,107,0.08);
+  border: 1px solid rgba(var(--accent-rgb),0.35);
+  background: rgba(var(--accent-rgb),0.08);
   color: var(--text);
   border-radius: 999px;
   padding: 0.65rem 1rem;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color var(--duration-fast) ease, transform var(--duration-fast) var(--ease-out);
 }
 
-.lang-toggle:hover {
-  background: rgba(217,163,107,0.14);
+@media (hover: hover) and (pointer: fine) {
+  .lang-toggle:hover {
+    background: rgba(var(--accent-rgb),0.14);
+  }
+}
+
+.lang-toggle:active {
+  transform: scale(0.96);
 }
 
 .menu-toggle {
@@ -158,6 +216,22 @@ body {
   height: 2px;
   background: var(--text);
   margin: 5px 0;
+  transform-origin: center;
+  transition: transform var(--duration-fast) var(--ease-out), opacity var(--duration-fast) ease;
+}
+
+/* Hamburger -> X, driven by the same aria-expanded attribute the JS already
+   sets, so the icon's state can never drift out of sync with the menu's. */
+.menu-toggle[aria-expanded="true"] span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.menu-toggle[aria-expanded="true"] span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle[aria-expanded="true"] span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
 }
 
 .hero-grid {
@@ -201,7 +275,7 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   }
 }
 
-.hero-copy, .card p, .section p, .project-card p, .plan-card li, .contact-info p, .footer p {
+.hero-copy, .card p, .section p, .contact-info p, .footer p {
   color: var(--muted);
   font-size: 1rem;
 }
@@ -218,19 +292,21 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   padding: 0.9rem 1.2rem;
   border-radius: 999px;
   font-weight: 600;
-  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+  transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-base) var(--ease-out), filter var(--duration-base) ease;
   border: 0;
   cursor: pointer;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
 }
 
-.btn:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.05);
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+  }
 }
 
 .btn:active {
-  transform: translateY(0);
+  transform: scale(0.97);
 }
 
 .btn-primary {
@@ -239,8 +315,8 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
 }
 
 .btn-secondary {
-  border: 1px solid rgba(217,163,107,0.35);
-  background: rgba(217,163,107,0.08);
+  border: 1px solid rgba(var(--accent-rgb),0.35);
+  background: rgba(var(--accent-rgb),0.08);
   color: var(--text);
 }
 
@@ -260,7 +336,7 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
 }
 
 .highlights li {
-  background: rgba(217,163,107,0.18);
+  background: rgba(var(--accent-rgb),0.18);
   padding: 0.6rem 0.9rem;
   border-radius: 999px;
   color: var(--text);
@@ -271,12 +347,11 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   --panel-auto-width: auto;
   min-width: var(--panel-auto-width);
   max-width: 460px;
-  background: linear-gradient(145deg, rgba(217,163,107,0.16), rgba(20,16,14,0.9));
-  border: 1px solid rgba(217,163,107,0.22);
-  border-radius: 1.25rem;
+  background: linear-gradient(145deg, rgba(var(--accent-rgb),0.1), #14100e 60%);
+  border: 1px solid rgba(var(--accent-rgb),0.22);
+  border-radius: var(--radius-lg);
   padding: 1.75rem;
   box-shadow: 0 24px 50px rgba(20,16,14,0.45);
-  backdrop-filter: blur(8px);
 }
 
 .panel-label { color: var(--muted); margin: 0 0 0.75rem; }
@@ -303,9 +378,9 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   display: grid;
   gap: 0.35rem;
   color: var(--text);
-  background: rgba(217,163,107,0.08);
-  border: 1px solid rgba(217,163,107,0.16);
-  border-radius: 1rem;
+  background: rgba(var(--accent-rgb),0.08);
+  border: 1px solid rgba(var(--accent-rgb),0.16);
+  border-radius: var(--radius-md);
   padding: 0.8rem 0.95rem;
 }
 
@@ -359,19 +434,16 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   width: min(1200px, calc(100% - 2rem));
   height: 1px;
   transform: translateX(-50%);
-  background: linear-gradient(90deg, transparent, rgba(217,163,107,0.28), transparent);
+  background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb),0.28), transparent);
 }
 
 .section-alt {
   background:
-    linear-gradient(180deg, rgba(240, 200, 130, 0.08), rgba(247, 246, 246, 0.03)),
-    rgba(240, 200, 130, 0.03);
-  border-top: 1px solid rgba(217,163,107,0.08);
-  border-bottom: 1px solid rgba(217,163,107,0.08);
-  border-radius: 1.35rem;
+    linear-gradient(180deg, rgba(var(--accent-2-rgb), 0.08), rgba(247, 246, 246, 0.03)),
+    rgba(var(--accent-2-rgb), 0.03);
+  border-top: 1px solid rgba(var(--accent-rgb), 0.08);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.08);
   padding-inline: clamp(1rem, 2.2vw, 2.2rem);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 18px 36px rgba(0,0,0,0.12);
-  overflow: hidden;
 }
 
 .section-alt .cards,
@@ -394,46 +466,30 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   margin: 0;
 }
 
-.cards, .project-grid, .plans-grid {
+.cards {
   display: grid;
   gap: 1.25rem;
-}
-
-.cards {
   grid-template-columns: repeat(3, 1fr);
 }
 
-.project-grid {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.plans-grid {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.card, .project-card, .plan-card, .contact-form {
+.card {
   background: rgba(20, 16, 14, 0.95);
-  border: 1px solid rgba(217,163,107,0.14);
-  border-radius: 1.1rem;
+  border: 1px solid rgba(var(--accent-rgb),0.14);
+  border-radius: var(--radius-md);
   padding: 1.35rem;
   box-shadow: 0 18px 35px rgba(0, 0, 0, 0.15);
-  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  transition: transform var(--duration-base) var(--ease-out), border-color var(--duration-base) ease, box-shadow var(--duration-base) var(--ease-out);
 }
 
-.card:hover,
-.project-card:hover,
-.plan-card:hover,
-.contact-form:hover,
-.contact-card:hover,
-.problem-item:hover,
-.feature:hover,
-.step:hover,
-.usecase-item:hover,
-.value-item:hover,
-.roadmap-column:hover {
-  transform: translateY(-3px);
-  border-color: rgba(217,163,107,0.24);
-  box-shadow: 0 22px 40px rgba(0, 0, 0, 0.22);
+@media (hover: hover) and (pointer: fine) {
+  .card:hover,
+  .problem-item:hover,
+  .usecase-item:hover,
+  .roadmap-column:hover {
+    transform: translateY(-3px);
+    border-color: rgba(var(--accent-rgb),0.24);
+    box-shadow: 0 22px 40px rgba(0, 0, 0, 0.22);
+  }
 }
 
 .card-icon {
@@ -444,8 +500,8 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   justify-content: center;
   margin-bottom: 0.9rem;
   border-radius: 50%;
-  background: rgba(217,163,107,0.1);
-  border: 1px solid rgba(217,163,107,0.18);
+  background: rgba(var(--accent-rgb),0.1);
+  border: 1px solid rgba(var(--accent-rgb),0.18);
   font-size: 1.55rem;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
 }
@@ -458,33 +514,7 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   filter: brightness(0) invert(1);
 }
 
-.card h3, .project-card h3, .plan-card h3 { margin-bottom: 0.7rem; }
-
-.plan-card.featured {
-  border-color: rgba(212,175,55,0.45);
-  box-shadow: 0 12px 30px rgba(212,175,55,0.12);
-}
-
-.price {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--accent);
-  margin-top: 0;
-}
-
-.section .price-note {
-  display: block;
-  margin-top: 0.75rem;
-  font-size: 0.7rem;
-  line-height: 1.4;
-  color: rgba(209,181,140, 0.8);
-  opacity: 0.95;
-}
-
-.plan-card ul {
-  padding-left: 1.1rem;
-  margin: 0;
-}
+.card h3 { margin-bottom: 0.7rem; }
 
 .contact-grid {
   display: grid;
@@ -494,16 +524,8 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
 }
 
 .contact-card {
-  background: rgba(20, 16, 14, 0.95);
-  border: 1px solid rgba(217,163,107,0.14);
-  border-radius: 1rem;
-  padding: 1.5rem;
   display: grid;
   gap: 1rem;
-}
-
-.contact-card h3 {
-  margin: 0;
 }
 
 .contact-note {
@@ -546,8 +568,8 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
 .form-field textarea {
   width: 100%;
   padding: 0.75rem 0.9rem;
-  border-radius: 0.7rem;
-  border: 1px solid rgba(217,163,107,0.24);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(var(--accent-rgb),0.24);
   background: rgba(9, 8, 6, 0.6);
   color: var(--text);
   resize: vertical;
@@ -558,7 +580,7 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
 .form-field textarea:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(217,163,107,0.18);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb),0.18);
 }
 
 .form-field input::placeholder,
@@ -590,6 +612,10 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
 .form-status-pending { color: var(--muted); }
 
 /* Problem Section */
+/* A hairline-divided grid instead of four boxed cards: with Services and
+   Advanced Analytics using real bordered cards later on the page, this
+   section reads as a distinct "diagnostic list" rather than more of the
+   same card formula. */
 .problem-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -598,17 +624,19 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
 
 .problem-item {
   background: rgba(20, 16, 14, 0.6);
-  border: 1px solid rgba(217,163,107,0.12);
-  border-radius: 1rem;
+  border: 1px solid rgba(var(--accent-rgb),0.12);
+  border-radius: var(--radius-md);
   padding: 1.5rem 1.2rem;
   text-align: center;
-  transition: all 0.3s ease;
+  transition: transform var(--duration-base) var(--ease-out), border-color var(--duration-base) ease, box-shadow var(--duration-base) var(--ease-out), background-color var(--duration-base) ease;
   min-height: 150px;
 }
 
-.problem-item:hover {
-  border-color: rgba(217,163,107,0.25);
-  background: rgba(20, 16, 14, 0.8);
+@media (hover: hover) and (pointer: fine) {
+  .problem-item:hover {
+    border-color: rgba(var(--accent-rgb),0.25);
+    background: rgba(20, 16, 14, 0.8);
+  }
 }
 
 .problem-icon {
@@ -619,8 +647,8 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   justify-content: center;
   margin-bottom: 0.85rem;
   border-radius: 50%;
-  background: rgba(217,163,107,0.1);
-  border: 1px solid rgba(217,163,107,0.18);
+  background: rgba(var(--accent-rgb),0.1);
+  border: 1px solid rgba(var(--accent-rgb),0.18);
   font-size: 1.55rem;
 }
 
@@ -640,19 +668,33 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
 }
 
 /* Solution Section */
+/* A horizontal strip with vertical dividers, not another card grid: same
+   4-item shape as Problem above it, deliberately laid out differently so
+   the two sections don't read as the same component repeated. */
 .solution-features {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.25rem;
+  border-top: 1px solid rgba(var(--accent-rgb),0.18);
+  border-bottom: 1px solid rgba(var(--accent-rgb),0.18);
 }
 
 .feature {
-  background: rgba(217,163,107,0.08);
-  border: 1px solid rgba(217,163,107,0.15);
-  border-radius: 1rem;
-  padding: 1.5rem 1.2rem;
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 1.9rem 1rem;
   text-align: center;
-  min-height: 150px;
+  transition: background-color var(--duration-base) ease;
+}
+
+.feature:not(:first-child) {
+  border-left: 1px solid rgba(var(--accent-rgb),0.18);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .feature:hover {
+    background: rgba(var(--accent-rgb),0.05);
+  }
 }
 
 .feature-icon {
@@ -663,8 +705,8 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   justify-content: center;
   margin-bottom: 0.85rem;
   border-radius: 50%;
-  background: rgba(217,163,107,0.1);
-  border: 1px solid rgba(217,163,107,0.18);
+  background: rgba(var(--accent-rgb),0.1);
+  border: 1px solid rgba(var(--accent-rgb),0.18);
   font-size: 1.4rem;
 }
 
@@ -681,20 +723,34 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
 }
 
 /* Steps / How It Works */
+/* A connected sequence instead of another bordered-card grid: the page has
+   already used that formula for Problem, Solution, Services and Advanced
+   Analytics. A numbered line reads as a process, which is what this
+   section actually is. */
 .steps-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.25rem;
+  position: relative;
+}
+
+.steps-grid::before {
+  content: '';
+  position: absolute;
+  top: 1.25rem;
+  left: 12.5%;
+  right: 12.5%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb),0.4) 12%, rgba(var(--accent-rgb),0.4) 88%, transparent);
+  z-index: 0;
 }
 
 .step {
-  background: rgba(20, 16, 14, 0.6);
-  border: 1px solid rgba(217,163,107,0.12);
-  border-radius: 1rem;
-  padding: 1.5rem 1.2rem;
+  background: none;
+  border: none;
+  padding: 0;
   text-align: center;
   position: relative;
-  min-height: 210px;
 }
 
 .step-number {
@@ -703,12 +759,14 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   justify-content: center;
   width: 2.5rem;
   height: 2.5rem;
-  background: linear-gradient(135deg, rgba(217,163,107,0.35), rgba(212,175,55,0.25));
-  border: 1px solid rgba(217,163,107,0.4);
+  background: linear-gradient(135deg, #3a2f22, #241d16);
+  border: 1px solid rgba(var(--accent-rgb),0.4);
   border-radius: 50%;
   font-weight: 700;
   font-size: 1.1rem;
-  margin: 0 auto 0.75rem;
+  margin: 0 auto 0.9rem;
+  position: relative;
+  z-index: 1;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
@@ -731,61 +789,68 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
 }
 
 .usecase-item {
-  background: rgba(217,163,107,0.06);
-  border: 1px solid rgba(217,163,107,0.16);
-  border-radius: 0.8rem;
+  background: rgba(var(--accent-rgb),0.06);
+  border: 1px solid rgba(var(--accent-rgb),0.16);
+  border-radius: var(--radius-sm);
   padding: 1rem;
   text-align: center;
   font-size: 0.95rem;
   color: var(--text);
   line-height: 1.35;
-  transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease;
+  transition: transform var(--duration-base) var(--ease-out), border-color var(--duration-base) ease, background-color var(--duration-base) ease;
   min-height: 88px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.usecase-item:hover {
-  transform: translateY(-2px);
-  border-color: rgba(217,163,107,0.28);
-  background: rgba(217,163,107,0.1);
+@media (hover: hover) and (pointer: fine) {
+  .usecase-item:hover {
+    transform: translateY(-2px);
+    border-color: rgba(var(--accent-rgb),0.28);
+    background: rgba(var(--accent-rgb),0.1);
+  }
 }
 
 /* Value Section */
+/* Deliberately flat (no card boxes): by this point in the page, Problem,
+   Solution, Services and Advanced Analytics have all used the bordered-card
+   pattern. A plain divided row keeps this section from reading as "yet
+   another card grid" and fits a short checklist better than five boxes. */
 .value-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 1.1rem;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 2.5rem;
+  row-gap: 1.1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(var(--accent-rgb),0.16);
 }
 
 .value-item {
-  background: rgba(20, 16, 14, 0.5);
-  border: 1px solid rgba(217,163,107,0.12);
-  border-radius: 0.85rem;
-  padding: 1.25rem 1rem;
-  text-align: center;
-  min-height: 128px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1 1 240px;
 }
 
 .value-icon {
-  width: 2.35rem;
-  height: 2.35rem;
+  width: 1.9rem;
+  height: 1.9rem;
+  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 0.65rem;
   border-radius: 50%;
-  background: rgba(217,163,107,0.12);
-  border: 1px solid rgba(217,163,107,0.18);
-  color: #fff;
-  font-size: 1.05rem;
-  font-weight: 800;
+  background: rgba(var(--accent-rgb),0.12);
+  border: 1px solid rgba(var(--accent-rgb),0.18);
+  color: var(--accent-2);
 }
 
 .value-item p {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  color: var(--text);
+  text-align: left;
 }
 
 /* Roadmap Section */
@@ -799,46 +864,30 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   position: relative;
   overflow: hidden;
   background: rgba(20, 16, 14, 0.6);
-  border: 1px solid rgba(217,163,107,0.14);
-  border-radius: 1rem;
+  border: 1px solid rgba(var(--accent-rgb),0.14);
+  border-radius: var(--radius-md);
   padding: 1.75rem;
-  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
-}
-
-.roadmap-column::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, rgba(217,163,107,0.35), rgba(240,200,130,0.1));
+  transition: transform var(--duration-base) var(--ease-out), border-color var(--duration-base) ease, box-shadow var(--duration-base) var(--ease-out);
 }
 
 .roadmap-column[data-roadmap-stage="available"] {
-  border-color: rgba(217,163,107,0.3);
+  border-color: rgba(var(--accent-rgb),0.3);
   background: linear-gradient(180deg, rgba(62, 42, 24, 0.3), rgba(20, 16, 14, 0.7));
 }
 
-.roadmap-column[data-roadmap-stage="available"]::after {
-  background: linear-gradient(90deg, rgba(240,200,130,0.95), rgba(217,163,107,0.22));
-}
-
 .roadmap-column[data-roadmap-stage="developing"] {
-  border-color: rgba(217,163,107,0.28);
+  border-color: rgba(var(--accent-rgb),0.28);
   background: linear-gradient(180deg, rgba(52, 34, 20, 0.3), rgba(20, 16, 14, 0.7));
 }
 
-.roadmap-column[data-roadmap-stage="developing"]::after {
-  background: linear-gradient(90deg, rgba(217,163,107,0.95), rgba(217,163,107,0.2));
-}
+@media (hover: hover) and (pointer: fine) {
+  .roadmap-column[data-roadmap-stage="available"]:hover {
+    border-color: rgba(var(--accent-2-rgb),0.45);
+  }
 
-.roadmap-column[data-roadmap-stage="available"]:hover {
-  border-color: rgba(240,200,130,0.45);
-}
-
-.roadmap-column[data-roadmap-stage="developing"]:hover {
-  border-color: rgba(217,163,107,0.38);
+  .roadmap-column[data-roadmap-stage="developing"]:hover {
+    border-color: rgba(var(--accent-rgb),0.38);
+  }
 }
 
 .roadmap-column h3 {
@@ -865,7 +914,6 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
 
 .roadmap-column[data-roadmap-stage="available"] h3::before {
   background: var(--accent-2);
-  box-shadow: 0 0 0 5px rgba(240,200,130,0.18);
 }
 
 .roadmap-column[data-roadmap-stage="developing"] h3 {
@@ -874,7 +922,6 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
 
 .roadmap-column[data-roadmap-stage="developing"] h3::before {
   background: var(--accent);
-  box-shadow: 0 0 0 5px rgba(217,163,107,0.18);
 }
 
 .roadmap-list {
@@ -891,8 +938,8 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   position: relative;
   color: var(--muted);
   font-size: 0.95rem;
-  border: 1px solid rgba(217,163,107,0.14);
-  border-radius: 0.72rem;
+  border: 1px solid rgba(var(--accent-rgb),0.14);
+  border-radius: var(--radius-sm);
   background: rgba(14, 12, 11, 0.46);
 }
 
@@ -907,7 +954,7 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
 }
 
 .roadmap-column[data-roadmap-stage="available"] .roadmap-list li {
-  border-color: rgba(240,200,130,0.2);
+  border-color: rgba(var(--accent-2-rgb),0.2);
   background: rgba(34, 24, 16, 0.42);
 }
 
@@ -916,7 +963,7 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
 }
 
 .roadmap-column[data-roadmap-stage="developing"] .roadmap-list li {
-  border-color: rgba(217,163,107,0.2);
+  border-color: rgba(var(--accent-rgb),0.2);
 }
 
 /* Closing Rotor Section */
@@ -941,8 +988,8 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   position: absolute;
   inset: 0;
   padding: clamp(1.2rem, 2vw, 2rem);
-  border-radius: 1.3rem;
-  border: 1px solid rgba(217,163,107,0.2);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(var(--accent-rgb),0.2);
   background:
     linear-gradient(180deg, #2b231b, #1f1812);
   box-shadow: 0 24px 46px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255,255,255,0.04);
@@ -979,7 +1026,7 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   z-index: 1;
   isolation: isolate;
   background: rgba(20, 16, 14, 0.6);
-  border: 1px solid rgba(217,163,107,0.15);
+  border: 1px solid rgba(var(--accent-rgb),0.15);
   border-radius: 1rem;
   padding: 1.2rem;
 }
@@ -990,7 +1037,7 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   position: absolute;
   inset: 0;
   border-radius: 1rem;
-  border: 1px solid rgba(217,163,107,0.2);
+  border: 1px solid rgba(var(--accent-rgb),0.2);
   background: linear-gradient(140deg, rgba(32,26,22,0.75), rgba(20,16,14,0.56));
   pointer-events: none;
   z-index: -1;
@@ -1035,7 +1082,7 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
 }
 
 .portfolio-clear-filters-btn {
-  border: 1px solid rgba(217,163,107,0.4);
+  border: 1px solid rgba(var(--accent-rgb),0.4);
   background: transparent;
   color: var(--accent-2, #f0c882);
   font-size: 0.74rem;
@@ -1044,18 +1091,24 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   border-radius: 999px;
   cursor: pointer;
   white-space: nowrap;
-  transition: transform 170ms ease, background-color 170ms ease, opacity 170ms ease;
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, opacity var(--duration-fast) ease;
 }
 
-.portfolio-clear-filters-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  background: rgba(217,163,107,0.16);
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-clear-filters-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background: rgba(var(--accent-rgb),0.16);
+  }
+}
+
+.portfolio-clear-filters-btn:active:not(:disabled) {
+  transform: scale(0.96);
 }
 
 .portfolio-clear-filters-btn:disabled {
   opacity: 0.4;
   cursor: default;
-  border-color: rgba(217,163,107,0.18);
+  border-color: rgba(var(--accent-rgb),0.18);
 }
 
 .portfolio-filters {
@@ -1066,23 +1119,29 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
 
 .portfolio-filter-chip {
   border-radius: 999px;
-  border: 1px solid rgba(217,163,107,0.26);
-  background: rgba(217,163,107,0.08);
+  border: 1px solid rgba(var(--accent-rgb),0.26);
+  background: rgba(var(--accent-rgb),0.08);
   color: var(--text);
   font-size: 0.75rem;
   padding: 0.3rem 0.62rem;
   cursor: pointer;
-  transition: transform 170ms ease, background-color 170ms ease, border-color 170ms ease;
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
 }
 
-.portfolio-filter-chip:hover {
-  transform: translateY(-1px);
-  background: rgba(217,163,107,0.16);
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-filter-chip:hover {
+    transform: translateY(-1px);
+    background: rgba(var(--accent-rgb),0.16);
+  }
+}
+
+.portfolio-filter-chip:active {
+  transform: scale(0.96);
 }
 
 .portfolio-filter-chip.is-active {
-  background: linear-gradient(90deg, rgba(217,163,107,0.28), rgba(240,200,130,0.25));
-  border-color: rgba(240,200,130,0.46);
+  background: linear-gradient(90deg, rgba(var(--accent-rgb),0.28), rgba(var(--accent-2-rgb),0.25));
+  border-color: rgba(var(--accent-2-rgb),0.46);
 }
 
 .portfolio-status-filters .portfolio-filter-chip {
@@ -1118,8 +1177,8 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
 .portfolio-stat {
   flex: 0 1 auto;
   min-width: 200px;
-  border: 1px solid rgba(217,163,107,0.18);
-  background: rgba(217,163,107,0.06);
+  border: 1px solid rgba(var(--accent-rgb),0.18);
+  background: rgba(var(--accent-rgb),0.06);
   border-radius: 0.9rem;
   padding: 0.85rem 1.6rem;
   text-align: center;
@@ -1130,10 +1189,7 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.5rem;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--accent-2);
   line-height: 1.2;
 }
 
@@ -1172,49 +1228,83 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   height: 2.1rem;
   flex: 0 0 auto;
   border-radius: 50%;
-  border: 1px solid rgba(217,163,107,0.3);
-  background: rgba(217,163,107,0.08);
+  border: 1px solid rgba(var(--accent-rgb),0.3);
+  background: rgba(var(--accent-rgb),0.08);
   color: var(--accent-2);
   cursor: pointer;
-  transition: transform 170ms ease, background-color 170ms ease, border-color 170ms ease;
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
 }
 
-.portfolio-nav-arrow:hover {
-  transform: translateY(-1px);
-  background: rgba(217,163,107,0.18);
-  border-color: rgba(240,200,130,0.5);
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-nav-arrow:hover {
+    transform: translateY(-1px);
+    background: rgba(var(--accent-rgb),0.18);
+    border-color: rgba(var(--accent-2-rgb),0.5);
+  }
 }
 
 .portfolio-nav-arrow:active {
-  transform: translateY(0);
+  transform: scale(0.9);
 }
 
 .portfolio-nav-dots {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1.5rem;
 }
 
 .portfolio-nav-dot {
+  position: relative;
   width: 0.5rem;
   height: 0.5rem;
   padding: 0;
   border-radius: 50%;
-  border: 1px solid rgba(217,163,107,0.4);
-  background: rgba(217,163,107,0.18);
+  border: 1px solid rgba(var(--accent-rgb),0.4);
+  background: rgba(var(--accent-rgb),0.18);
   cursor: pointer;
-  transition: transform 170ms ease, background-color 170ms ease, width 170ms ease;
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
 }
 
-.portfolio-nav-dot:hover {
-  transform: scale(1.15);
+.portfolio-nav-dot::before {
+  /* Invisible tap-target extension: the visible dot stays small, but the
+     actual clickable area grows to ~32px so it doesn't get lost on touch. */
+  content: '';
+  position: absolute;
+  inset: -0.75rem;
+}
+
+.portfolio-nav-dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  border: 1px solid rgba(var(--accent-2-rgb),0.5);
+  transform: translate(-50%, -50%) scaleX(0);
+  transition: transform 170ms ease;
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-nav-dot:hover {
+    transform: scale(1.15);
+  }
+}
+
+.portfolio-nav-dot:active {
+  transform: scale(0.9);
 }
 
 .portfolio-nav-dot.is-active {
-  width: 1.35rem;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  border-color: rgba(240,200,130,0.5);
+  background: transparent;
+  border-color: transparent;
+}
+
+.portfolio-nav-dot.is-active::after {
+  transform: translate(-50%, -50%) scaleX(1);
 }
 
 .portfolio-cta {
@@ -1226,7 +1316,7 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   /* Combined with the parent's 2.4rem flex gap, this restores the ~4.5rem
      separation the CTA had before the nav row was inserted above it. */
   margin-top: 2.1rem;
-  border-top: 1px solid rgba(217,163,107,0.16);
+  border-top: 1px solid rgba(var(--accent-rgb),0.16);
   padding-top: 1.6rem;
 }
 
@@ -1287,12 +1377,12 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
 }
 
 .portfolio-card:focus-visible {
-  outline: 2px solid rgba(240,200,130,0.8);
+  outline: 2px solid rgba(var(--accent-2-rgb),0.8);
   outline-offset: 2px;
 }
 
 .portfolio-card.is-active {
-  border-color: rgba(240,200,130,0.4);
+  border-color: rgba(var(--accent-2-rgb),0.4);
 }
 
 .portfolio-card:hover {
@@ -1302,7 +1392,7 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
     translateY(calc(var(--abs-distance) * 14px - 3px))
     scale(calc(1 - var(--abs-distance) * 0.08))
     rotateY(calc(var(--distance) * -8deg));
-  border-color: rgba(217,163,107,0.24);
+  border-color: rgba(var(--accent-rgb),0.24);
 }
 
 .portfolio-top {
@@ -1331,8 +1421,8 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   padding: 0.25rem 0.58rem;
   font-size: 0.74rem;
   color: #f7e8cd;
-  background: rgba(217,163,107,0.12);
-  border: 1px solid rgba(217,163,107,0.25);
+  background: rgba(var(--accent-rgb),0.12);
+  border: 1px solid rgba(var(--accent-rgb),0.25);
 }
 
 .portfolio-card h3 {
@@ -1351,29 +1441,35 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   padding: 0.26rem 0.6rem;
   font-size: 0.73rem;
   color: var(--text);
-  border: 1px solid rgba(217,163,107,0.2);
-  background: rgba(217,163,107,0.07);
+  border: 1px solid rgba(var(--accent-rgb),0.2);
+  background: rgba(var(--accent-rgb),0.07);
 }
 
 .portfolio-expand-btn {
   width: 2rem;
   height: 2rem;
   border-radius: 999px;
-  border: 1px solid rgba(217,163,107,0.3);
-  background: rgba(217,163,107,0.1);
+  border: 1px solid rgba(var(--accent-rgb),0.3);
+  background: rgba(var(--accent-rgb),0.1);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0;
   box-shadow: none;
   cursor: pointer;
-  transition: transform 170ms ease, background-color 170ms ease, border-color 170ms ease;
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
 }
 
-.portfolio-expand-btn:hover {
-  transform: translateY(-1px);
-  border-color: rgba(240,200,130,0.44);
-  background: rgba(240,200,130,0.16);
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-expand-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(var(--accent-2-rgb),0.44);
+    background: rgba(var(--accent-2-rgb),0.16);
+  }
+}
+
+.portfolio-expand-btn:active {
+  transform: scale(0.92);
 }
 
 .portfolio-expand-btn img {
@@ -1388,8 +1484,10 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   display: block;
 }
 
-.portfolio-github-btn:hover {
-  color: var(--accent-2);
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-github-btn:hover {
+    color: var(--accent-2);
+  }
 }
 
 .portfolio-detail-modal {
@@ -1430,7 +1528,7 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   overflow: auto;
   z-index: 1;
   background: linear-gradient(180deg, #2b231b, #1f1812);
-  border: 1px solid rgba(240,200,130,0.35);
+  border: 1px solid rgba(var(--accent-2-rgb),0.35);
   border-radius: 1rem;
   padding: 1.25rem;
   box-shadow: 0 26px 52px rgba(0, 0, 0, 0.35);
@@ -1487,8 +1585,8 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   padding: 0.3rem 0.62rem;
   font-size: 0.73rem;
   color: var(--text);
-  border: 1px solid rgba(217,163,107,0.22);
-  background: rgba(217,163,107,0.07);
+  border: 1px solid rgba(var(--accent-rgb),0.22);
+  background: rgba(var(--accent-rgb),0.07);
 }
 
 .portfolio-detail-actions {
@@ -1532,7 +1630,7 @@ body.portfolio-detail-open {
   margin: 0.2rem;
   padding: 1.2rem;
   border-radius: 0.9rem;
-  border: 1px dashed rgba(217,163,107,0.28);
+  border: 1px dashed rgba(var(--accent-rgb),0.28);
   color: var(--muted);
 }
 
@@ -1579,24 +1677,59 @@ body.portfolio-detail-open {
   .menu-toggle { display: block; }
 
   .nav-links {
-    display: none;
+    display: flex;
+    flex-direction: column;
     position: absolute;
     top: 70px;
     right: 1rem;
-    background: rgba(7, 17, 31, 0.96);
+    background: rgba(18, 16, 15, 0.96);
     padding: 1rem;
-    border-radius: 1rem;
-    border: 1px solid rgba(255,255,255,0.1);
-    flex-direction: column;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(var(--accent-rgb),0.18);
     min-width: 180px;
+    transform-origin: top right;
+    opacity: 0;
+    transform: scale(0.95) translateY(-4px);
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity var(--duration-base) var(--ease-out), transform var(--duration-base) var(--ease-out), visibility 0s linear var(--duration-base);
   }
 
-  .nav-links.open { display: flex; }
+  .nav-links.open {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity var(--duration-base) var(--ease-out), transform var(--duration-base) var(--ease-out), visibility 0s linear;
+  }
 
-  .hero-grid, .contact-grid, .cards, .project-grid, .plans-grid,
-  .problem-grid, .solution-features, .steps-grid, .usecases-list, 
-  .value-grid, .roadmap-grid {
+  .hero-grid, .contact-grid, .cards,
+  .problem-grid, .solution-features, .steps-grid, .usecases-list,
+  .roadmap-grid {
     grid-template-columns: 1fr;
+  }
+
+  .steps-grid::before {
+    display: none;
+  }
+
+  .steps-grid {
+    gap: 1.75rem;
+  }
+
+  .feature:not(:first-child) {
+    border-left: none;
+    border-top: 1px solid rgba(var(--accent-rgb),0.18);
+  }
+
+  .value-grid {
+    flex-direction: column;
+  }
+
+  .contact-grid .contact-form,
+  .contact-grid .contact-card {
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(var(--accent-rgb),0.14);
   }
 
   .portfolio-shell {
@@ -1706,7 +1839,6 @@ body.portfolio-detail-open {
   }
 
   .section-alt {
-    border-radius: 1rem;
     padding-inline: 0.85rem;
   }
 

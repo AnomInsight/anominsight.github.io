@@ -343,7 +343,9 @@ const animatePortfolioFilterChange = (applyChange) => {
   renderPortfolioFilters(currentLang);
 
   const cards = Array.from(track.querySelectorAll('.portfolio-card'));
-  if (!cards.length || window.matchMedia('(max-width: 840px)').matches) {
+  const skipStagger = window.matchMedia('(max-width: 840px)').matches
+    || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!cards.length || skipStagger) {
     renderPortfolio(currentLang);
     return;
   }
@@ -426,7 +428,10 @@ const renderPortfolioNavDots = (count, lang) => {
     return;
   }
 
-  nav.style.display = count > 1 ? '' : 'none';
+  // visibility (not display) so the row keeps its height when there's only
+  // one result — otherwise the CTA below snaps up into the gap the arrows
+  // left behind.
+  nav.style.visibility = count > 1 ? '' : 'hidden';
   dotsHost.innerHTML = '';
 
   const labelTemplate = translations[lang]['portfolio.navDotLabel'] || 'Go to project {n}';

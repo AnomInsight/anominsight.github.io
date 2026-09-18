@@ -27,13 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
 			'meta.targetLanguagesLabel': 'Target languages',
 			'meta.targetLanguagesValue': 'English, Hungarian',
 			'meta.emailLabel': 'Email',
+			'status.text': 'Actively in development.',
 			'footer.copy': '© <span id="year"></span> AnomInsight. All rights reserved.',
 			pageTitle: 'AnomInsight | Coming Soon',
-			statuses: [
-				'Preparing launch experience...',
-				'Finalizing features and UI polish...',
-				'Opening early access requests soon...',
-			],
 		},
 		hu: {
 			'lang.toggle': 'HU',
@@ -47,10 +43,36 @@ document.addEventListener('DOMContentLoaded', () => {
 			'meta.targetLanguagesLabel': 'Célzott nyelvek',
 			'meta.targetLanguagesValue': 'Magyar, angol',
 			'meta.emailLabel': 'E-mail',
+			'status.text': 'Aktívan fejlesztés alatt.',
 			'footer.copy': '© <span id="year"></span> AnomInsight. Minden jog fenntartva.',
 			pageTitle: 'AnomInsight | Hamarosan',
-			statuses: ['Indulási élmény előkészítése...'],
 		},
+	};
+
+	const LANG_STORAGE_KEY = 'anominsight:lang';
+
+	// Returns a stored choice first, then a browser-language guess, so a
+	// Hungarian visitor doesn't land on English by default every single time.
+	const getPreferredLang = () => {
+		try {
+			const stored = window.localStorage.getItem(LANG_STORAGE_KEY);
+			if (stored === 'en' || stored === 'hu') {
+				return stored;
+			}
+		} catch {
+			// Storage blocked (private mode, disabled site data) - fall through.
+		}
+
+		const browserLangs = navigator.languages || [navigator.language];
+		return browserLangs.some((lang) => lang.toLowerCase().startsWith('hu')) ? 'hu' : 'en';
+	};
+
+	const storeLangPreference = (lang) => {
+		try {
+			window.localStorage.setItem(LANG_STORAGE_KEY, lang);
+		} catch {
+			// Storage blocked - the choice just won't survive a reload this time.
+		}
 	};
 
 	const applyTranslations = (lang) => {
@@ -77,27 +99,14 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	};
 
-	const statusEl = document.getElementById('statusText');
-	let currentLang = 'en';
-	let statusIndex = 0;
-
-	if (statusEl) {
-		statusEl.textContent = translations[currentLang].statuses[statusIndex];
-		setInterval(() => {
-			statusIndex = (statusIndex + 1) % translations[currentLang].statuses.length;
-			statusEl.textContent = translations[currentLang].statuses[statusIndex];
-		}, 2800);
-	}
+	let currentLang = getPreferredLang();
 
 	const langToggle = document.querySelector('.lang-toggle');
 	if (langToggle) {
 		langToggle.addEventListener('click', () => {
 			currentLang = currentLang === 'en' ? 'hu' : 'en';
-			statusIndex = 0;
+			storeLangPreference(currentLang);
 			applyTranslations(currentLang);
-			if (statusEl) {
-				statusEl.textContent = translations[currentLang].statuses[statusIndex];
-			}
 		});
 	}
 

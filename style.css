@@ -3,21 +3,37 @@
 	--bg-soft: #1a1714;
 	--card: rgba(20, 16, 14, 0.78);
 	--text: #f7f2de;
-	--muted: #d1b58c;
+	--muted: #e3d2b3;
 	--line: rgba(217, 163, 107, 0.24);
 	--accent: #d9a36b;
 	--accent-strong: #f0c882;
+
+	/* Motion: matches src/frontend's tokens so both pages feel like one site. */
+	--ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+	--duration-fast: 140ms;
+	--duration-base: 220ms;
 }
 
 * {
 	box-sizing: border-box;
 }
 
+/* Reduced motion: collapse transitions/animations to effectively instant
+   rather than removing them, so content still appears and state still
+   changes - it just doesn't move to get there. */
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+	}
+}
+
 body {
 	margin: 0;
 	min-height: 100vh;
 	color: var(--text);
-	font-family: 'IBM Plex Sans', sans-serif;
+	font-family: 'Source Sans 3', sans-serif;
 	background:
 		radial-gradient(circle at 12% 12%, rgba(217, 163, 107, 0.2), transparent 36%),
 		radial-gradient(circle at 88% 16%, rgba(240, 200, 130, 0.12), transparent 30%),
@@ -38,12 +54,18 @@ body {
 	font-weight: 700;
 	letter-spacing: 0.05em;
 	cursor: pointer;
-	transition: background-color 170ms ease, transform 170ms ease;
+	transition: background-color var(--duration-fast) ease, transform var(--duration-fast) var(--ease-out);
 }
 
-.lang-toggle:hover {
-	background: rgba(217, 163, 107, 0.14);
-	transform: translateY(-1px);
+@media (hover: hover) and (pointer: fine) {
+	.lang-toggle:hover {
+		background: rgba(217, 163, 107, 0.14);
+		transform: translateY(-1px);
+	}
+}
+
+.lang-toggle:active {
+	transform: scale(0.96);
 }
 
 .bg-shape {
@@ -111,15 +133,15 @@ body {
 	padding: 0.4rem 0.85rem;
 	border-radius: 999px;
 	font-size: 0.8rem;
-	letter-spacing: 0.1em;
-	text-transform: uppercase;
+	font-weight: 600;
+	letter-spacing: 0.02em;
 	background: rgba(217, 163, 107, 0.14);
 	border: 1px solid rgba(217, 163, 107, 0.35);
 	color: #f6debc;
 }
 
 h1 {
-	font-family: 'Sora', sans-serif;
+	font-family: 'Manrope', sans-serif;
 	margin: 0.95rem auto 0;
 	font-size: clamp(1.9rem, 4.3vw, 3rem);
 	line-height: 1.15;
@@ -146,8 +168,6 @@ h1 {
 	height: 10px;
 	border-radius: 50%;
 	background: var(--accent);
-	box-shadow: 0 0 0 0 rgba(217, 163, 107, 0.55);
-	animation: pulse 2s infinite;
 }
 
 .actions {
@@ -165,11 +185,17 @@ h1 {
 	text-decoration: none;
 	font-weight: 600;
 	border: 1px solid transparent;
-	transition: transform 170ms ease, background-color 170ms ease, border-color 170ms ease;
+	transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
 }
 
-.btn:hover {
-	transform: translateY(-1px);
+@media (hover: hover) and (pointer: fine) {
+	.btn:hover {
+		transform: translateY(-1px);
+	}
+}
+
+.btn:active {
+	transform: scale(0.97);
 }
 
 .btn-primary {
@@ -206,7 +232,7 @@ h1 {
 
 .meta-value {
 	margin: 0.35rem 0 0;
-	font-family: 'Sora', sans-serif;
+	font-family: 'Manrope', sans-serif;
 	font-weight: 600;
 	font-size: 1rem;
 }
@@ -224,19 +250,7 @@ h1 {
 }
 
 .reveal.in {
-	animation: revealUp 540ms ease forwards;
-}
-
-@keyframes pulse {
-	0% {
-		box-shadow: 0 0 0 0 rgba(217, 163, 107, 0.65);
-	}
-	70% {
-		box-shadow: 0 0 0 12px rgba(217, 163, 107, 0);
-	}
-	100% {
-		box-shadow: 0 0 0 0 rgba(217, 163, 107, 0);
-	}
+	animation: revealUp 540ms var(--ease-out) forwards;
 }
 
 @keyframes revealUp {
