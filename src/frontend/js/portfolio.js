@@ -17,6 +17,7 @@ const portfolioProjects = [
       hu: 'A váratlan leállások sokba kerülnek egy folyamatosan üzemelő CNC gyártásban, ezért ez a projekt egy korai figyelmeztető rendszert épít a gépleállások előrejelzésére. A modell valós szenzoradatokat figyel, például hőmérsékletet, teljesítményfelvételt és csavarónyomatékot, hogy jelezze, mely gépek állhatnak le a következő egy-két napban, még mielőtt bármi elromlana. Több módszer kipróbálása után egy LightGBM modell mellett döntöttem (ez egy gyors, fákra épülő gépi tanulási módszer), amelyet úgy hangoltam, hogy a lehető legtöbb valós meghibásodást elkapja: a tesztelés során az esetek 96%-ában időben jelzett, cserébe nagyjából két téves riasztás jutott minden valós találatra. A cél nem az, hogy kiváltsa a karbantartó mérnököket, hanem hogy egy priorizált napi listát adjon a kezükbe, amelyre érdemes figyelniük. A riasztási küszöb pedig állítható, hogy illeszkedjen ahhoz, mennyi téves riasztást bír el a csapat.',
     },
     categories: ['predictiveMaintenance', 'anomalyDetection', 'decisionSupport'],
+    githubUrl: 'https://github.com/AnomInsight/01_Portfolio_Project',
   },
   {
     kind: { en: 'Logistics', hu: 'Logisztika' },
@@ -31,6 +32,7 @@ const portfolioProjects = [
       hu: 'A kézzel írt irányítószámok kézi feldolgozása lassú és hibalehetőségekkel teli, ha nagy mennyiségben kell csinálni. Ez a projekt azt vizsgálja, hogy egy AI megbízhatóan át tudja-e venni ezt a feladatot. Egy egyszerű alapmodellből kiindulva, logisztikus regresszión, random foreston és szupport vektor gépeken keresztül végül egy konvolúciós neurális hálónál kötöttem ki (ez egy kifejezetten képfelismerésre kitalált modelltípus), amely az esetek 99,27%-ában helyesen ismerte fel a számjegyeket. A pontosságon túl azt is megvizsgáltam, mely számjegyeket keveri össze a modell egymással, alaposan átnéztem a magabiztosan hozott hibáit, és teszteltem, hogyan teljesít elforgatott, zajos vagy rosszul megvilágított képeken. A gyakorlati tanulság: amiben a modell nem elég magabiztos, azt küldjük emberi ellenőrzésre, és élesben is érdemes folyamatosan figyelni a hibáit.',
     },
     categories: ['imageClassification', 'deepLearning', 'computerVision'],
+    githubUrl: 'https://github.com/AnomInsight/02_Portfolio_Project',
   },
   {
     kind: { en: 'Hospitality', hu: 'Vendéglátás' },
@@ -45,8 +47,13 @@ const portfolioProjects = [
       hu: 'A kisvállalkozások gyakran veszítenek el ügyfeleket csak azért, mert senki sincs ott, hogy megválaszoljon egy egyszerű kérdést, mint például „nyitva vannak most?” vagy „melyik a legnépszerűbb pizzájuk?”. Ez a projekt azt mutatja be, hogyan tud egy könnyű AI chatbot pótolni ezt a hiányt. Egy demó pizzéria weboldalt építettem egy chat widgettel, amelyet egy gyors nagy nyelvi modell hajt meg (Groq-on keresztül), és úgy állítottam be, hogy csak a vállalkozás valós adataiból, menüből, árakból és nyitvatartásból, beszéljen, ami sokkal kisebb eséllyel eredményez kitalált, nem létező ételeket. A beszélgetés alatt emlékszik a korábbi üzenetekre, nyomon követi, mely termékeket rendelik a legtöbbször, és alapvető védelmi mechanizmusokat is tartalmaz, mint a kéréskorlátozás és az API-kulcsos védelem. Maga a widget egyszerű HTML, CSS és JavaScript, így szinte bármelyik meglévő weboldalba beilleszthető.',
     },
     categories: ['chatbot', 'llmIntegration', 'customerExperience'],
+    githubUrl: 'https://github.com/AnomInsight/03_Portfolio_Project',
   },
 ];
+
+// Octicon "mark-github" glyph, inlined so it can be recolored with currentColor
+// instead of managing a separate image asset per theme state.
+const GITHUB_ICON_SVG = '<svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>';
 
 const portfolioCategoryLabels = {
   predictiveMaintenance: { en: 'Predictive Maintenance', hu: 'Prediktív karbantartás' },
@@ -115,9 +122,10 @@ const openPortfolioDetails = (project, lang) => {
   const kindNode = document.getElementById('portfolioDetailKind');
   const stageNode = document.getElementById('portfolioDetailStage');
   const metaNode = document.getElementById('portfolioDetailMeta');
+  const githubNode = document.getElementById('portfolioDetailGithub');
   const closeBtn = document.getElementById('portfolioDetailCloseBtn');
 
-  if (!modal || !titleNode || !textNode || !kindNode || !stageNode || !metaNode || !closeBtn) {
+  if (!modal || !titleNode || !textNode || !kindNode || !stageNode || !metaNode || !githubNode || !closeBtn) {
     return;
   }
 
@@ -139,6 +147,13 @@ const openPortfolioDetails = (project, lang) => {
   stageNode.textContent = stage;
   titleNode.textContent = title;
   textNode.textContent = overview;
+
+  if (project.githubUrl) {
+    githubNode.href = project.githubUrl;
+    githubNode.hidden = false;
+  } else {
+    githubNode.hidden = true;
+  }
 
   const categoryLabels = project.categories.map((categoryId) => getCategoryLabel(categoryId, lang));
   metaNode.innerHTML = '';
@@ -475,6 +490,10 @@ const renderPortfolio = (lang, options = {}) => {
     const categoryLabels = project.categories.map((categoryId) => getCategoryLabel(categoryId, lang));
     const categories = categoryLabels.join(' • ');
     const expandLabel = translations[lang]['portfolio.expand'];
+    const githubLabel = translations[lang]['portfolio.githubLabel'];
+    const githubLink = project.githubUrl
+      ? `<a class="portfolio-expand-btn portfolio-github-btn" href="${project.githubUrl}" target="_blank" rel="noopener noreferrer" aria-label="${githubLabel}" title="${githubLabel}">${GITHUB_ICON_SVG}</a>`
+      : '';
 
     card.innerHTML = `
       <div>
@@ -482,6 +501,7 @@ const renderPortfolio = (lang, options = {}) => {
           <p class="portfolio-kind">${kind}</p>
           <div class="portfolio-top-actions">
             <span class="portfolio-stage">${stage}</span>
+            ${githubLink}
             <button type="button" class="portfolio-expand-btn" aria-label="${expandLabel}" title="${expandLabel}">
               <img src="../../images/expand-arrows.png" alt="" />
             </button>
@@ -497,11 +517,18 @@ const renderPortfolio = (lang, options = {}) => {
 
     track.appendChild(card);
 
-    const expandBtn = card.querySelector('.portfolio-expand-btn');
+    const expandBtn = card.querySelector('.portfolio-expand-btn:not(.portfolio-github-btn)');
     if (expandBtn) {
       expandBtn.addEventListener('click', (event) => {
         event.stopPropagation();
         openPortfolioDetails(project, lang);
+      });
+    }
+
+    const githubBtn = card.querySelector('.portfolio-github-btn');
+    if (githubBtn) {
+      githubBtn.addEventListener('click', (event) => {
+        event.stopPropagation();
       });
     }
 
