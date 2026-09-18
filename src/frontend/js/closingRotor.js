@@ -105,27 +105,71 @@ export function initClosingRotor(isReload) {
       return;
     }
 
-    const maxTravel = Math.max(1, shell.offsetHeight - window.innerHeight);
-    const normalized = Math.max(0, Math.min(1, index / (panels.length - 1)));
-    const targetY = Math.round(window.scrollY + shell.getBoundingClientRect().top + normalized * maxTravel);
+    let targetY;
+    if (index === panels.length - 1) {
+      // Landing at the end of the shell's own scroll track leaves the
+      // pinned panel filling the entire viewport, with the footer sitting
+      // just past the fold - reachable, but not visible without an extra
+      // manual scroll. For the last panel, go to the actual bottom of the
+      // page instead so the footer comes into view along with it.
+      targetY = Math.round(document.documentElement.scrollHeight - window.innerHeight);
+    } else {
+      const maxTravel = Math.max(1, shell.offsetHeight - window.innerHeight);
+      const normalized = Math.max(0, Math.min(1, index / (panels.length - 1)));
+      targetY = Math.round(window.scrollY + shell.getBoundingClientRect().top + normalized * maxTravel);
+    }
     window.scrollTo({ top: targetY, behavior: 'smooth' });
   };
 
+  const rotorHashIndex = { '#roadmap': 0, '#final-cta': 1, '#contact': 2 };
+
   const handleHashNavigation = () => {
-    const hash = window.location.hash;
-    if (hash === '#final-cta') {
-      scrollToRotorPanel(1);
-    } else if (hash === '#contact') {
-      scrollToRotorPanel(2);
-    } else if (hash === '#roadmap') {
-      scrollToRotorPanel(0);
+    const index = rotorHashIndex[window.location.hash];
+    if (index !== undefined) {
+      scrollToRotorPanel(index);
     }
+  };
+
+  // The three panels are stacked on top of each other and only reach their
+  // visual position through the scroll-driven transform above, so the
+  // browser's native anchor jump (which reads the element's *currently
+  // transformed* position) tends to land short or past it. Handle clicks on
+  // rotor links ourselves instead of relying on the native jump, and do it
+  // on the click itself rather than `hashchange` - `hashchange` never fires
+  // when the link's hash matches the page's current hash (e.g. clicking a
+  // second "#contact" link in a row), which left those clicks with no
+  // correction at all.
+  const handleRotorLinkClick = (event) => {
+    const link = event.target.closest('a[href]');
+    if (!link) {
+      return;
+    }
+    const hash = link.getAttribute('href');
+    if (!(hash in rotorHashIndex)) {
+      return;
+    }
+    const index = rotorHashIndex[hash];
+
+    const compactMode = window.matchMedia('(max-width: 840px)').matches;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (compactMode || reducedMotion) {
+      // Panels lay out normally here, so the native anchor jump is correct.
+      return;
+    }
+
+    event.preventDefault();
+    if (window.location.hash !== hash) {
+      window.history.pushState(null, '', hash);
+    }
+    scrollToRotorPanel(index);
   };
 
   update();
   window.addEventListener('scroll', requestUpdate, { passive: true });
   window.addEventListener('resize', requestUpdate);
   window.addEventListener('hashchange', handleHashNavigation);
+  window.addEventListener('popstate', handleHashNavigation);
+  document.addEventListener('click', handleRotorLinkClick);
 
   if (window.location.hash && !isReload) {
     window.setTimeout(handleHashNavigation, 80);
