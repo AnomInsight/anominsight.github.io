@@ -14,6 +14,10 @@
 
 html { scroll-behavior: smooth; }
 
+#services, #projects, #howitworks, #contact {
+  scroll-margin-top: 20px; /* offset for fixed nav so anchor jumps land below it */
+}
+
 body {
   margin: 0;
   font-family: var(--font-body);
@@ -516,6 +520,74 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
 .contact-actions .btn-secondary {
   align-self: center;
 }
+
+.contact-form {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+
+.contact-form h3 {
+  margin: 0;
+}
+
+.form-field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.form-field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.form-field input,
+.form-field textarea {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.7rem;
+  border: 1px solid rgba(217,163,107,0.24);
+  background: rgba(9, 8, 6, 0.6);
+  color: var(--text);
+  resize: vertical;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(217,163,107,0.18);
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+  color: rgba(209,181,140, 0.55);
+}
+
+.form-honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.contact-form .btn {
+  justify-self: start;
+}
+
+.form-status {
+  margin: 0;
+  font-size: 0.88rem;
+  min-height: 1.2em;
+}
+
+.form-status-success { color: var(--accent-2); }
+.form-status-error { color: #e08585; }
+.form-status-pending { color: var(--muted); }
 
 /* Problem Section */
 .problem-grid {
@@ -1312,6 +1384,14 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   filter: brightness(0) invert(1);
 }
 
+.portfolio-github-btn svg {
+  display: block;
+}
+
+.portfolio-github-btn:hover {
+  color: var(--accent-2);
+}
+
 .portfolio-detail-modal {
   position: fixed;
   inset: 0;
@@ -1409,6 +1489,17 @@ h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
   color: var(--text);
   border: 1px solid rgba(217,163,107,0.22);
   background: rgba(217,163,107,0.07);
+}
+
+.portfolio-detail-actions {
+  display: flex;
+  margin-top: 1.25rem;
+}
+
+.portfolio-detail-github {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
 }
 
 .portfolio-detail-close {

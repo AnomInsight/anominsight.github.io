@@ -4,6 +4,7 @@
 import { applyTranslations } from './i18n.js';
 import { setPortfolioLanguage, initPortfolioInteraction } from './portfolio.js';
 import { initClosingRotor } from './closingRotor.js';
+import { initContactForm } from './contactForm.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const navigationEntry = performance.getEntriesByType('navigation')[0];
@@ -77,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
   translatePage(currentLang);
   initPortfolioInteraction();
   initClosingRotor(isReload);
+  initContactForm(() => currentLang);
 
   window.addEventListener('resize', normalizePanelLayout);
 });
