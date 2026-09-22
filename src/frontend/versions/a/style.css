@@ -1,0 +1,1962 @@
+/* ===========================================================================
+   Direction A — "Reimagined Original"
+
+   Same brand: the warm near-black ground, amber/gold accent pair, and the
+   Manrope + Source Sans 3 pairing are kept exactly (DESIGN.md marks color and
+   typography "controlled" — improved, not replaced). What changes is
+   execution: a real spacing/type scale, a merged Problem+Solution section
+   instead of two near-identical icon grids, a proof band pulled up near the
+   top, a founder section, and the closing roadmap/audit/contact sequence
+   restored to normal document flow instead of a 190vh scroll-jacked stack.
+
+   The Portfolio section (#projects) keeps the original's exact deck/carousel
+   structure and interaction — DESIGN.md marks it protected — restyled only
+   with this file's refined tokens, never restructured.
+   =========================================================================== */
+
+:root {
+  --font-display: 'Manrope', sans-serif;
+  --font-body: 'Source Sans 3', sans-serif;
+
+  --bg: #090806;
+  --panel: #12100f;
+  --panel-2: #1a1714;
+  --text: #f7f2de;
+  --muted: #e3d2b3;
+  --accent: #d9a36b;
+  --accent-2: #f0c882;
+  --accent-rgb: 217, 163, 107;
+  --accent-2-rgb: 240, 200, 130;
+
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.5rem;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --duration-fast: 140ms;
+  --duration-base: 220ms;
+  --duration-slow: 360ms;
+
+  /* A real 4px-based spacing scale, used consistently instead of one-off
+     values, so the rhythm reads as designed rather than eyeballed. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --space-9: 6.5rem;
+
+  /* One content measure for the whole page, stepping up with the viewport (see
+     the min-width blocks below) so a large monitor gets a composition sized for
+     it rather than the narrow layout centred in a wide empty canvas. Both
+     `.shell` and `.container` read it, so every section's edges line up. Long
+     text stays readable regardless, because paragraphs and headings are capped
+     in `ch` independently of this — widening the measure widens the grids, not
+     the line lengths. */
+  --gutter: 1.25rem;
+  --shell: 1240px;
+}
+
+/* Wide-desktop steps. Gutters grow alongside the measure so the margins stay
+   deliberate instead of collapsing into thin slivers as the content widens. */
+@media (min-width: 1440px) {
+  :root {
+    --gutter: 2rem;
+    --shell: 1380px;
+  }
+}
+
+/* The top step stops at 1720px on purpose. The card grids and the two-column
+   sections keep reflowing into the extra width, but past roughly this measure
+   the portfolio deck (fixed 480px cards fanning out about ±120px per position)
+   just gains empty space around itself, so widening further stops buying
+   anything and starts pulling the composition apart. */
+@media (min-width: 1760px) {
+  :root {
+    --gutter: 3rem;
+    --shell: 1560px;
+  }
+}
+
+@media (min-width: 2200px) {
+  :root {
+    --gutter: 4rem;
+    --shell: 1720px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  /* Compensates for .site-header's fixed positioning (measured ~74px) so the
+     hero's own heading doesn't render clipped underneath the nav bar. */
+  padding-top: 76px;
+  font-family: var(--font-body);
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.14), transparent 32%),
+    radial-gradient(circle at top right, rgba(var(--accent-2-rgb), 0.08), transparent 26%),
+    linear-gradient(150deg, #1c1712, #0c0a08 55%, #1a150f);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgba(var(--accent-2-rgb), 0.32);
+  color: var(--text);
+}
+
+:root {
+  scrollbar-color: rgba(var(--accent-rgb), 0.5) var(--bg);
+}
+
+input,
+textarea {
+  caret-color: var(--accent-2);
+}
+
+:focus-visible {
+  outline: 2px solid rgba(var(--accent-2-rgb), 0.85);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+}
+
+ul, ol, dl, dd {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+.shell {
+  width: min(var(--shell), calc(100% - 2 * var(--gutter)));
+  margin-inline: auto;
+}
+
+/* The portfolio section carries this class (as it does in the Original). It was
+   previously undefined here, which left that section unconstrained and without
+   gutters — the one place the page ignored its own layout system. */
+.container {
+  width: min(var(--shell), calc(100% - 2 * var(--gutter)));
+  margin-inline: auto;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 200;
+  background: var(--accent-2);
+  color: #1d160f;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+}
+
+.skip-link:focus {
+  left: var(--space-4);
+  top: var(--space-4);
+}
+
+/* Standard visually-hidden-but-announced pattern, for icon buttons that carry
+   their label as text for assistive tech instead of `aria-label`. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Header --------------------------------------------------------------- */
+
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  /* High enough opacity that whatever scrolls behind (including lighter
+     card/gradient regions) can't dilute the nav-link text contrast below
+     AA, even with the blur's soft bleed-through. */
+  background: rgba(9, 8, 6, 0.94);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.12);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.2rem;
+  letter-spacing: -0.01em;
+}
+
+.brand__mark {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid rgba(var(--accent-rgb), 0.4);
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.3), rgba(var(--accent-2-rgb), 0.14));
+  display: grid;
+  place-items: center;
+}
+
+.brand__mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.nav-links {
+  display: flex;
+  gap: var(--space-6);
+}
+
+.nav-links a {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  /* Brighter than --muted specifically here: against the translucent,
+     blurred nav background --muted measured as low as 4.11:1 at some
+     scroll positions, just under the 4.5:1 body-text threshold. */
+  color: #ecdfc4;
+  padding: var(--space-2) 0;
+  position: relative;
+  transition: color var(--duration-fast) ease;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nav-links a:hover {
+    color: var(--text);
+  }
+
+  .nav-links a:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+.lang {
+  border: 1px solid rgba(var(--accent-rgb), 0.35);
+  background: rgba(var(--accent-rgb), 0.08);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) ease, transform var(--duration-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .lang:hover {
+    background: rgba(var(--accent-rgb), 0.16);
+  }
+}
+
+.lang:active {
+  transform: scale(0.95);
+}
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: 0;
+  padding: 0.4rem;
+  cursor: pointer;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  margin: 5px 0;
+  transition: transform var(--duration-fast) var(--ease-out), opacity var(--duration-fast) ease;
+}
+
+.menu-toggle[aria-expanded='true'] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.menu-toggle[aria-expanded='true'] span:nth-child(2) { opacity: 0; }
+.menu-toggle[aria-expanded='true'] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* --- Buttons ---------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0.85rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  border: 0;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-base) var(--ease-out), filter var(--duration-base) ease, background-color var(--duration-base) ease;
+}
+
+.btn--primary {
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  color: #1d160f;
+  box-shadow: 0 14px 28px -8px rgba(var(--accent-rgb), 0.45);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn--primary:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.06);
+    box-shadow: 0 18px 34px -8px rgba(var(--accent-rgb), 0.55);
+  }
+}
+
+.btn--primary:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.btn--ghost {
+  background: rgba(var(--accent-rgb), 0.08);
+  border: 1px solid rgba(var(--accent-rgb), 0.32);
+  color: var(--text);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn--ghost:hover {
+    background: rgba(var(--accent-rgb), 0.16);
+    transform: translateY(-2px);
+  }
+}
+
+.btn--ghost:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.btn--large {
+  padding: 1.05rem 1.9rem;
+  font-size: 1rem;
+}
+
+/* --- Reveal motion ------------------------------------------------------ */
+
+.reveal {
+  transition: opacity var(--duration-slow) var(--ease-out), transform var(--duration-slow) var(--ease-out);
+}
+
+.reveal--pending {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+.cards > *,
+.steps > *,
+.value-list > *,
+.roadmap > *,
+.usecases > * {
+  transition: opacity var(--duration-slow) var(--ease-out), transform var(--duration-slow) var(--ease-out);
+}
+
+.reveal--pending .cards > *,
+.reveal--pending .steps > *,
+.reveal--pending .value-list > *,
+.reveal--pending .roadmap > *,
+.reveal--pending .usecases > * {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+/* --- Hero --------------------------------------------------------------- */
+
+.hero {
+  position: relative;
+  /* body's padding-top already clears the fixed nav; this is the hero's own
+     breathing room on top of that, not nav clearance. */
+  padding: clamp(2.5rem, 5vw, 4rem) 0 var(--space-9);
+  overflow: clip;
+}
+
+.hero__field {
+  position: absolute;
+  inset: -10% -10% auto auto;
+  width: 34rem;
+  height: 34rem;
+  background: radial-gradient(circle, rgba(var(--accent-rgb), 0.16), transparent 70%);
+  pointer-events: none;
+}
+
+.hero__grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: var(--space-7);
+  align-items: center;
+  position: relative;
+}
+
+.hero h1 {
+  font-size: clamp(2.6rem, 5vw, 4.25rem);
+  max-width: 16ch;
+}
+
+.hero__lead {
+  margin-top: var(--space-5);
+  max-width: 54ch;
+  font-size: clamp(1.0625rem, 1.4vw, 1.1875rem);
+  color: var(--muted);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+.credentials {
+  background: linear-gradient(155deg, rgba(var(--accent-rgb), 0.12), #14100e 62%);
+  border: 1px solid rgba(var(--accent-rgb), 0.22);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: 0 30px 60px -20px rgba(10, 8, 6, 0.6);
+}
+
+.credentials__list {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.credentials__list li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: start;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.14);
+}
+
+.credentials__list li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.credentials__mark {
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-top: 0.5rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  flex: none;
+}
+
+.credentials__list strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.credentials__list span {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.875rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* --- Proof band ----------------------------------------------------------- */
+
+.proof {
+  padding-block: var(--space-7);
+  border-block: 1px solid rgba(var(--accent-rgb), 0.14);
+  background: rgba(var(--accent-rgb), 0.035);
+}
+
+.proof__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.62fr) minmax(0, 1.38fr);
+  gap: var(--space-7);
+  align-items: center;
+}
+
+.proof__intro h2 {
+  font-size: clamp(1.375rem, 2.2vw, 1.75rem);
+}
+
+.proof__intro p {
+  margin-top: var(--space-3);
+  color: var(--muted);
+  font-size: 0.9375rem;
+  max-width: 34ch;
+}
+
+.proof__figures {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+}
+
+.proof__figure {
+  display: grid;
+  gap: 0.3rem;
+  padding-left: var(--space-4);
+  border-left: 2px solid rgba(var(--accent-rgb), 0.3);
+}
+
+.proof__value {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  color: var(--accent-2);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.proof__label {
+  font-size: 0.875rem;
+  color: var(--text);
+  line-height: 1.35;
+}
+
+.proof__source {
+  font-size: 0.75rem;
+  color: var(--muted);
+  opacity: 0.85;
+}
+
+/* --- Approach (merged Problem + Solution) --------------------------------- */
+
+.approach {
+  padding-block: var(--space-9);
+}
+
+.approach__grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: var(--space-7);
+  align-items: start;
+}
+
+.approach__col h2 {
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  max-width: 24ch;
+}
+
+.approach__lead {
+  margin-top: var(--space-4);
+  color: var(--muted);
+  font-size: 1rem;
+  max-width: 52ch;
+}
+
+.approach__list {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+/* The Original's white icons carry these rows now, so the bullet dots that
+   previously stood in for them are gone. */
+.approach__list li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  font-size: 0.9375rem;
+  color: var(--text);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.12);
+}
+
+.approach__icon {
+  flex: none;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(var(--accent-rgb), 0.1);
+  border: 1px solid rgba(var(--accent-rgb), 0.18);
+}
+
+.approach__icon img {
+  width: 1.15rem;
+  height: 1.15rem;
+  object-fit: contain;
+  display: block;
+  /* Same treatment the Original used: flatten the source art to pure white. */
+  filter: brightness(0) invert(1);
+}
+
+.approach__arrow {
+  display: grid;
+  place-items: center;
+  color: var(--accent-2);
+  padding-top: 3.5rem;
+  opacity: 0.7;
+}
+
+/* --- Generic sections ----------------------------------------------------- */
+
+.section {
+  padding-block: var(--space-9);
+  position: relative;
+}
+
+.section + .section::before,
+.approach + .section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(1100px, calc(100% - 2.5rem));
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb), 0.26), transparent);
+}
+
+.section--alt {
+  background: linear-gradient(180deg, rgba(var(--accent-2-rgb), 0.055), transparent);
+  border-block: 1px solid rgba(var(--accent-rgb), 0.08);
+}
+
+.section-heading {
+  max-width: 640px;
+  margin-bottom: var(--space-7);
+}
+
+.section-heading h2 {
+  font-size: clamp(1.75rem, 3vw, 2.375rem);
+}
+
+.section-heading p {
+  margin-top: var(--space-3);
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.section-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-7);
+}
+
+/* --- Cards (Services / Advanced) ------------------------------------------ */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
+}
+
+.card {
+  background: rgba(20, 16, 14, 0.92);
+  border: 1px solid rgba(var(--accent-rgb), 0.14);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  transition: transform var(--duration-base) var(--ease-out), border-color var(--duration-base) ease, box-shadow var(--duration-base) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(var(--accent-rgb), 0.3);
+    box-shadow: 0 22px 44px -18px rgba(0, 0, 0, 0.55);
+  }
+}
+
+.card__icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(var(--accent-rgb), 0.1);
+  border: 1px solid rgba(var(--accent-rgb), 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  color: var(--accent-2);
+  margin-bottom: var(--space-5);
+}
+
+.card__icon img {
+  width: 1.7rem;
+  height: 1.7rem;
+  object-fit: contain;
+  display: block;
+  /* Same treatment the Original used: flatten the source art to pure white. */
+  filter: brightness(0) invert(1);
+}
+
+.card h3 {
+  font-size: 1.0625rem;
+  margin-bottom: var(--space-3);
+}
+
+.card p {
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+.card--advanced {
+  background: linear-gradient(180deg, rgba(var(--accent-rgb), 0.06), rgba(20, 16, 14, 0.92));
+}
+
+/* --- Portfolio (protected — original presentation restored) --------------- */
+
+#services, #projects, #method, #about, #contact {
+  scroll-margin-top: 5.5rem;
+}
+
+/* Everything from here to the Founder section is lifted verbatim from the
+   Original's stylesheet. The portfolio deck is the protected section and its
+   original presentation was the better one, so Version A's redesign stops at
+   the section boundary rather than restyling the deck. */
+.portfolio-shell {
+  display: grid;
+  grid-template-columns: minmax(220px, 360px) minmax(0, 1fr);
+  gap: 1.4rem;
+  align-items: center;
+}
+
+.portfolio-sticky {
+  position: sticky;
+  top: 6.2rem;
+  align-self: start;
+  z-index: 1;
+  isolation: isolate;
+  background: rgba(20, 16, 14, 0.6);
+  border: 1px solid rgba(var(--accent-rgb),0.15);
+  border-radius: 1rem;
+  padding: 1.2rem;
+}
+
+.portfolio-sticky::before,
+.portfolio-sticky::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  border: 1px solid rgba(var(--accent-rgb),0.2);
+  background: linear-gradient(140deg, rgba(32,26,22,0.75), rgba(20,16,14,0.56));
+  pointer-events: none;
+  z-index: -1;
+}
+
+.portfolio-sticky::before {
+  transform: translate(10px, 9px) rotate(1.4deg);
+  opacity: 0.6;
+}
+
+.portfolio-sticky::after {
+  transform: translate(19px, 17px) rotate(2.2deg);
+  opacity: 0.36;
+}
+
+.portfolio-sticky h2 {
+  margin-bottom: 0.65rem;
+}
+
+.portfolio-note {
+  margin: 0.95rem 0 0;
+  font-size: 0.86rem;
+  color: rgba(209,181,140,0.9);
+}
+
+.portfolio-filter-title {
+  margin: 1rem 0 0.55rem;
+  font-size: 0.84rem;
+  color: var(--muted);
+}
+
+.portfolio-filter-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.portfolio-filter-header .portfolio-filter-title {
+  margin-top: 0;
+}
+
+.portfolio-clear-filters-btn {
+  border: 1px solid rgba(var(--accent-rgb),0.4);
+  background: transparent;
+  color: var(--accent-2, #f0c882);
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 0.28rem 0.62rem;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, opacity var(--duration-fast) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-clear-filters-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background: rgba(var(--accent-rgb),0.16);
+  }
+}
+
+.portfolio-clear-filters-btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.portfolio-clear-filters-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+  border-color: rgba(var(--accent-rgb),0.18);
+}
+
+.portfolio-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.portfolio-filter-chip {
+  border-radius: 999px;
+  border: 1px solid rgba(var(--accent-rgb),0.26);
+  background: rgba(var(--accent-rgb),0.08);
+  color: var(--text);
+  font-size: 0.75rem;
+  padding: 0.3rem 0.62rem;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-filter-chip:hover {
+    transform: translateY(-1px);
+    background: rgba(var(--accent-rgb),0.16);
+  }
+}
+
+.portfolio-filter-chip:active {
+  transform: scale(0.96);
+}
+
+.portfolio-filter-chip.is-active {
+  background: linear-gradient(90deg, rgba(var(--accent-rgb),0.28), rgba(var(--accent-2-rgb),0.25));
+  border-color: rgba(var(--accent-2-rgb),0.46);
+}
+
+.portfolio-status-filters .portfolio-filter-chip {
+  font-weight: 600;
+}
+
+.portfolio-type-filters .portfolio-filter-chip {
+  font-size: 0.72rem;
+  padding: 0.26rem 0.56rem;
+  opacity: 0.92;
+}
+
+.portfolio-focus-hint {
+  margin: 1rem 0 0;
+  color: var(--accent-2);
+  font-size: 0.84rem;
+}
+
+.portfolio-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+  min-width: 0;
+}
+
+.portfolio-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.portfolio-stat {
+  flex: 0 1 auto;
+  min-width: 200px;
+  border: 1px solid rgba(var(--accent-rgb),0.18);
+  background: rgba(var(--accent-rgb),0.06);
+  border-radius: 0.9rem;
+  padding: 0.85rem 1.6rem;
+  text-align: center;
+}
+
+.portfolio-stat-value {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--accent-2);
+  line-height: 1.2;
+}
+
+.portfolio-stat-label {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+
+.portfolio-rotator {
+  --deck-shift-x: -280px;
+  --deck-shift-y: 0px;
+  position: relative;
+  min-height: 348px;
+  border-radius: 1.6rem;
+  overflow: hidden;
+  perspective: 1100px;
+}
+
+.portfolio-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  /* Pulls the nav row closer to the deck than the parent's 2.4rem flex gap
+     would alone, since dots read best sitting right under the cards. */
+  margin-top: -1.4rem;
+}
+
+.portfolio-nav-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--accent-rgb),0.3);
+  background: rgba(var(--accent-rgb),0.08);
+  color: var(--accent-2);
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-nav-arrow:hover {
+    transform: translateY(-1px);
+    background: rgba(var(--accent-rgb),0.18);
+    border-color: rgba(var(--accent-2-rgb),0.5);
+  }
+}
+
+.portfolio-nav-arrow:active {
+  transform: scale(0.9);
+}
+
+.portfolio-nav-dots {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.portfolio-nav-dot {
+  position: relative;
+  width: 0.5rem;
+  height: 0.5rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--accent-rgb),0.4);
+  background: rgba(var(--accent-rgb),0.18);
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+
+.portfolio-nav-dot::before {
+  /* Invisible tap-target extension: the visible dot stays small, but the
+     actual clickable area grows to ~32px so it doesn't get lost on touch. */
+  content: '';
+  position: absolute;
+  inset: -0.75rem;
+}
+
+.portfolio-nav-dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  border: 1px solid rgba(var(--accent-2-rgb),0.5);
+  transform: translate(-50%, -50%) scaleX(0);
+  transition: transform 170ms ease;
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-nav-dot:hover {
+    transform: scale(1.15);
+  }
+}
+
+.portfolio-nav-dot:active {
+  transform: scale(0.9);
+}
+
+.portfolio-nav-dot.is-active {
+  background: transparent;
+  border-color: transparent;
+}
+
+.portfolio-nav-dot.is-active::after {
+  transform: translate(-50%, -50%) scaleX(1);
+}
+
+.portfolio-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  /* Combined with the parent's 2.4rem flex gap, this restores the ~4.5rem
+     separation the CTA had before the nav row was inserted above it. */
+  margin-top: 2.1rem;
+  border-top: 1px solid rgba(var(--accent-rgb),0.16);
+  padding-top: 1.6rem;
+}
+
+.portfolio-cta p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.portfolio-cta .btn {
+  padding: 0.6rem 1.1rem;
+  font-size: 0.86rem;
+  white-space: nowrap;
+}
+
+.portfolio-card {
+  --distance: 0;
+  --abs-distance: 0;
+  /* The deck card carries `card portfolio-card`, and this stylesheet's own
+     `.card` base differs from the Original's (roomier padding, no shadow,
+     slightly different alpha). Restate the Original's values here so the deck
+     matches it exactly while Version A's own cards keep their redesigned base. */
+  background: rgba(20, 16, 14, 0.95);
+  padding: 1.35rem;
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.15);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(480px, calc(100% - 1rem));
+  min-height: 270px;
+  display: grid;
+  align-content: space-between;
+  gap: 0.9rem;
+  cursor: pointer;
+  border-radius: 1.6rem;
+  transform:
+    translate(-50%, -50%)
+    translateX(calc(var(--distance) * 120px))
+    translateY(calc(var(--abs-distance) * 14px))
+    scale(calc(1 - var(--abs-distance) * 0.08))
+    rotateY(calc(var(--distance) * -8deg));
+  opacity: calc(1 - var(--abs-distance) * 0.22);
+  z-index: calc(100 - var(--abs-distance));
+  transition: opacity 360ms ease, transform 360ms ease, border-color 210ms ease;
+  transition-delay: var(--deal-delay, 0ms);
+  will-change: transform, opacity;
+}
+
+.portfolio-card.is-beyond-depth {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+.portfolio-card.is-to-deck {
+  opacity: 0 !important;
+  z-index: 1 !important;
+  transform: translate(calc(-50% + var(--deck-shift-x)), calc(-50% + 48px + var(--deck-shift-y))) scale(0.68) rotateY(0deg) !important;
+  transition-delay: var(--stack-delay, 0ms);
+}
+
+.portfolio-card.is-from-deck {
+  opacity: 0 !important;
+  transform: translate(calc(-50% + var(--deck-shift-x)), calc(-50% + 48px + var(--deck-shift-y))) scale(0.68) rotateY(0deg) !important;
+  transition-delay: var(--deal-delay, 0ms);
+}
+
+.portfolio-card:focus-visible {
+  outline: 2px solid rgba(var(--accent-2-rgb),0.8);
+  outline-offset: 2px;
+}
+
+.portfolio-card.is-active {
+  border-color: rgba(var(--accent-2-rgb),0.4);
+}
+
+.portfolio-card:hover {
+  transform:
+    translate(-50%, -50%)
+    translateX(calc(var(--distance) * 120px))
+    translateY(calc(var(--abs-distance) * 14px - 3px))
+    scale(calc(1 - var(--abs-distance) * 0.08))
+    rotateY(calc(var(--distance) * -8deg));
+  border-color: rgba(var(--accent-rgb),0.24);
+}
+
+.portfolio-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.portfolio-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.portfolio-kind {
+  margin: 0;
+  font-size: 0.76rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+}
+
+.portfolio-stage {
+  border-radius: 999px;
+  padding: 0.25rem 0.58rem;
+  font-size: 0.74rem;
+  color: #f7e8cd;
+  background: rgba(var(--accent-rgb),0.12);
+  border: 1px solid rgba(var(--accent-rgb),0.25);
+}
+
+.portfolio-card h3 {
+  margin: 1.25rem 0 0;
+  font-size: 1.06rem;
+}
+
+/* Same reason as the padding above: `.card p` in this stylesheet drops the
+   description to 0.9375rem, where the Original left it at the body size. */
+.portfolio-card p {
+  margin-top: 0.65rem;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.portfolio-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.portfolio-meta span {
+  border-radius: 999px;
+  padding: 0.26rem 0.6rem;
+  font-size: 0.73rem;
+  color: var(--text);
+  border: 1px solid rgba(var(--accent-rgb),0.2);
+  background: rgba(var(--accent-rgb),0.07);
+}
+
+.portfolio-expand-btn {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--accent-rgb),0.3);
+  background: rgba(var(--accent-rgb),0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-shadow: none;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-expand-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(var(--accent-2-rgb),0.44);
+    background: rgba(var(--accent-2-rgb),0.16);
+  }
+}
+
+.portfolio-expand-btn:active {
+  transform: scale(0.92);
+}
+
+.portfolio-expand-btn img {
+  width: 1rem;
+  height: 1rem;
+  object-fit: contain;
+  display: block;
+  filter: brightness(0) invert(1);
+}
+
+.portfolio-github-btn svg {
+  display: block;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-github-btn:hover {
+    color: var(--accent-2);
+  }
+}
+
+.portfolio-detail-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+  transition: opacity 240ms ease;
+}
+
+.portfolio-detail-modal[aria-hidden="true"] {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.portfolio-detail-modal[aria-hidden="false"] {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.portfolio-detail-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 5, 4, 0.72);
+  backdrop-filter: blur(5px);
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.portfolio-detail-dialog {
+  position: relative;
+  width: min(720px, calc(100% - 1rem));
+  max-height: min(86vh, 840px);
+  overflow: auto;
+  z-index: 1;
+  background: linear-gradient(180deg, #2b231b, #1f1812);
+  border: 1px solid rgba(var(--accent-2-rgb),0.35);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  box-shadow: 0 26px 52px rgba(0, 0, 0, 0.35);
+  display: grid;
+  gap: 0.9rem;
+  opacity: 0;
+  transform: translateY(14px) scale(0.97);
+  transition: transform 240ms cubic-bezier(0.2, 0.85, 0.2, 1), opacity 220ms ease;
+}
+
+.portfolio-detail-modal[aria-hidden="false"] .portfolio-detail-backdrop {
+  opacity: 1;
+}
+
+.portfolio-detail-modal[aria-hidden="false"] .portfolio-detail-dialog {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.portfolio-detail-modal.is-closing .portfolio-detail-backdrop {
+  opacity: 0;
+}
+
+.portfolio-detail-modal.is-closing .portfolio-detail-dialog {
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+}
+
+.portfolio-detail-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding-right: 2.5rem;
+}
+
+.portfolio-detail-dialog h3 {
+  margin: 0;
+}
+
+.portfolio-detail-dialog p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.portfolio-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.portfolio-detail-meta span {
+  border-radius: 999px;
+  padding: 0.3rem 0.62rem;
+  font-size: 0.73rem;
+  color: var(--text);
+  border: 1px solid rgba(var(--accent-rgb),0.22);
+  background: rgba(var(--accent-rgb),0.07);
+}
+
+.portfolio-detail-actions {
+  display: flex;
+  margin-top: 1.25rem;
+}
+
+.portfolio-detail-github {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.portfolio-detail-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  padding: 0;
+  border-radius: 50%;
+}
+
+/* An SVG X, not the "×" glyph the Original used: that character's own ink
+   sits visibly below the vertical center of its line box in this typeface, so
+   `place-items: center` was centering an invisible box, not the mark itself —
+   the close button read as off-center. An SVG centers exactly, the same way
+   the nav arrows and GitHub icon already do here. */
+.portfolio-detail-close svg {
+  display: block;
+}
+
+body.portfolio-detail-open {
+  overflow: hidden;
+}
+
+.portfolio-empty {
+  margin: 0.2rem;
+  padding: 1.2rem;
+  border-radius: 0.9rem;
+  border: 1px dashed rgba(var(--accent-rgb),0.28);
+  color: var(--muted);
+}
+
+.portfolio-empty.is-from-deck {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 260ms ease, transform 260ms ease;
+}
+
+/* The block above is the Original's source verbatim, but a few of its rules
+   never actually won there: the Original also carries a grouped
+   `.hero-copy, .card p, .section p, …` rule at higher specificity, so the
+   sidebar's supporting text rendered at 1rem rather than the 0.84rem written
+   just above, and its heading took the global `h2` size. This stylesheet has no
+   such grouped rule, so those declarations would win here and the section would
+   render smaller than the Original did. These four rules reproduce the
+   Original's *rendering*, which is what was being restored. */
+.portfolio-sticky h2 {
+  /* Matches Version A's own section-heading scale, which lands within half a
+     pixel of the Original's clamp(1.8rem, 3vw, 2.4rem) at every width. */
+  font-size: clamp(1.75rem, 3vw, 2.375rem);
+}
+
+.portfolio-filter-title,
+.portfolio-focus-hint {
+  font-size: 1rem;
+}
+
+.portfolio-note {
+  font-size: 1rem;
+}
+
+/* --- Founder ---------------------------------------------------------- */
+
+.founder__grid {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-7);
+  align-items: start;
+}
+
+.founder__portrait {
+  width: 8rem;
+  height: 8rem;
+  flex: none;
+  border-radius: 50%;
+  overflow: hidden;
+  /* Shows through the photo's transparent corners (see the asset note below),
+     so the circle reads as a deliberate frame rather than a hard photo edge. */
+  background: linear-gradient(155deg, rgba(var(--accent-rgb), 0.3), rgba(var(--accent-2-rgb), 0.14));
+  border: 1px solid rgba(var(--accent-rgb), 0.4);
+}
+
+/* Source photo (images/CsomorBence.png) was a studio headshot on plain white;
+   images/founder-bence-csomor.png is a cutout of it with the background
+   removed, cropped to head-and-shoulders, so it sits on the page's own warm
+   tones instead of showing a stark white disc. */
+.founder__portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.founder__body h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); }
+
+.founder__name {
+  margin-top: var(--space-4);
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.founder__role {
+  margin-top: 0.2rem;
+  color: var(--accent-2);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.16);
+  max-width: 24rem;
+}
+
+.founder__body p {
+  margin-top: var(--space-4);
+  color: var(--muted);
+  max-width: 62ch;
+}
+
+.founder__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  margin-top: var(--space-5);
+}
+
+.founder__links a {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.35);
+  padding-bottom: 0.15rem;
+  transition: border-color var(--duration-fast) ease, color var(--duration-fast) ease;
+}
+
+.founder__links a:hover {
+  color: var(--accent-2);
+  border-color: var(--accent-2);
+}
+
+/* --- Steps (How it works) ----------------------------------------------- */
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+  position: relative;
+}
+
+.steps::before {
+  content: '';
+  position: absolute;
+  top: 1.4rem;
+  left: 12.5%;
+  right: 12.5%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb), 0.4) 12%, rgba(var(--accent-rgb), 0.4) 88%, transparent);
+  z-index: 0;
+}
+
+.step { position: relative; }
+
+.step__number {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  background: linear-gradient(135deg, #3a2f22, #241d16);
+  border: 1px solid rgba(var(--accent-rgb), 0.4);
+  border-radius: 50%;
+  font-weight: 800;
+  font-family: var(--font-display);
+  margin-bottom: var(--space-4);
+  position: relative;
+  z-index: 1;
+}
+
+.step h3 { font-size: 1.0625rem; margin-bottom: var(--space-2); }
+.step p { color: var(--muted); font-size: 0.9375rem; }
+
+/* --- Use cases ----------------------------------------------------------- */
+
+.usecases {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.usecases__item {
+  padding: 0.85rem 1.25rem;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--accent-rgb), 0.22);
+  background: rgba(var(--accent-rgb), 0.06);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  transition: transform var(--duration-base) var(--ease-out), border-color var(--duration-base) ease, background-color var(--duration-base) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .usecases__item:hover {
+    transform: translateY(-2px);
+    border-color: rgba(var(--accent-rgb), 0.4);
+    background: rgba(var(--accent-rgb), 0.12);
+  }
+}
+
+/* --- Value list ---------------------------------------------------------- */
+
+.value-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3) var(--space-7);
+}
+
+.value-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-block: var(--space-3);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.14);
+  font-size: 0.9375rem;
+}
+
+.value-list .check {
+  flex: none;
+  color: var(--accent-2);
+}
+
+/* --- Roadmap (plain flow, not the closing rotor) -------------------------- */
+
+.roadmap {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-5);
+}
+
+.roadmap__col {
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  border: 1px solid rgba(var(--accent-rgb), 0.16);
+  transition: transform var(--duration-base) var(--ease-out), border-color var(--duration-base) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .roadmap__col:hover { transform: translateY(-3px); }
+}
+
+.roadmap__col--live {
+  background: linear-gradient(180deg, rgba(62, 42, 24, 0.3), rgba(20, 16, 14, 0.7));
+  border-color: rgba(var(--accent-2-rgb), 0.28);
+}
+
+.roadmap__col--dev {
+  background: linear-gradient(180deg, rgba(52, 34, 20, 0.3), rgba(20, 16, 14, 0.7));
+}
+
+.roadmap__col h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 1.0625rem;
+  margin-bottom: var(--space-5);
+  color: var(--accent-2);
+}
+
+.roadmap__col h3::before {
+  content: '';
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.roadmap__col ul {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.roadmap__col li {
+  position: relative;
+  padding: 0.75rem 0.9rem 0.75rem 2rem;
+  border: 1px solid rgba(var(--accent-rgb), 0.14);
+  border-radius: var(--radius-sm);
+  background: rgba(14, 12, 11, 0.46);
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+.roadmap__col li::before {
+  content: '•';
+  position: absolute;
+  left: 0.82rem;
+  color: var(--accent);
+  font-weight: 800;
+}
+
+/* --- Final CTA + Contact -------------------------------------------------- */
+
+.final-cta__grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: var(--space-7);
+  align-items: center;
+}
+
+.final-cta h2 { font-size: clamp(1.75rem, 3vw, 2.375rem); max-width: 20ch; }
+.final-cta p { margin-top: var(--space-4); color: var(--muted); max-width: 48ch; }
+.final-cta__note { font-size: 0.9375rem; }
+.final-cta .btn { margin-top: var(--space-6); }
+
+.final-cta__list {
+  display: grid;
+  gap: var(--space-4);
+  background: rgba(var(--accent-rgb), 0.06);
+  border: 1px solid rgba(var(--accent-rgb), 0.18);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+}
+
+.final-cta__list li {
+  padding-left: var(--space-5);
+  position: relative;
+  font-size: 0.9375rem;
+  color: var(--text);
+}
+
+.final-cta__list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.45rem;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+}
+
+.contact__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-7);
+  align-items: start;
+}
+
+.contact h2 { font-size: clamp(1.75rem, 3vw, 2.375rem); }
+.contact > .shell > div > p { margin-top: var(--space-4); color: var(--muted); max-width: 46ch; }
+
+.contact__meta {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-6) 0;
+}
+
+.contact__meta > div {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: baseline;
+}
+
+.contact__meta dt { font-size: 0.8125rem; color: var(--muted); }
+.contact__meta dd { font-weight: 600; }
+.contact__meta a { border-bottom: 1px solid rgba(var(--accent-rgb), 0.35); }
+
+.form {
+  display: grid;
+  gap: var(--space-4);
+  background: rgba(20, 16, 14, 0.6);
+  border: 1px solid rgba(var(--accent-rgb), 0.18);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+}
+
+.form h3 { font-size: 1.25rem; }
+
+.field { display: grid; gap: var(--space-2); }
+.field label { font-size: 0.85rem; font-weight: 700; color: var(--muted); }
+
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(var(--accent-rgb), 0.24);
+  background: rgba(9, 8, 6, 0.6);
+  color: var(--text);
+  resize: vertical;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.field input::placeholder,
+.field textarea::placeholder { color: rgba(209, 181, 140, 0.55); }
+
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.18);
+}
+
+.honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+.form .btn { justify-self: start; }
+
+.form__status { margin: 0; font-size: 0.88rem; min-height: 1.2em; color: var(--muted); }
+.form__status[data-state='success'] { color: var(--accent-2); }
+.form__status[data-state='error'] { color: #e08585; }
+
+/* --- Footer --------------------------------------------------------------- */
+
+.footer { padding: var(--space-6) 0 var(--space-7); }
+.footer__inner { text-align: center; color: var(--muted); font-size: 0.9375rem; }
+
+/* --- Responsive ------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+  .cards { grid-template-columns: 1fr; }
+  .proof__grid { grid-template-columns: 1fr; }
+  .proof__figures { grid-template-columns: repeat(2, 1fr); }
+  .approach__grid { grid-template-columns: 1fr; }
+  .approach__arrow { display: none; }
+  .value-list { grid-template-columns: 1fr; }
+  .roadmap { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 840px) {
+  .menu-toggle { display: block; }
+
+  .nav-actions {
+    position: absolute;
+    top: 100%;
+    right: 1rem;
+    left: 1rem;
+    background: rgba(18, 16, 15, 0.97);
+    border: 1px solid rgba(var(--accent-rgb), 0.18);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-4);
+    opacity: 0;
+    transform: scale(0.97) translateY(-6px);
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity var(--duration-base) var(--ease-out), transform var(--duration-base) var(--ease-out), visibility 0s linear var(--duration-base);
+  }
+
+  .nav-actions.open {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity var(--duration-base) var(--ease-out), transform var(--duration-base) var(--ease-out), visibility 0s linear;
+  }
+
+  .nav-links { flex-direction: column; gap: var(--space-3); }
+  .lang { align-self: flex-start; }
+
+  .hero__grid,
+  .founder__grid,
+  .final-cta__grid,
+  .contact__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .founder__portrait { width: 6.5rem; height: 6.5rem; }
+
+  .steps { grid-template-columns: 1fr; gap: var(--space-6); }
+  .steps::before { display: none; }
+
+  .contact__meta > div { grid-template-columns: 1fr; gap: 0.2rem; }
+
+  /* Portfolio: the Original's mobile behaviour, restored verbatim. */
+  .portfolio-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .portfolio-sticky {
+    position: static;
+  }
+
+  .portfolio-sticky::before,
+  .portfolio-sticky::after {
+    display: none;
+  }
+
+  .portfolio-rotator {
+    min-height: auto;
+    display: grid;
+    gap: 0.85rem;
+    perspective: none;
+    overflow: visible;
+  }
+
+  .portfolio-stats {
+    gap: 0.5rem;
+  }
+
+  .portfolio-stat {
+    flex: 1 1 0;
+    padding: 0.6rem 0.5rem;
+  }
+
+  .portfolio-stat-value {
+    font-size: 1.2rem;
+  }
+
+  .portfolio-nav {
+    /* All cards are already visible as a stacked list at this width, so
+       "browse to the next card" has nothing meaningful left to do. */
+    display: none;
+  }
+
+  .portfolio-cta {
+    justify-content: flex-start;
+    /* Nav is hidden here, so restore the roomier gap it otherwise borrows
+       from (the desktop rule tightens this to make room for the nav row). */
+    margin-top: 4.5rem;
+  }
+
+  .portfolio-card {
+    position: static;
+    width: 100%;
+    opacity: 1;
+    transform: none;
+    cursor: default;
+  }
+
+  .portfolio-card:hover {
+    transform: none;
+  }
+
+  .portfolio-card.is-to-deck,
+  .portfolio-card.is-from-deck {
+    opacity: 1;
+    transform: none;
+  }
+
+  .portfolio-card.is-beyond-depth {
+    opacity: 1 !important;
+    pointer-events: auto;
+  }
+
+  .portfolio-top {
+    align-items: center;
+  }
+
+  .portfolio-expand-btn {
+    width: 2.15rem;
+    height: 2.15rem;
+  }
+
+  .portfolio-detail-modal {
+    padding: 0.75rem;
+  }
+
+  .portfolio-detail-dialog {
+    width: 100%;
+    padding: 1rem;
+  }
+}
+
+/* --- Reduced motion --------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
