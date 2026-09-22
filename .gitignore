@@ -212,3 +212,5 @@ __marimo__/
 .agents/
 .claude/
 .codex/
+/src/frontend/versions/b/
+/src/frontend/versions/c/

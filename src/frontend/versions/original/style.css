@@ -1,0 +1,1871 @@
+﻿:root {
+  --font-display: 'Manrope', sans-serif;
+  --font-body: 'Source Sans 3', sans-serif;
+  --bg: #090806;
+  --panel: #12100f;
+  --panel-2: #1a1714;
+  --text: #f7f2de;
+  --muted: #e3d2b3;
+  --accent: #d9a36b;
+  --accent-2: #f0c882;
+  --accent-rgb: 217, 163, 107;
+  --accent-2-rgb: 240, 200, 130;
+
+  /* Shape scale: chips/inputs use sm, cards use md, feature panels use lg,
+     large rotor/hero panels use xl. Pills and circles stay at 999px/50%. */
+  --radius-sm: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.5rem;
+
+  /* Motion: a strong ease-out for anything entering, moving on press/hover,
+     or settling into place - built-in `ease`/`ease-out` read as weak at
+     these durations. Plain `ease` is kept (not tokenized) for simple color
+     transitions, where the built-in curve is already the right choice. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --duration-fast: 140ms;
+  --duration-base: 220ms;
+  --duration-slow: 320ms;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+/* Reduced motion: collapse every CSS transition/animation to effectively
+   instant rather than removing them outright, so content still appears
+   and state still changes (opacity, color, layout) - it just doesn't move
+   to get there. JS-driven motion (the closing rotor, portfolio autoplay
+   and deal/stack stagger, scroll reveal below) has its own matchMedia
+   checks and is skipped entirely, not just sped up. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  html { scroll-behavior: auto; }
+}
+
+#services, #projects, #howitworks, #contact {
+  scroll-margin-top: 20px; /* offset for fixed nav so anchor jumps land below it */
+}
+
+/* Scroll reveal: applied by main.js via IntersectionObserver, one fade-up
+   per section (not per card/item - the page shouldn't feel like it's
+   raining content in). `.reveal-pending` is only ever added by JS, so a
+   section is always visible by default; JS removes it once, permanently,
+   the first time the section enters the viewport. Skipped entirely under
+   reduced motion or without IntersectionObserver support - see main.js. */
+.reveal-section {
+  transition: opacity var(--duration-slow) var(--ease-out), transform var(--duration-slow) var(--ease-out);
+}
+
+.reveal-section.reveal-pending {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(var(--accent-rgb),0.14), transparent 30%),
+    radial-gradient(circle at top right, rgba(var(--accent-2-rgb),0.08), transparent 24%),
+    linear-gradient(135deg, #1d1811, #110e0d 55%, #1c1814);
+  line-height: 1.6;
+}
+
+a { color: inherit; text-decoration: none; }
+
+button, input, textarea { font: inherit; }
+
+.container {
+  width: min(1600px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+body {
+  padding-top: 72px;
+}
+
+.hero {
+  padding: 1.2rem 0 4rem;
+  position: relative;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 3rem auto auto -6rem;
+  width: 28rem;
+  height: 28rem;
+  background: radial-gradient(circle, rgba(var(--accent-rgb),0.12), transparent 70%);
+  pointer-events: none;
+}
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background: rgba(9, 8, 6, 0.92);
+  backdrop-filter: blur(14px);
+  padding: 0 1rem;
+  border-bottom: 1px solid rgba(var(--accent-rgb),0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
+}
+
+.nav-inner {
+  width: min(2000px, calc(100% - 2rem));
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+}
+
+.brand {
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  font-size: 1.4rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.brand-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(var(--accent-rgb),0.3), rgba(var(--accent-2-rgb),0.15));
+  border: 1px solid rgba(var(--accent-rgb),0.35);
+  flex-shrink: 0;
+  padding: 2px;
+}
+
+.brand-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  color: var(--muted);
+}
+
+.nav-links a {
+  transition: color var(--duration-fast) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nav-links a:hover {
+    color: var(--text);
+  }
+}
+
+.lang-toggle {
+  border: 1px solid rgba(var(--accent-rgb),0.35);
+  background: rgba(var(--accent-rgb),0.08);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) ease, transform var(--duration-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .lang-toggle:hover {
+    background: rgba(var(--accent-rgb),0.14);
+  }
+}
+
+.lang-toggle:active {
+  transform: scale(0.96);
+}
+
+.menu-toggle {
+  display: none;
+  background: transparent;
+  border: 0;
+  padding: 0.25rem;
+  cursor: pointer;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--text);
+  margin: 5px 0;
+  transform-origin: center;
+  transition: transform var(--duration-fast) var(--ease-out), opacity var(--duration-fast) ease;
+}
+
+/* Hamburger -> X, driven by the same aria-expanded attribute the JS already
+   sets, so the icon's state can never drift out of sync with the menu's. */
+.menu-toggle[aria-expanded="true"] span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.menu-toggle[aria-expanded="true"] span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle[aria-expanded="true"] span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 2.5rem;
+  align-items: center;
+  padding-top: 3rem;
+}
+
+.hero-copy {
+  max-width: 58ch;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 0 0 1rem;
+}
+
+h1 { font-size: clamp(2.2rem, 4vw, 3.7rem); }
+h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); }
+
+.problem-title {
+  white-space: nowrap;
+}
+
+@media (max-width: 980px) {
+  .problem-title {
+    white-space: normal;
+  }
+}
+
+.hero-copy, .card p, .section p, .contact-info p, .footer p {
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.9rem 1.2rem;
+  border-radius: 999px;
+  font-weight: 600;
+  transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-base) var(--ease-out), filter var(--duration-base) ease;
+  border: 0;
+  cursor: pointer;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+  }
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  color: #1d160f;
+}
+
+.btn-secondary {
+  border: 1px solid rgba(var(--accent-rgb),0.35);
+  background: rgba(var(--accent-rgb),0.08);
+  color: var(--text);
+}
+
+.btn.large {
+  padding: 1.1rem 1.8rem;
+  font-size: 1rem;
+}
+
+.highlights {
+  backdrop-filter: blur(8px);
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0;
+  margin: 1.5rem 0 0;
+  list-style: none;
+}
+
+.highlights li {
+  background: rgba(var(--accent-rgb),0.18);
+  padding: 0.6rem 0.9rem;
+  border-radius: 999px;
+  color: var(--text);
+}
+
+.panel-card {
+  width: 100%;
+  --panel-auto-width: auto;
+  min-width: var(--panel-auto-width);
+  max-width: 460px;
+  background: linear-gradient(145deg, rgba(var(--accent-rgb),0.1), #14100e 60%);
+  border: 1px solid rgba(var(--accent-rgb),0.22);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  box-shadow: 0 24px 50px rgba(20,16,14,0.45);
+}
+
+.panel-label { color: var(--muted); margin: 0 0 0.75rem; }
+
+.score {
+  font-size: clamp(1.7rem, 2.2vw, 2.5rem);
+  font-weight: 800;
+  margin-bottom: 1rem;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.panel-text { margin: 0 0 1rem; color: var(--muted); }
+
+.panel-highlights {
+  display: grid;
+  gap: 0.7rem;
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+
+.panel-highlights li {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--text);
+  background: rgba(var(--accent-rgb),0.08);
+  border: 1px solid rgba(var(--accent-rgb),0.16);
+  border-radius: var(--radius-md);
+  padding: 0.8rem 0.95rem;
+}
+
+.panel-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.panel-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  color: var(--accent-2);
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.panel-highlights strong,
+.panel-highlights small {
+  display: block;
+}
+
+.panel-highlights strong {
+  color: var(--text);
+  font-size: clamp(0.9rem, 1.15vw, 0.98rem);
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.panel-highlights small {
+  color: var(--muted);
+  font-size: clamp(0.8rem, 1vw, 0.86rem);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.section {
+  padding: 5rem 0;
+  position: relative;
+}
+
+.section + .section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(1200px, calc(100% - 2rem));
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb),0.28), transparent);
+}
+
+.section-alt {
+  background:
+    linear-gradient(180deg, rgba(var(--accent-2-rgb), 0.08), rgba(247, 246, 246, 0.03)),
+    rgba(var(--accent-2-rgb), 0.03);
+  border-top: 1px solid rgba(var(--accent-rgb), 0.08);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.08);
+  padding-inline: clamp(1rem, 2.2vw, 2.2rem);
+}
+
+.section-alt .cards,
+.section-alt .usecases-list {
+  margin-top: 0.35rem;
+}
+
+.section-heading {
+  margin-bottom: 2.2rem;
+  max-width: 760px;
+}
+
+.section-heading h2 {
+  margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.cards {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.card {
+  background: rgba(20, 16, 14, 0.95);
+  border: 1px solid rgba(var(--accent-rgb),0.14);
+  border-radius: var(--radius-md);
+  padding: 1.35rem;
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.15);
+  transition: transform var(--duration-base) var(--ease-out), border-color var(--duration-base) ease, box-shadow var(--duration-base) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover,
+  .problem-item:hover,
+  .usecase-item:hover,
+  .roadmap-column:hover {
+    transform: translateY(-3px);
+    border-color: rgba(var(--accent-rgb),0.24);
+    box-shadow: 0 22px 40px rgba(0, 0, 0, 0.22);
+  }
+}
+
+.card-icon {
+  width: 2.9rem;
+  height: 2.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.9rem;
+  border-radius: 50%;
+  background: rgba(var(--accent-rgb),0.1);
+  border: 1px solid rgba(var(--accent-rgb),0.18);
+  font-size: 1.55rem;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+.card-icon img {
+  width: 1.7rem;
+  height: 1.7rem;
+  object-fit: contain;
+  display: block;
+  filter: brightness(0) invert(1);
+}
+
+.card h3 { margin-bottom: 0.7rem; }
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.contact-card {
+  display: grid;
+  gap: 1rem;
+}
+
+.contact-note {
+  margin: 0;
+  color: var(--muted);
+}
+
+.contact-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.contact-actions .btn-secondary {
+  align-self: center;
+}
+
+.contact-form {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+
+.contact-form h3 {
+  margin: 0;
+}
+
+.form-field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.form-field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.form-field input,
+.form-field textarea {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(var(--accent-rgb),0.24);
+  background: rgba(9, 8, 6, 0.6);
+  color: var(--text);
+  resize: vertical;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb),0.18);
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+  color: rgba(209,181,140, 0.55);
+}
+
+.form-honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.contact-form .btn {
+  justify-self: start;
+}
+
+.form-status {
+  margin: 0;
+  font-size: 0.88rem;
+  min-height: 1.2em;
+}
+
+.form-status-success { color: var(--accent-2); }
+.form-status-error { color: #e08585; }
+.form-status-pending { color: var(--muted); }
+
+/* Problem Section */
+/* A hairline-divided grid instead of four boxed cards: with Services and
+   Advanced Analytics using real bordered cards later on the page, this
+   section reads as a distinct "diagnostic list" rather than more of the
+   same card formula. */
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+.problem-item {
+  background: rgba(20, 16, 14, 0.6);
+  border: 1px solid rgba(var(--accent-rgb),0.12);
+  border-radius: var(--radius-md);
+  padding: 1.5rem 1.2rem;
+  text-align: center;
+  transition: transform var(--duration-base) var(--ease-out), border-color var(--duration-base) ease, box-shadow var(--duration-base) var(--ease-out), background-color var(--duration-base) ease;
+  min-height: 150px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .problem-item:hover {
+    border-color: rgba(var(--accent-rgb),0.25);
+    background: rgba(20, 16, 14, 0.8);
+  }
+}
+
+.problem-icon {
+  width: 3rem;
+  height: 3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.85rem;
+  border-radius: 50%;
+  background: rgba(var(--accent-rgb),0.1);
+  border: 1px solid rgba(var(--accent-rgb),0.18);
+  font-size: 1.55rem;
+}
+
+.problem-icon img,
+.feature-icon img {
+  width: 1.7rem;
+  height: 1.7rem;
+  object-fit: contain;
+  display: block;
+  filter: brightness(0) invert(1);
+}
+
+.problem-item p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+/* Solution Section */
+/* A horizontal strip with vertical dividers, not another card grid: same
+   4-item shape as Problem above it, deliberately laid out differently so
+   the two sections don't read as the same component repeated. */
+.solution-features {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid rgba(var(--accent-rgb),0.18);
+  border-bottom: 1px solid rgba(var(--accent-rgb),0.18);
+}
+
+.feature {
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 1.9rem 1rem;
+  text-align: center;
+  transition: background-color var(--duration-base) ease;
+}
+
+.feature:not(:first-child) {
+  border-left: 1px solid rgba(var(--accent-rgb),0.18);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .feature:hover {
+    background: rgba(var(--accent-rgb),0.05);
+  }
+}
+
+.feature-icon {
+  width: 2.9rem;
+  height: 2.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.85rem;
+  border-radius: 50%;
+  background: rgba(var(--accent-rgb),0.1);
+  border: 1px solid rgba(var(--accent-rgb),0.18);
+  font-size: 1.4rem;
+}
+
+.feature p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Services Section CTA */
+.section-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/* Steps / How It Works */
+/* A connected sequence instead of another bordered-card grid: the page has
+   already used that formula for Problem, Solution, Services and Advanced
+   Analytics. A numbered line reads as a process, which is what this
+   section actually is. */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  position: relative;
+}
+
+.steps-grid::before {
+  content: '';
+  position: absolute;
+  top: 1.25rem;
+  left: 12.5%;
+  right: 12.5%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb),0.4) 12%, rgba(var(--accent-rgb),0.4) 88%, transparent);
+  z-index: 0;
+}
+
+.step {
+  background: none;
+  border: none;
+  padding: 0;
+  text-align: center;
+  position: relative;
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: linear-gradient(135deg, #3a2f22, #241d16);
+  border: 1px solid rgba(var(--accent-rgb),0.4);
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin: 0 auto 0.9rem;
+  position: relative;
+  z-index: 1;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+.step h3 {
+  margin: 0.75rem 0 0.5rem;
+  font-size: 1rem;
+}
+
+.step p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* Use Cases */
+.usecases-list {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+}
+
+.usecase-item {
+  background: rgba(var(--accent-rgb),0.06);
+  border: 1px solid rgba(var(--accent-rgb),0.16);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.35;
+  transition: transform var(--duration-base) var(--ease-out), border-color var(--duration-base) ease, background-color var(--duration-base) ease;
+  min-height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .usecase-item:hover {
+    transform: translateY(-2px);
+    border-color: rgba(var(--accent-rgb),0.28);
+    background: rgba(var(--accent-rgb),0.1);
+  }
+}
+
+/* Value Section */
+/* Deliberately flat (no card boxes): by this point in the page, Problem,
+   Solution, Services and Advanced Analytics have all used the bordered-card
+   pattern. A plain divided row keeps this section from reading as "yet
+   another card grid" and fits a short checklist better than five boxes. */
+.value-grid {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 2.5rem;
+  row-gap: 1.1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(var(--accent-rgb),0.16);
+}
+
+.value-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1 1 240px;
+}
+
+.value-icon {
+  width: 1.9rem;
+  height: 1.9rem;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(var(--accent-rgb),0.12);
+  border: 1px solid rgba(var(--accent-rgb),0.18);
+  color: var(--accent-2);
+}
+
+.value-item p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text);
+  text-align: left;
+}
+
+/* Roadmap Section */
+.roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.roadmap-column {
+  position: relative;
+  overflow: hidden;
+  background: rgba(20, 16, 14, 0.6);
+  border: 1px solid rgba(var(--accent-rgb),0.14);
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  transition: transform var(--duration-base) var(--ease-out), border-color var(--duration-base) ease, box-shadow var(--duration-base) var(--ease-out);
+}
+
+.roadmap-column[data-roadmap-stage="available"] {
+  border-color: rgba(var(--accent-rgb),0.3);
+  background: linear-gradient(180deg, rgba(62, 42, 24, 0.3), rgba(20, 16, 14, 0.7));
+}
+
+.roadmap-column[data-roadmap-stage="developing"] {
+  border-color: rgba(var(--accent-rgb),0.28);
+  background: linear-gradient(180deg, rgba(52, 34, 20, 0.3), rgba(20, 16, 14, 0.7));
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .roadmap-column[data-roadmap-stage="available"]:hover {
+    border-color: rgba(var(--accent-2-rgb),0.45);
+  }
+
+  .roadmap-column[data-roadmap-stage="developing"]:hover {
+    border-color: rgba(var(--accent-rgb),0.38);
+  }
+}
+
+.roadmap-column h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  font-size: 1.1rem;
+  color: var(--accent);
+}
+
+.roadmap-column h3::before {
+  content: '';
+  width: 0.62rem;
+  height: 0.62rem;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.roadmap-column[data-roadmap-stage="available"] h3 {
+  color: var(--accent-2);
+}
+
+.roadmap-column[data-roadmap-stage="available"] h3::before {
+  background: var(--accent-2);
+}
+
+.roadmap-column[data-roadmap-stage="developing"] h3 {
+  color: var(--accent-2);
+}
+
+.roadmap-column[data-roadmap-stage="developing"] h3::before {
+  background: var(--accent);
+}
+
+.roadmap-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.roadmap-list li {
+  padding: 0.72rem 0.82rem 0.72rem 2rem;
+  position: relative;
+  color: var(--muted);
+  font-size: 0.95rem;
+  border: 1px solid rgba(var(--accent-rgb),0.14);
+  border-radius: var(--radius-sm);
+  background: rgba(14, 12, 11, 0.46);
+}
+
+.roadmap-list li:before {
+  content: '•';
+  position: absolute;
+  left: 0.82rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.roadmap-column[data-roadmap-stage="available"] .roadmap-list li {
+  border-color: rgba(var(--accent-2-rgb),0.2);
+  background: rgba(34, 24, 16, 0.42);
+}
+
+.roadmap-column[data-roadmap-stage="available"] .roadmap-list li:before {
+  color: var(--accent-2);
+}
+
+.roadmap-column[data-roadmap-stage="developing"] .roadmap-list li {
+  border-color: rgba(var(--accent-rgb),0.2);
+}
+
+/* Closing Rotor Section */
+.closing-rotor-section {
+  padding-top: 5.2rem;
+  padding-bottom: 5.8rem;
+}
+
+.closing-rotor-shell {
+  position: relative;
+  min-height: 190vh;
+}
+
+.closing-rotor-stage {
+  position: sticky;
+  top: 6.2rem;
+  height: min(72vh, 660px);
+  perspective: 1100px;
+}
+
+.closing-panel {
+  position: absolute;
+  inset: 0;
+  padding: clamp(1.2rem, 2vw, 2rem);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(var(--accent-rgb),0.2);
+  background:
+    linear-gradient(180deg, #2b231b, #1f1812);
+  box-shadow: 0 24px 46px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255,255,255,0.04);
+  transform-origin: center center;
+  will-change: transform;
+  overflow: hidden;
+}
+
+.closing-panel .contact-grid {
+  height: 100%;
+  align-content: center;
+}
+
+.closing-panel .roadmap-grid {
+  margin-top: 0.75rem;
+}
+
+.closing-panel .roadmap-column {
+  background: #1c1510;
+}
+
+/* Portfolio Section */
+.portfolio-shell {
+  display: grid;
+  grid-template-columns: minmax(220px, 360px) minmax(0, 1fr);
+  gap: 1.4rem;
+  align-items: center;
+}
+
+.portfolio-sticky {
+  position: sticky;
+  top: 6.2rem;
+  align-self: start;
+  z-index: 1;
+  isolation: isolate;
+  background: rgba(20, 16, 14, 0.6);
+  border: 1px solid rgba(var(--accent-rgb),0.15);
+  border-radius: 1rem;
+  padding: 1.2rem;
+}
+
+.portfolio-sticky::before,
+.portfolio-sticky::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  border: 1px solid rgba(var(--accent-rgb),0.2);
+  background: linear-gradient(140deg, rgba(32,26,22,0.75), rgba(20,16,14,0.56));
+  pointer-events: none;
+  z-index: -1;
+}
+
+.portfolio-sticky::before {
+  transform: translate(10px, 9px) rotate(1.4deg);
+  opacity: 0.6;
+}
+
+.portfolio-sticky::after {
+  transform: translate(19px, 17px) rotate(2.2deg);
+  opacity: 0.36;
+}
+
+.portfolio-sticky h2 {
+  margin-bottom: 0.65rem;
+}
+
+.portfolio-note {
+  margin: 0.95rem 0 0;
+  font-size: 0.86rem;
+  color: rgba(209,181,140,0.9);
+}
+
+.portfolio-filter-title {
+  margin: 1rem 0 0.55rem;
+  font-size: 0.84rem;
+  color: var(--muted);
+}
+
+.portfolio-filter-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.portfolio-filter-header .portfolio-filter-title {
+  margin-top: 0;
+}
+
+.portfolio-clear-filters-btn {
+  border: 1px solid rgba(var(--accent-rgb),0.4);
+  background: transparent;
+  color: var(--accent-2, #f0c882);
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 0.28rem 0.62rem;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, opacity var(--duration-fast) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-clear-filters-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background: rgba(var(--accent-rgb),0.16);
+  }
+}
+
+.portfolio-clear-filters-btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.portfolio-clear-filters-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+  border-color: rgba(var(--accent-rgb),0.18);
+}
+
+.portfolio-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.portfolio-filter-chip {
+  border-radius: 999px;
+  border: 1px solid rgba(var(--accent-rgb),0.26);
+  background: rgba(var(--accent-rgb),0.08);
+  color: var(--text);
+  font-size: 0.75rem;
+  padding: 0.3rem 0.62rem;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-filter-chip:hover {
+    transform: translateY(-1px);
+    background: rgba(var(--accent-rgb),0.16);
+  }
+}
+
+.portfolio-filter-chip:active {
+  transform: scale(0.96);
+}
+
+.portfolio-filter-chip.is-active {
+  background: linear-gradient(90deg, rgba(var(--accent-rgb),0.28), rgba(var(--accent-2-rgb),0.25));
+  border-color: rgba(var(--accent-2-rgb),0.46);
+}
+
+.portfolio-status-filters .portfolio-filter-chip {
+  font-weight: 600;
+}
+
+.portfolio-type-filters .portfolio-filter-chip {
+  font-size: 0.72rem;
+  padding: 0.26rem 0.56rem;
+  opacity: 0.92;
+}
+
+.portfolio-focus-hint {
+  margin: 1rem 0 0;
+  color: var(--accent-2);
+  font-size: 0.84rem;
+}
+
+.portfolio-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+  min-width: 0;
+}
+
+.portfolio-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.portfolio-stat {
+  flex: 0 1 auto;
+  min-width: 200px;
+  border: 1px solid rgba(var(--accent-rgb),0.18);
+  background: rgba(var(--accent-rgb),0.06);
+  border-radius: 0.9rem;
+  padding: 0.85rem 1.6rem;
+  text-align: center;
+}
+
+.portfolio-stat-value {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--accent-2);
+  line-height: 1.2;
+}
+
+.portfolio-stat-label {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+
+.portfolio-rotator {
+  --deck-shift-x: -280px;
+  --deck-shift-y: 0px;
+  position: relative;
+  min-height: 348px;
+  border-radius: 1.6rem;
+  overflow: hidden;
+  perspective: 1100px;
+}
+
+.portfolio-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  /* Pulls the nav row closer to the deck than the parent's 2.4rem flex gap
+     would alone, since dots read best sitting right under the cards. */
+  margin-top: -1.4rem;
+}
+
+.portfolio-nav-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--accent-rgb),0.3);
+  background: rgba(var(--accent-rgb),0.08);
+  color: var(--accent-2);
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-nav-arrow:hover {
+    transform: translateY(-1px);
+    background: rgba(var(--accent-rgb),0.18);
+    border-color: rgba(var(--accent-2-rgb),0.5);
+  }
+}
+
+.portfolio-nav-arrow:active {
+  transform: scale(0.9);
+}
+
+.portfolio-nav-dots {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.portfolio-nav-dot {
+  position: relative;
+  width: 0.5rem;
+  height: 0.5rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--accent-rgb),0.4);
+  background: rgba(var(--accent-rgb),0.18);
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+
+.portfolio-nav-dot::before {
+  /* Invisible tap-target extension: the visible dot stays small, but the
+     actual clickable area grows to ~32px so it doesn't get lost on touch. */
+  content: '';
+  position: absolute;
+  inset: -0.75rem;
+}
+
+.portfolio-nav-dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  border: 1px solid rgba(var(--accent-2-rgb),0.5);
+  transform: translate(-50%, -50%) scaleX(0);
+  transition: transform 170ms ease;
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-nav-dot:hover {
+    transform: scale(1.15);
+  }
+}
+
+.portfolio-nav-dot:active {
+  transform: scale(0.9);
+}
+
+.portfolio-nav-dot.is-active {
+  background: transparent;
+  border-color: transparent;
+}
+
+.portfolio-nav-dot.is-active::after {
+  transform: translate(-50%, -50%) scaleX(1);
+}
+
+.portfolio-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  /* Combined with the parent's 2.4rem flex gap, this restores the ~4.5rem
+     separation the CTA had before the nav row was inserted above it. */
+  margin-top: 2.1rem;
+  border-top: 1px solid rgba(var(--accent-rgb),0.16);
+  padding-top: 1.6rem;
+}
+
+.portfolio-cta p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.portfolio-cta .btn {
+  padding: 0.6rem 1.1rem;
+  font-size: 0.86rem;
+  white-space: nowrap;
+}
+
+.portfolio-card {
+  --distance: 0;
+  --abs-distance: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(480px, calc(100% - 1rem));
+  min-height: 270px;
+  display: grid;
+  align-content: space-between;
+  gap: 0.9rem;
+  cursor: pointer;
+  border-radius: 1.6rem;
+  transform:
+    translate(-50%, -50%)
+    translateX(calc(var(--distance) * 120px))
+    translateY(calc(var(--abs-distance) * 14px))
+    scale(calc(1 - var(--abs-distance) * 0.08))
+    rotateY(calc(var(--distance) * -8deg));
+  opacity: calc(1 - var(--abs-distance) * 0.22);
+  z-index: calc(100 - var(--abs-distance));
+  transition: opacity 360ms ease, transform 360ms ease, border-color 210ms ease;
+  transition-delay: var(--deal-delay, 0ms);
+  will-change: transform, opacity;
+}
+
+.portfolio-card.is-beyond-depth {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+.portfolio-card.is-to-deck {
+  opacity: 0 !important;
+  z-index: 1 !important;
+  transform: translate(calc(-50% + var(--deck-shift-x)), calc(-50% + 48px + var(--deck-shift-y))) scale(0.68) rotateY(0deg) !important;
+  transition-delay: var(--stack-delay, 0ms);
+}
+
+.portfolio-card.is-from-deck {
+  opacity: 0 !important;
+  transform: translate(calc(-50% + var(--deck-shift-x)), calc(-50% + 48px + var(--deck-shift-y))) scale(0.68) rotateY(0deg) !important;
+  transition-delay: var(--deal-delay, 0ms);
+}
+
+.portfolio-card:focus-visible {
+  outline: 2px solid rgba(var(--accent-2-rgb),0.8);
+  outline-offset: 2px;
+}
+
+.portfolio-card.is-active {
+  border-color: rgba(var(--accent-2-rgb),0.4);
+}
+
+.portfolio-card:hover {
+  transform:
+    translate(-50%, -50%)
+    translateX(calc(var(--distance) * 120px))
+    translateY(calc(var(--abs-distance) * 14px - 3px))
+    scale(calc(1 - var(--abs-distance) * 0.08))
+    rotateY(calc(var(--distance) * -8deg));
+  border-color: rgba(var(--accent-rgb),0.24);
+}
+
+.portfolio-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.portfolio-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.portfolio-kind {
+  margin: 0;
+  font-size: 0.76rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+}
+
+.portfolio-stage {
+  border-radius: 999px;
+  padding: 0.25rem 0.58rem;
+  font-size: 0.74rem;
+  color: #f7e8cd;
+  background: rgba(var(--accent-rgb),0.12);
+  border: 1px solid rgba(var(--accent-rgb),0.25);
+}
+
+.portfolio-card h3 {
+  margin: 0;
+  font-size: 1.06rem;
+}
+
+.portfolio-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.portfolio-meta span {
+  border-radius: 999px;
+  padding: 0.26rem 0.6rem;
+  font-size: 0.73rem;
+  color: var(--text);
+  border: 1px solid rgba(var(--accent-rgb),0.2);
+  background: rgba(var(--accent-rgb),0.07);
+}
+
+.portfolio-expand-btn {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--accent-rgb),0.3);
+  background: rgba(var(--accent-rgb),0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-shadow: none;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-expand-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(var(--accent-2-rgb),0.44);
+    background: rgba(var(--accent-2-rgb),0.16);
+  }
+}
+
+.portfolio-expand-btn:active {
+  transform: scale(0.92);
+}
+
+.portfolio-expand-btn img {
+  width: 1rem;
+  height: 1rem;
+  object-fit: contain;
+  display: block;
+  filter: brightness(0) invert(1);
+}
+
+.portfolio-github-btn svg {
+  display: block;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-github-btn:hover {
+    color: var(--accent-2);
+  }
+}
+
+.portfolio-detail-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+  transition: opacity 240ms ease;
+}
+
+.portfolio-detail-modal[aria-hidden="true"] {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.portfolio-detail-modal[aria-hidden="false"] {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.portfolio-detail-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 5, 4, 0.72);
+  backdrop-filter: blur(5px);
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.portfolio-detail-dialog {
+  position: relative;
+  width: min(720px, calc(100% - 1rem));
+  max-height: min(86vh, 840px);
+  overflow: auto;
+  z-index: 1;
+  background: linear-gradient(180deg, #2b231b, #1f1812);
+  border: 1px solid rgba(var(--accent-2-rgb),0.35);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  box-shadow: 0 26px 52px rgba(0, 0, 0, 0.35);
+  display: grid;
+  gap: 0.9rem;
+  opacity: 0;
+  transform: translateY(14px) scale(0.97);
+  transition: transform 240ms cubic-bezier(0.2, 0.85, 0.2, 1), opacity 220ms ease;
+}
+
+.portfolio-detail-modal[aria-hidden="false"] .portfolio-detail-backdrop {
+  opacity: 1;
+}
+
+.portfolio-detail-modal[aria-hidden="false"] .portfolio-detail-dialog {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.portfolio-detail-modal.is-closing .portfolio-detail-backdrop {
+  opacity: 0;
+}
+
+.portfolio-detail-modal.is-closing .portfolio-detail-dialog {
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+}
+
+.portfolio-detail-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding-right: 2.5rem;
+}
+
+.portfolio-detail-dialog h3 {
+  margin: 0;
+}
+
+.portfolio-detail-dialog p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.portfolio-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.portfolio-detail-meta span {
+  border-radius: 999px;
+  padding: 0.3rem 0.62rem;
+  font-size: 0.73rem;
+  color: var(--text);
+  border: 1px solid rgba(var(--accent-rgb),0.22);
+  background: rgba(var(--accent-rgb),0.07);
+}
+
+.portfolio-detail-actions {
+  display: flex;
+  margin-top: 1.25rem;
+}
+
+.portfolio-detail-github {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.portfolio-detail-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 0;
+  line-height: 1;
+}
+
+.portfolio-detail-close::after {
+  content: '×';
+  font-family: var(--font-body);
+  font-size: 1.45rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+body.portfolio-detail-open {
+  overflow: hidden;
+}
+
+.portfolio-empty {
+  margin: 0.2rem;
+  padding: 1.2rem;
+  border-radius: 0.9rem;
+  border: 1px dashed rgba(var(--accent-rgb),0.28);
+  color: var(--muted);
+}
+
+.portfolio-empty.is-from-deck {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 260ms ease, transform 260ms ease;
+}
+
+/* Final CTA Section */
+#final-cta .btn {
+  margin-top: 1.5rem;
+}
+
+.cta-note {
+  margin: 0.75rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Contact Info */
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.contact-info p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.footer {
+  padding: 1.5rem 0 2.5rem;
+}
+
+.footer-content {
+  text-align: center;
+}
+
+@media (max-width: 840px) {
+  .menu-toggle { display: block; }
+
+  .nav-links {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    right: 1rem;
+    background: rgba(18, 16, 15, 0.96);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(var(--accent-rgb),0.18);
+    min-width: 180px;
+    transform-origin: top right;
+    opacity: 0;
+    transform: scale(0.95) translateY(-4px);
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity var(--duration-base) var(--ease-out), transform var(--duration-base) var(--ease-out), visibility 0s linear var(--duration-base);
+  }
+
+  .nav-links.open {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity var(--duration-base) var(--ease-out), transform var(--duration-base) var(--ease-out), visibility 0s linear;
+  }
+
+  .hero-grid, .contact-grid, .cards,
+  .problem-grid, .solution-features, .steps-grid, .usecases-list,
+  .roadmap-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .steps-grid::before {
+    display: none;
+  }
+
+  .steps-grid {
+    gap: 1.75rem;
+  }
+
+  .feature:not(:first-child) {
+    border-left: none;
+    border-top: 1px solid rgba(var(--accent-rgb),0.18);
+  }
+
+  .value-grid {
+    flex-direction: column;
+  }
+
+  .contact-grid .contact-form,
+  .contact-grid .contact-card {
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(var(--accent-rgb),0.14);
+  }
+
+  .portfolio-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .portfolio-sticky {
+    position: static;
+  }
+
+  .portfolio-sticky::before,
+  .portfolio-sticky::after {
+    display: none;
+  }
+
+  .portfolio-rotator {
+    min-height: auto;
+    display: grid;
+    gap: 0.85rem;
+    perspective: none;
+    overflow: visible;
+  }
+
+  .portfolio-stats {
+    gap: 0.5rem;
+  }
+
+  .portfolio-stat {
+    flex: 1 1 0;
+    padding: 0.6rem 0.5rem;
+  }
+
+  .portfolio-stat-value {
+    font-size: 1.2rem;
+  }
+
+  .portfolio-nav {
+    /* All cards are already visible as a stacked list at this width, so
+       "browse to the next card" has nothing meaningful left to do. */
+    display: none;
+  }
+
+  .portfolio-cta {
+    justify-content: flex-start;
+    /* Nav is hidden here, so restore the roomier gap it otherwise borrows
+       from (the desktop rule tightens this to make room for the nav row). */
+    margin-top: 4.5rem;
+  }
+
+  .portfolio-card {
+    position: static;
+    width: 100%;
+    opacity: 1;
+    transform: none;
+    cursor: default;
+  }
+
+  .portfolio-card:hover {
+    transform: none;
+  }
+
+  .portfolio-card.is-to-deck,
+  .portfolio-card.is-from-deck {
+    opacity: 1;
+    transform: none;
+  }
+
+  .portfolio-card.is-beyond-depth {
+    opacity: 1 !important;
+    pointer-events: auto;
+  }
+
+  .portfolio-top {
+    align-items: center;
+  }
+
+  .portfolio-expand-btn {
+    width: 2.15rem;
+    height: 2.15rem;
+  }
+
+  .portfolio-detail-modal {
+    padding: 0.75rem;
+  }
+
+  .portfolio-detail-dialog {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .hero::before {
+    width: 18rem;
+    height: 18rem;
+  }
+
+  .panel-card {
+    max-width: none;
+    min-width: 0;
+  }
+
+  .score {
+    white-space: normal;
+  }
+
+  .contact-actions {
+    flex-direction: column;
+  }
+
+  .section-alt {
+    padding-inline: 0.85rem;
+  }
+
+  .closing-rotor-shell {
+    min-height: auto;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .closing-rotor-stage {
+    position: static;
+    height: auto;
+    perspective: none;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .closing-panel {
+    position: static;
+    inset: auto;
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+  }
+
+  .contact-actions .btn {
+    width: 100%;
+    text-align: center;
+  }
+}
