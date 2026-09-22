@@ -604,14 +604,34 @@ button {
   padding-block: var(--space-9);
 }
 
+/* Heading / lead / list are each their own grid row spanning both columns
+   (rather than nested inside a per-column div) so a row's height is driven by
+   whichever side's copy is taller — the two lists then always start on the
+   same line regardless of how the Problem and Solution copy compare in length,
+   in either language, at any width. */
 .approach__grid {
+  position: relative;
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: var(--space-7);
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto 1fr;
+  column-gap: var(--space-7);
+  /* Row spacing is intentionally 0 here: .approach__lead and .approach__list
+     already carry their own margin-top for the (deliberately unequal)
+     heading-to-lead vs lead-to-list rhythm. A non-zero row-gap would stack on
+     top of those and double the spacing. */
+  row-gap: 0;
   align-items: start;
 }
 
-.approach__col h2 {
+.approach__heading--problem { grid-column: 1; grid-row: 1; }
+.approach__lead--problem { grid-column: 1; grid-row: 2; }
+.approach__list--problem { grid-column: 1; grid-row: 3; }
+
+.approach__heading--solution { grid-column: 2; grid-row: 1; }
+.approach__lead--solution { grid-column: 2; grid-row: 2; }
+.approach__list--solution { grid-column: 2; grid-row: 3; }
+
+.approach__heading {
   font-size: clamp(1.5rem, 2.6vw, 2rem);
   max-width: 24ch;
 }
@@ -662,13 +682,6 @@ button {
   filter: brightness(0) invert(1);
 }
 
-.approach__arrow {
-  display: grid;
-  place-items: center;
-  color: var(--accent-2);
-  padding-top: 3.5rem;
-  opacity: 0.7;
-}
 
 /* --- Generic sections ----------------------------------------------------- */
 
@@ -1806,8 +1819,19 @@ body.portfolio-detail-open {
   .cards { grid-template-columns: 1fr; }
   .proof__grid { grid-template-columns: 1fr; }
   .proof__figures { grid-template-columns: repeat(2, 1fr); }
+  /* Collapse to a single column and let items fall back to DOM order (problem
+     heading/lead/list, then solution heading/lead/list) instead of the
+     explicit row/column placement used for the two-column desktop layout. */
   .approach__grid { grid-template-columns: 1fr; }
-  .approach__arrow { display: none; }
+  .approach__heading--problem,
+  .approach__lead--problem,
+  .approach__list--problem,
+  .approach__heading--solution,
+  .approach__lead--solution,
+  .approach__list--solution {
+    grid-column: 1;
+    grid-row: auto;
+  }
   .value-list { grid-template-columns: 1fr; }
   .roadmap { grid-template-columns: 1fr; }
 }

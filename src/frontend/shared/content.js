@@ -24,7 +24,7 @@ export const translations = {
     'nav.method': 'How it works',
     'nav.about': 'About',
     'nav.contact': 'Contact',
-    'lang.switchTo': 'HU',
+    'lang.switchTo': 'EN',
     'lang.switchAria': 'Switch to Hungarian',
 
     'hero.heading': 'AI-powered analytics that turn data into decisions',
@@ -62,7 +62,7 @@ export const translations = {
     'credentials.item4.title': 'Continuous development',
     'credentials.item4.text': 'New analytics capabilities in active development',
 
-    'problem.title': 'Most companies have data — but no clarity',
+    'problem.title': 'Most companies have data - but no clarity',
     'problem.text': 'Businesses collect large amounts of data every day, but struggle to turn it into actionable insights. Errors, inconsistencies, and hidden patterns often go unnoticed.',
     'problem.issue1': 'Unexpected downtime',
     'problem.issue1.detail': 'Machines fail without warning and production stops mid-shift.',
@@ -214,7 +214,7 @@ export const translations = {
     'nav.method': 'Hogyan működik',
     'nav.about': 'Rólam',
     'nav.contact': 'Kapcsolat',
-    'lang.switchTo': 'EN',
+    'lang.switchTo': 'HU',
     'lang.switchAria': 'Váltás angol nyelvre',
 
     'hero.heading': 'MI-alapú adatelemzés, amelyből jobb döntések születnek',
