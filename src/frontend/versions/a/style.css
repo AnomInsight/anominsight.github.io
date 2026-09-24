@@ -1,18 +1,61 @@
 /* ===========================================================================
-   Direction A — "Reimagined Original"
+   Direction A - "Reimagined Original"
 
    Same brand: the warm near-black ground, amber/gold accent pair, and the
    Manrope + Source Sans 3 pairing are kept exactly (DESIGN.md marks color and
-   typography "controlled" — improved, not replaced). What changes is
+   typography "controlled" - improved, not replaced). What changes is
    execution: a real spacing/type scale, a merged Problem+Solution section
    instead of two near-identical icon grids, a proof band pulled up near the
    top, a founder section, and the closing roadmap/audit/contact sequence
    restored to normal document flow instead of a 190vh scroll-jacked stack.
 
    The Portfolio section (#projects) keeps the original's exact deck/carousel
-   structure and interaction — DESIGN.md marks it protected — restyled only
+   structure and interaction - DESIGN.md marks it protected - restyled only
    with this file's refined tokens, never restructured.
    =========================================================================== */
+
+/* --- Fonts (self-hosted) -------------------------------------------------- */
+
+/* Manrope and Source Sans 3, self-hosted from /fonts (SIL OFL 1.1, licences
+   alongside the files). Both are variable fonts, so one file per subset covers
+   every weight in use. Only latin + latin-ext are shipped: enough for English
+   and Hungarian (ő, ű live in latin-ext). */
+
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600 800;
+  font-display: swap;
+  src: url('../../../../fonts/manrope-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600 800;
+  font-display: swap;
+  src: url('../../../../fonts/manrope-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Source Sans 3';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../../../../fonts/source-sans-3-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Source Sans 3';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../../../../fonts/source-sans-3-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 
 :root {
   --font-display: 'Manrope', sans-serif;
@@ -55,10 +98,36 @@
      it rather than the narrow layout centred in a wide empty canvas. Both
      `.shell` and `.container` read it, so every section's edges line up. Long
      text stays readable regardless, because paragraphs and headings are capped
-     in `ch` independently of this — widening the measure widens the grids, not
+     in `ch` independently of this - widening the measure widens the grids, not
      the line lengths. */
   --gutter: 1.25rem;
   --shell: 1240px;
+
+  /* Every other colour in this file resolves to one of these (exact values,
+     named rather than repeated). The *-rgb triplets are for alpha use. */
+  --ground: #0c0a08;          /* page base under the body gradients */
+  --ground-warm-1: #1c1712;   /* body gradient stops */
+  --ground-warm-2: #1a150f;
+  --on-accent: #1d160f;       /* text on amber fills */
+  --nav-text: #ecdfc4;        /* nav links: brighter than --muted for AA on the blurred bar */
+  --chip-text: #f7e8cd;
+  --error: #e08585;
+  --dialog-top: #2b231b;
+  --dialog-bottom: #1f1812;
+  --step-top: #3a2f22;
+  --step-bottom: #241d16;
+  --bg-rgb: 9, 8, 6;                 /* = --bg */
+  --panel-rgb: 18, 16, 15;           /* = --panel */
+  --surface-rgb: 20, 16, 14;         /* cards, forms, packages, portfolio deck */
+  --surface-deep-rgb: 14, 12, 11;
+  --surface-raised-rgb: 32, 26, 22;
+  --scrim-rgb: 6, 5, 4;              /* dialog backdrop */
+  --text-rgb: 247, 242, 222;         /* = --text */
+  --muted-rgb: 227, 210, 179;        /* = --muted */
+  --sand-rgb: 209, 181, 140;         /* secondary labels, placeholders */
+  --umber-rgb: 62, 42, 24;           /* roadmap tints */
+  --umber-2-rgb: 52, 34, 20;
+  --shadow-rgb: 0, 0, 0;
 }
 
 /* Wide-desktop steps. Gutters grow alongside the measure so the margins stay
@@ -107,10 +176,13 @@ body {
   padding-top: 76px;
   font-family: var(--font-body);
   color: var(--text);
-  background:
+  /* Solid base under the gradients (their darkest stop), so the page is never
+     light if a gradient fails to paint and contrast tools resolve a real ground. */
+  background-color: var(--ground);
+  background-image:
     radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.14), transparent 32%),
     radial-gradient(circle at top right, rgba(var(--accent-2-rgb), 0.08), transparent 26%),
-    linear-gradient(150deg, #1c1712, #0c0a08 55%, #1a150f);
+    linear-gradient(150deg, var(--ground-warm-1), var(--ground) 55%, var(--ground-warm-2));
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
@@ -124,9 +196,18 @@ body {
   scrollbar-color: rgba(var(--accent-rgb), 0.5) var(--bg);
 }
 
+/* Form controls don't inherit the page font by default (the textarea fell back
+   to monospace, inputs to Arial). */
 input,
 textarea {
+  font: inherit;
   caret-color: var(--accent-2);
+}
+
+/* <main> takes programmatic focus from the skip link; the ring would just
+   outline the whole page. */
+main:focus {
+  outline: none;
 }
 
 :focus-visible {
@@ -179,7 +260,7 @@ button {
 
 /* The portfolio section carries this class (as it does in the Original). It was
    previously undefined here, which left that section unconstrained and without
-   gutters — the one place the page ignored its own layout system. */
+   gutters - the one place the page ignored its own layout system. */
 .container {
   width: min(var(--shell), calc(100% - 2 * var(--gutter)));
   margin-inline: auto;
@@ -191,7 +272,7 @@ button {
   top: 0;
   z-index: 200;
   background: var(--accent-2);
-  color: #1d160f;
+  color: var(--on-accent);
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-sm);
   font-weight: 700;
@@ -227,7 +308,7 @@ button {
   /* High enough opacity that whatever scrolls behind (including lighter
      card/gradient regions) can't dilute the nav-link text contrast below
      AA, even with the blur's soft bleed-through. */
-  background: rgba(9, 8, 6, 0.94);
+  background: rgba(var(--bg-rgb), 0.94);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(var(--accent-rgb), 0.12);
 }
@@ -284,7 +365,7 @@ button {
   /* Brighter than --muted specifically here: against the translucent,
      blurred nav background --muted measured as low as 4.11:1 at some
      scroll positions, just under the 4.5:1 body-text threshold. */
-  color: #ecdfc4;
+  color: var(--nav-text);
   padding: var(--space-2) 0;
   position: relative;
   transition: color var(--duration-fast) ease;
@@ -339,7 +420,9 @@ button {
   display: none;
   background: none;
   border: 0;
-  padding: 0.4rem;
+  /* 22x26 icon + padding = a 44x44 tap target. Block layout (not flex) on
+     purpose: the X animation relies on the collapsed 5px span margins. */
+  padding: 9px 11px;
   cursor: pointer;
 }
 
@@ -374,15 +457,17 @@ button {
 
 .btn--primary {
   background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  color: #1d160f;
-  box-shadow: 0 14px 28px -8px rgba(var(--accent-rgb), 0.45);
+  color: var(--on-accent);
+  /* Neutral elevation, not an amber glow: the gradient fill already carries
+     the emphasis. */
+  box-shadow: 0 10px 22px -10px rgba(var(--shadow-rgb), 0.7);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .btn--primary:hover {
     transform: translateY(-2px);
     filter: brightness(1.06);
-    box-shadow: 0 18px 34px -8px rgba(var(--accent-rgb), 0.55);
+    box-shadow: 0 14px 28px -10px rgba(var(--shadow-rgb), 0.75);
   }
 }
 
@@ -423,19 +508,19 @@ button {
   transform: translateY(18px);
 }
 
-.cards > *,
 .steps > *,
 .value-list > *,
 .roadmap > *,
-.usecases > * {
+.usecases > *,
+.packages > * {
   transition: opacity var(--duration-slow) var(--ease-out), transform var(--duration-slow) var(--ease-out);
 }
 
-.reveal--pending .cards > *,
 .reveal--pending .steps > *,
 .reveal--pending .value-list > *,
 .reveal--pending .roadmap > *,
-.reveal--pending .usecases > * {
+.reveal--pending .usecases > *,
+.reveal--pending .packages > * {
   opacity: 0;
   transform: translateY(14px);
 }
@@ -450,26 +535,18 @@ button {
   overflow: clip;
 }
 
-.hero__field {
-  position: absolute;
-  inset: -10% -10% auto auto;
-  width: 34rem;
-  height: 34rem;
-  background: radial-gradient(circle, rgba(var(--accent-rgb), 0.16), transparent 70%);
-  pointer-events: none;
-}
-
 .hero__grid {
   display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
+  /* The copy column gets the extra width so each headline clause can hold a
+     single line on desktop; the figure reads fine from ~360px up. */
+  grid-template-columns: minmax(0, 1.22fr) minmax(0, 0.78fr);
   gap: var(--space-7);
   align-items: center;
-  position: relative;
 }
 
 .hero h1 {
-  font-size: clamp(2.6rem, 5vw, 4.25rem);
-  max-width: 16ch;
+  font-size: clamp(2.5rem, 4.6vw, 4.25rem);
+  letter-spacing: -0.025em;
 }
 
 .hero__lead {
@@ -486,56 +563,296 @@ button {
   margin-top: var(--space-6);
 }
 
-.credentials {
-  background: linear-gradient(155deg, rgba(var(--accent-rgb), 0.12), #14100e 62%);
-  border: 1px solid rgba(var(--accent-rgb), 0.22);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  box-shadow: 0 30px 60px -20px rgba(10, 8, 6, 0.6);
-}
-
-.credentials__list {
-  display: grid;
-  gap: var(--space-4);
-}
-
-.credentials__list li {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+.hero__byline {
+  display: flex;
+  align-items: center;
   gap: var(--space-3);
-  align-items: start;
-  padding-bottom: var(--space-4);
-  border-bottom: 1px solid rgba(var(--accent-rgb), 0.14);
+  margin-top: var(--space-5);
 }
 
-.credentials__list li:last-child {
-  padding-bottom: 0;
-  border-bottom: 0;
-}
-
-.credentials__mark {
-  width: 0.55rem;
-  height: 0.55rem;
-  margin-top: 0.5rem;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+/* The <picture> is the flex item, so it (not the img) must refuse to shrink,
+   or the photo gets squeezed next to a long role line on phones. */
+.hero__byline picture {
   flex: none;
 }
 
-.credentials__list strong {
-  display: block;
+.hero__byline img {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(var(--accent-rgb), 0.4);
+}
+
+.hero__byline-text {
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+
+.hero__byline-text strong {
   font-family: var(--font-display);
-  font-size: 1rem;
   font-weight: 700;
   color: var(--text);
 }
 
-.credentials__list span {
-  display: block;
-  margin-top: 0.2rem;
+.hero__byline-role {
+  color: var(--muted);
+  margin-left: var(--space-2);
+  padding-left: var(--space-2);
+  border-left: 1px solid rgba(var(--accent-rgb), 0.4);
+}
+
+/* Narrow phones: the role gets its own line instead of breaking mid-phrase
+   next to the name ("Alapító és data / scientist"). */
+@media (max-width: 480px) {
+  .hero__byline-role {
+    display: block;
+    margin-left: 0;
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
+.hero__byline-note {
+  margin-top: 0.15rem;
   font-size: 0.875rem;
   color: var(--muted);
+  text-wrap: pretty;
+}
+
+/* Wide-desktop steps (see the --shell steps above): the copy column keeps
+   growing, so the headline grows with it instead of shrinking into the
+   middle of a 1500px+ measure. */
+@media (min-width: 1760px) {
+  .hero h1 { font-size: 4.75rem; }
+}
+
+@media (min-width: 2200px) {
+  .hero h1 { font-size: 5.25rem; }
+}
+
+/* --- Hero figure: anomaly -> insight -------------------------------------- */
+
+/* Drawn like a figure in an engineering report rather than a dashboard
+   mock-up: hairline grid, one learned band, one trace, one flagged reading,
+   and a two-part readout that spells the brand name out (Anom -> Insight). */
+.signal {
+  margin: 0;
+  padding: var(--space-5);
+  background: rgba(var(--panel-rgb), 0.7);
+  border: 1px solid rgba(var(--accent-rgb), 0.22);
+  border-radius: var(--radius-md);
+  container-type: inline-size;
+}
+
+.signal__plot {
+  position: relative;
+}
+
+.signal__plot svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.signal__grid path {
+  fill: none;
+  stroke: rgba(var(--text-rgb), 0.06);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.signal__band {
+  fill: rgba(var(--accent-rgb), 0.1);
+  stroke: rgba(var(--accent-rgb), 0.38);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+  vector-effect: non-scaling-stroke;
+}
+
+.signal__axis {
+  fill: none;
+  stroke: rgba(var(--accent-rgb), 0.3);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.signal__reading,
+.signal__excursion {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.signal__reading {
+  stroke: rgba(var(--muted-rgb), 0.78);
+  stroke-width: 1.5;
+}
+
+.signal__excursion {
+  stroke: var(--accent-2);
+  stroke-width: 2.25;
+}
+
+.signal__leader {
+  stroke: rgba(var(--accent-2-rgb), 0.5);
+  stroke-width: 1;
+  stroke-dasharray: 2 4;
+  vector-effect: non-scaling-stroke;
+}
+
+.signal__point {
+  fill: var(--accent-2);
+}
+
+.signal__ring {
+  fill: none;
+  stroke: rgba(var(--accent-2-rgb), 0.6);
+  stroke-width: 1.25;
+  vector-effect: non-scaling-stroke;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* HTML rather than SVG text so it stays at a readable size when the figure
+   scales down; positioned in viewBox fractions (y 160 in the 24-196 box). */
+.signal__band-label {
+  position: absolute;
+  left: 1.2%;
+  top: 79%;
+  font-size: 0.75rem;
+  line-height: 1;
+  color: var(--muted);
+}
+
+.signal__readout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+  /* No rule of its own: the chart's time axis already closes the plot. */
+  margin-top: var(--space-5);
+}
+
+.signal__step {
+  font-size: 0.9375rem;
   line-height: 1.4;
+  color: var(--text);
+}
+
+.signal__key {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--accent-2);
+}
+
+.signal__arrow {
+  margin-top: 0.1rem;
+  color: var(--accent);
+  /* Entrance offset, along the arrow's direction (re-pointed below). */
+  --signal-arrow-from: -5px 0;
+}
+
+.signal figcaption {
+  margin-top: var(--space-4);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* Narrow figure (the 841-1100px two-column band, and phones): the readout
+   stacks, with the arrow turned to point down the stack. */
+@container (max-width: 26rem) {
+  .signal__readout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+
+  .signal__arrow {
+    transform: rotate(90deg);
+    --signal-arrow-from: 0 -5px;
+  }
+}
+
+/* --- Hero figure entrance ------------------------------------------------- */
+
+/* The page's one authored moment, played once in the figure's reading order:
+   the series is scanned in left to right (normal behaviour, then the
+   deviation), the ring closes onto the flagged reading as the scan passes it,
+   the marker drops to the time axis, and the readout follows, Anomaly then
+   arrow then Insight. ~1.25s in total, then fully static.
+
+   main.js adds .signal--pending when the figure is armed and swaps it for
+   .signal--play once the figure is on screen (phones: below the fold, so it
+   waits). Without JS or under reduced motion neither class is ever set and
+   the figure is simply drawn. Every animation uses `backwards` fill: hidden
+   through its delay, then it hands back to the element's own static style,
+   so nothing animated lingers once the sequence ends. The caption is never
+   hidden - the "illustrative" label is there from the first frame. */
+.signal--pending .signal__plot {
+  clip-path: inset(-16px 100% -16px -16px);
+}
+
+.signal--pending .signal__ring,
+.signal--pending .signal__leader,
+.signal--pending .signal__step,
+.signal--pending .signal__arrow {
+  opacity: 0;
+}
+
+/* Decelerating scan: it reaches the anomaly (70% across) about a third of
+   the way in, then settles while the ring takes the attention. */
+.signal--play .signal__plot {
+  animation: signal-scan 800ms cubic-bezier(0.33, 1, 0.68, 1) 240ms backwards;
+}
+
+.signal--play .signal__ring {
+  animation: signal-lock 420ms var(--ease-out) 500ms backwards;
+}
+
+.signal--play .signal__leader {
+  transform-box: fill-box;
+  transform-origin: top;
+  animation: signal-drop 280ms var(--ease-out) 580ms backwards;
+}
+
+.signal--play .signal__step,
+.signal--play .signal__arrow {
+  animation: signal-read 320ms var(--ease-out) backwards;
+}
+
+.signal--play .signal__step:first-child { animation-delay: 760ms; }
+.signal--play .signal__arrow { animation-name: signal-point; animation-delay: 840ms; }
+.signal--play .signal__step:last-child { animation-delay: 920ms; }
+
+@keyframes signal-scan {
+  from { clip-path: inset(-16px 100% -16px -16px); }
+  to { clip-path: inset(-16px -16px -16px -16px); }
+}
+
+/* Contracts onto the point rather than growing from nothing. */
+@keyframes signal-lock {
+  from { opacity: 0; transform: scale(1.6); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes signal-drop {
+  from { opacity: 0; transform: scaleY(0); }
+  to { opacity: 1; transform: scaleY(1); }
+}
+
+@keyframes signal-read {
+  from { opacity: 0; translate: 0 6px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@keyframes signal-point {
+  from { opacity: 0; translate: var(--signal-arrow-from); }
+  to { opacity: 1; translate: 0 0; }
 }
 
 /* --- Proof band ----------------------------------------------------------- */
@@ -566,7 +883,9 @@ button {
 
 .proof__figures {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /* Four across at normal text sizes; drops to fewer columns instead of
+     overflowing when the reader enlarges text (WCAG 1.4.4). */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8.5rem), 1fr));
   gap: var(--space-5);
 }
 
@@ -606,7 +925,7 @@ button {
 
 /* Heading / lead / list are each their own grid row spanning both columns
    (rather than nested inside a per-column div) so a row's height is driven by
-   whichever side's copy is taller — the two lists then always start on the
+   whichever side's copy is taller - the two lists then always start on the
    same line regardless of how the Problem and Solution copy compare in length,
    in either language, at any width. */
 .approach__grid {
@@ -728,16 +1047,10 @@ button {
   margin-top: var(--space-7);
 }
 
-/* --- Cards (Services / Advanced) ------------------------------------------ */
-
-.cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-5);
-}
+/* --- Card base (used by the portfolio cards) ------------------------------ */
 
 .card {
-  background: rgba(20, 16, 14, 0.92);
+  background: rgba(var(--surface-rgb), 0.92);
   border: 1px solid rgba(var(--accent-rgb), 0.14);
   border-radius: var(--radius-md);
   padding: var(--space-6);
@@ -748,30 +1061,8 @@ button {
   .card:hover {
     transform: translateY(-4px);
     border-color: rgba(var(--accent-rgb), 0.3);
-    box-shadow: 0 22px 44px -18px rgba(0, 0, 0, 0.55);
+    box-shadow: 0 22px 44px -18px rgba(var(--shadow-rgb), 0.55);
   }
-}
-
-.card__icon {
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: rgba(var(--accent-rgb), 0.1);
-  border: 1px solid rgba(var(--accent-rgb), 0.2);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  color: var(--accent-2);
-  margin-bottom: var(--space-5);
-}
-
-.card__icon img {
-  width: 1.7rem;
-  height: 1.7rem;
-  object-fit: contain;
-  display: block;
-  /* Same treatment the Original used: flatten the source art to pure white. */
-  filter: brightness(0) invert(1);
 }
 
 .card h3 {
@@ -784,11 +1075,93 @@ button {
   font-size: 0.9375rem;
 }
 
-.card--advanced {
-  background: linear-gradient(180deg, rgba(var(--accent-rgb), 0.06), rgba(20, 16, 14, 0.92));
+/* --- Capabilities (homepage services index) ------------------------------ */
+
+/* One section instead of two card grids: an intro column with the route to
+   services.html, and the six services as a typographic index grouped by
+   Core / Advanced. Hairlines, not boxes, so it reads differently from the
+   icon rows above it and the roadmap panels below. */
+.capabilities__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.7fr);
+  gap: var(--space-7);
+  align-items: start;
 }
 
-/* --- Portfolio (protected — original presentation restored) --------------- */
+.capabilities__intro h2 {
+  font-size: clamp(1.75rem, 3vw, 2.375rem);
+}
+
+.capabilities__intro p {
+  margin-top: var(--space-4);
+  color: var(--muted);
+  max-width: 40ch;
+}
+
+.capabilities__intro .btn {
+  margin-top: var(--space-6);
+}
+
+.capabilities__groups {
+  display: grid;
+  gap: var(--space-7);
+}
+
+.capabilities__group h3 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-4);
+  /* Group label: accent colour carries it, not size, so the service names
+     below get the real type step (16px -> 20px -> 15px body). */
+  font-size: 1rem;
+  color: var(--accent-2);
+}
+
+.capabilities__note {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+
+.capabilities__list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.capabilities__list li {
+  padding-top: var(--space-4);
+  border-top: 1px solid rgba(var(--accent-rgb), 0.22);
+}
+
+.capabilities__list h4 {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.capabilities__list p {
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+/* Stack the intro above the index before the three columns get narrow enough
+   for long Hungarian compounds ("minőségértékelés") to overflow. In em so it
+   also triggers when the reader enlarges text (68.75em = 1100px at default). */
+@media (max-width: 68.75em) {
+  .capabilities__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Portfolio (protected - original presentation restored) --------------- */
 
 #services, #projects, #method, #about, #contact {
   scroll-margin-top: 5.5rem;
@@ -811,7 +1184,7 @@ button {
   align-self: start;
   z-index: 1;
   isolation: isolate;
-  background: rgba(20, 16, 14, 0.6);
+  background: rgba(var(--surface-rgb), 0.6);
   border: 1px solid rgba(var(--accent-rgb),0.15);
   border-radius: 1rem;
   padding: 1.2rem;
@@ -824,7 +1197,7 @@ button {
   inset: 0;
   border-radius: 1rem;
   border: 1px solid rgba(var(--accent-rgb),0.2);
-  background: linear-gradient(140deg, rgba(32,26,22,0.75), rgba(20,16,14,0.56));
+  background: linear-gradient(140deg, rgba(var(--surface-raised-rgb), 0.75), rgba(var(--surface-rgb), 0.56));
   pointer-events: none;
   z-index: -1;
 }
@@ -846,7 +1219,7 @@ button {
 .portfolio-note {
   margin: 0.95rem 0 0;
   font-size: 0.86rem;
-  color: rgba(209,181,140,0.9);
+  color: rgba(var(--sand-rgb), 0.9);
 }
 
 .portfolio-filter-title {
@@ -870,7 +1243,7 @@ button {
 .portfolio-clear-filters-btn {
   border: 1px solid rgba(var(--accent-rgb),0.4);
   background: transparent;
-  color: var(--accent-2, #f0c882);
+  color: var(--accent-2);
   font-size: 0.74rem;
   font-weight: 600;
   padding: 0.28rem 0.62rem;
@@ -1125,9 +1498,9 @@ button {
      `.card` base differs from the Original's (roomier padding, no shadow,
      slightly different alpha). Restate the Original's values here so the deck
      matches it exactly while Version A's own cards keep their redesigned base. */
-  background: rgba(20, 16, 14, 0.95);
+  background: rgba(var(--surface-rgb), 0.95);
   padding: 1.35rem;
-  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 18px 35px rgba(var(--shadow-rgb), 0.15);
   position: absolute;
   top: 50%;
   left: 50%;
@@ -1213,7 +1586,7 @@ button {
   border-radius: 999px;
   padding: 0.25rem 0.58rem;
   font-size: 0.74rem;
-  color: #f7e8cd;
+  color: var(--chip-text);
   background: rgba(var(--accent-rgb),0.12);
   border: 1px solid rgba(var(--accent-rgb),0.25);
 }
@@ -1316,7 +1689,7 @@ button {
 .portfolio-detail-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(6, 5, 4, 0.72);
+  background: rgba(var(--scrim-rgb), 0.72);
   backdrop-filter: blur(5px);
   opacity: 0;
   transition: opacity 220ms ease;
@@ -1328,11 +1701,12 @@ button {
   max-height: min(86vh, 840px);
   overflow: auto;
   z-index: 1;
-  background: linear-gradient(180deg, #2b231b, #1f1812);
+  background: linear-gradient(180deg, var(--dialog-top), var(--dialog-bottom));
   border: 1px solid rgba(var(--accent-2-rgb),0.35);
   border-radius: 1rem;
   padding: 1.25rem;
-  box-shadow: 0 26px 52px rgba(0, 0, 0, 0.35);
+  /* No drop shadow: the blurred, dimmed backdrop and the accent border
+     already lift the dialog. */
   display: grid;
   gap: 0.9rem;
   opacity: 0;
@@ -1415,7 +1789,7 @@ button {
 
 /* An SVG X, not the "×" glyph the Original used: that character's own ink
    sits visibly below the vertical center of its line box in this typeface, so
-   `place-items: center` was centering an invisible box, not the mark itself —
+   `place-items: center` was centering an invisible box, not the mark itself -
    the close button read as off-center. An SVG centers exactly, the same way
    the nav arrows and GitHub icon already do here. */
 .portfolio-detail-close svg {
@@ -1488,6 +1862,12 @@ body.portfolio-detail-open {
    images/founder-bence-csomor.png is a cutout of it with the background
    removed, cropped to head-and-shoulders, so it sits on the page's own warm
    tones instead of showing a stark white disc. */
+/* The <picture> wrapper (WebP + PNG fallback) must not become the img's
+   containing block, or height: 100% has nothing to resolve against. */
+.founder__portrait picture {
+  display: contents;
+}
+
 .founder__portrait img {
   width: 100%;
   height: 100%;
@@ -1567,7 +1947,7 @@ body.portfolio-detail-open {
   place-items: center;
   width: 2.75rem;
   height: 2.75rem;
-  background: linear-gradient(135deg, #3a2f22, #241d16);
+  background: linear-gradient(135deg, var(--step-top), var(--step-bottom));
   border: 1px solid rgba(var(--accent-rgb), 0.4);
   border-radius: 50%;
   font-weight: 800;
@@ -1648,12 +2028,12 @@ body.portfolio-detail-open {
 }
 
 .roadmap__col--live {
-  background: linear-gradient(180deg, rgba(62, 42, 24, 0.3), rgba(20, 16, 14, 0.7));
+  background: linear-gradient(180deg, rgba(var(--umber-rgb), 0.3), rgba(var(--surface-rgb), 0.7));
   border-color: rgba(var(--accent-2-rgb), 0.28);
 }
 
 .roadmap__col--dev {
-  background: linear-gradient(180deg, rgba(52, 34, 20, 0.3), rgba(20, 16, 14, 0.7));
+  background: linear-gradient(180deg, rgba(var(--umber-2-rgb), 0.3), rgba(var(--surface-rgb), 0.7));
 }
 
 .roadmap__col h3 {
@@ -1683,7 +2063,7 @@ body.portfolio-detail-open {
   padding: 0.75rem 0.9rem 0.75rem 2rem;
   border: 1px solid rgba(var(--accent-rgb), 0.14);
   border-radius: var(--radius-sm);
-  background: rgba(14, 12, 11, 0.46);
+  background: rgba(var(--surface-deep-rgb), 0.46);
   font-size: 0.9375rem;
   color: var(--muted);
 }
@@ -1767,7 +2147,7 @@ body.portfolio-detail-open {
 .form {
   display: grid;
   gap: var(--space-4);
-  background: rgba(20, 16, 14, 0.6);
+  background: rgba(var(--surface-rgb), 0.6);
   border: 1px solid rgba(var(--accent-rgb), 0.18);
   border-radius: var(--radius-lg);
   padding: var(--space-6);
@@ -1784,14 +2164,14 @@ body.portfolio-detail-open {
   padding: 0.75rem 0.9rem;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(var(--accent-rgb), 0.24);
-  background: rgba(9, 8, 6, 0.6);
+  background: rgba(var(--bg-rgb), 0.6);
   color: var(--text);
   resize: vertical;
   transition: border-color 180ms ease, box-shadow 180ms ease;
 }
 
 .field input::placeholder,
-.field textarea::placeholder { color: rgba(209, 181, 140, 0.55); }
+.field textarea::placeholder { color: rgba(var(--sand-rgb), 0.7); } /* ~5.3:1 on the field */
 
 .field input:focus,
 .field textarea:focus {
@@ -1806,17 +2186,169 @@ body.portfolio-detail-open {
 
 .form__status { margin: 0; font-size: 0.88rem; min-height: 1.2em; color: var(--muted); }
 .form__status[data-state='success'] { color: var(--accent-2); }
-.form__status[data-state='error'] { color: #e08585; }
+.form__status[data-state='error'] { color: var(--error); }
 
 /* --- Footer --------------------------------------------------------------- */
 
 .footer { padding: var(--space-6) 0 var(--space-7); }
 .footer__inner { text-align: center; color: var(--muted); font-size: 0.9375rem; }
 
+/* --- Services page (services.html) ---------------------------------------- */
+
+/* Current page in the nav: the hover state, held. */
+.nav-links a[aria-current='page'] {
+  color: var(--text);
+}
+
+.nav-links a[aria-current='page']::after {
+  transform: scaleX(1);
+}
+
+.page-intro {
+  padding: clamp(2.5rem, 5vw, 4rem) 0 var(--space-8);
+}
+
+/* Heading left, the "what you get / how it's quoted" copy right, bottom-aligned
+   so the two read as one statement rather than a heading over a paragraph. */
+.page-intro__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: var(--space-7);
+  align-items: end;
+}
+
+.page-intro h1 {
+  font-size: clamp(2.4rem, 4.6vw, 3.75rem);
+  max-width: 16ch;
+}
+
+.page-intro__lead {
+  font-size: clamp(1.0625rem, 1.4vw, 1.1875rem);
+  color: var(--text);
+  max-width: 48ch;
+}
+
+.page-intro__note {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid rgba(var(--accent-rgb), 0.18);
+  color: var(--muted);
+  font-size: 0.9375rem;
+  max-width: 48ch;
+}
+
+.packages-section {
+  padding-top: 0;
+}
+
+/* Full-width rows rather than a card grid: each package is read left to right
+   as name, what's in it, and the action, so the four compare line by line. */
+.packages {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.package {
+  display: grid;
+  grid-template-columns: minmax(0, 17rem) minmax(0, 1fr) auto;
+  gap: var(--space-4) var(--space-7);
+  align-items: center;
+  padding: var(--space-6);
+  background: rgba(var(--surface-rgb), 0.92);
+  border: 1px solid rgba(var(--accent-rgb), 0.14);
+  border-radius: var(--radius-md);
+  transition: border-color var(--duration-base) ease, box-shadow var(--duration-base) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .package:hover {
+    border-color: rgba(var(--accent-rgb), 0.3);
+    box-shadow: 0 22px 44px -18px rgba(var(--shadow-rgb), 0.55);
+  }
+}
+
+.package h2 {
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+.package__title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+
+.package__meta {
+  margin-top: var(--space-2);
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.package__text {
+  color: var(--muted);
+  font-size: 1rem;
+  max-width: 62ch;
+}
+
+.package__cta {
+  justify-self: end;
+  white-space: nowrap;
+}
+
+/* The featured package is the one row that carries the primary button, a
+   warmer ground and a brighter edge - emphasis by material, not by size. */
+.package--featured {
+  padding-block: var(--space-7);
+  background: linear-gradient(120deg, rgba(var(--accent-rgb), 0.16), rgba(var(--surface-rgb), 0.94) 58%);
+  border-color: rgba(var(--accent-2-rgb), 0.42);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .package--featured:hover {
+    border-color: rgba(var(--accent-2-rgb), 0.6);
+  }
+}
+
+.package--featured h2 {
+  font-size: 1.4rem;
+}
+
+.package--featured .package__text {
+  color: var(--text);
+}
+
+/* Highest implementation tier: a brighter edge and its badge only. The warm
+   ground and primary button stay with the featured package, so the two
+   emphasised rows don't compete. */
+.package--premium {
+  border-color: rgba(var(--accent-2-rgb), 0.3);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .package--premium:hover {
+    border-color: rgba(var(--accent-2-rgb), 0.5);
+  }
+}
+
+.package__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--accent-2-rgb), 0.45);
+  background: rgba(var(--accent-2-rgb), 0.12);
+  color: var(--accent-2);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
 /* --- Responsive ------------------------------------------------------------ */
 
 @media (max-width: 900px) {
-  .cards { grid-template-columns: 1fr; }
+  .capabilities__grid { grid-template-columns: 1fr; }
   .proof__grid { grid-template-columns: 1fr; }
   .proof__figures { grid-template-columns: repeat(2, 1fr); }
   /* Collapse to a single column and let items fall back to DOM order (problem
@@ -1834,9 +2366,21 @@ body.portfolio-detail-open {
   }
   .value-list { grid-template-columns: 1fr; }
   .roadmap { grid-template-columns: 1fr; }
+
+  /* Services: name + text stack on the left, the action holds the right. */
+  .package {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .package__head { grid-column: 1; }
+  .package__text { grid-column: 1; }
+  .package__cta { grid-column: 2; grid-row: 1 / span 2; }
 }
 
-@media (max-width: 840px) {
+/* The nav switches to the menu button in `em`, not px: em media queries follow
+   the browser's text-size setting, so a reader who enlarges text gets the
+   menu before the links run out of room (52.5em = 840px at default size).
+   Layout breakpoints stay in px below. */
+@media (max-width: 52.5em) {
   .menu-toggle { display: block; }
 
   .nav-actions {
@@ -1844,7 +2388,7 @@ body.portfolio-detail-open {
     top: 100%;
     right: 1rem;
     left: 1rem;
-    background: rgba(18, 16, 15, 0.97);
+    background: rgba(var(--panel-rgb), 0.97);
     border: 1px solid rgba(var(--accent-rgb), 0.18);
     border-radius: var(--radius-md);
     padding: var(--space-4);
@@ -1868,7 +2412,9 @@ body.portfolio-detail-open {
 
   .nav-links { flex-direction: column; gap: var(--space-3); }
   .lang { align-self: flex-start; }
+}
 
+@media (max-width: 840px) {
   .hero__grid,
   .founder__grid,
   .final-cta__grid,
@@ -1882,6 +2428,30 @@ body.portfolio-detail-open {
   .steps::before { display: none; }
 
   .contact__meta > div { grid-template-columns: 1fr; gap: 0.2rem; }
+
+  .capabilities__list { grid-template-columns: 1fr; gap: var(--space-4); }
+
+  .page-intro__grid { grid-template-columns: 1fr; gap: var(--space-5); }
+  .page-intro { padding-bottom: var(--space-7); }
+  /* "Szolgáltatáscsomagok," is one ~21-character word: size it to fit a 360px
+     phone, and let it break rather than overflow on anything narrower. */
+  .page-intro h1 {
+    font-size: clamp(1.75rem, 6.6vw, 2.4rem);
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  .package {
+    grid-template-columns: 1fr;
+    padding: var(--space-5);
+  }
+  .package--featured { padding-block: var(--space-6); }
+  .package__cta {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+    white-space: normal;
+  }
 
   /* Portfolio: the Original's mobile behaviour, restored verbatim. */
   .portfolio-shell {
@@ -1900,6 +2470,37 @@ body.portfolio-detail-open {
   .portfolio-rotator {
     min-height: auto;
     display: grid;
+    /* One column that may shrink below its content's natural width - the
+       default `auto` track sized to the widest card row and pushed the page
+       sideways on 320-360px phones (worst in Hungarian). */
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Same fix one level in: the card is a grid too, and its top row
+     (category + status chip + icon buttons) must give way to the width
+     instead of widening the card. The icon buttons keep their size. */
+  .portfolio-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* When category + chip + buttons don't fit, the actions wrap under the
+     category (still right-aligned) rather than the category breaking
+     mid-word. */
+  .portfolio-top {
+    flex-wrap: wrap;
+    row-gap: var(--space-2);
+  }
+
+  .portfolio-top-actions {
+    margin-left: auto;
+  }
+
+  .portfolio-kind {
+    overflow-wrap: break-word;
+  }
+
+  .portfolio-expand-btn {
+    flex: none;
     gap: 0.85rem;
     perspective: none;
     overflow: visible;
@@ -1973,14 +2574,76 @@ body.portfolio-detail-open {
   }
 }
 
+/* --- Portfolio rotation pause (a11y addition, WCAG 2.2.2) ----------------- */
+
+/* Shares the arrow buttons' look; shows "pause" while rotating, "play" once
+   paused. */
+.portfolio-nav-pause .icon-play { display: none; }
+.portfolio-nav-pause[aria-pressed='true'] .icon-pause { display: none; }
+.portfolio-nav-pause[aria-pressed='true'] .icon-play { display: block; }
+
+/* --- Touch targets ------------------------------------------------------- */
+
+/* On coarse pointers, small controls reach ~44px. Chips grow for real (they
+   sit too close together to overlap hit areas); round icon buttons keep their
+   visual size and gain an invisible extension, the same technique the nav
+   dots use. */
+@media (pointer: coarse) {
+  .portfolio-filter-chip,
+  .portfolio-clear-filters-btn {
+    min-height: 2.75rem;
+  }
+
+  .portfolio-filter-chip {
+    min-width: 2.75rem;
+  }
+
+  /* Text buttons grow for real (43px -> 44px is invisible in the design). */
+  .btn {
+    min-height: 2.75rem;
+  }
+
+  .portfolio-expand-btn,
+  .portfolio-nav-arrow,
+  .brand,
+  .founder__links a {
+    position: relative;
+  }
+
+  .portfolio-expand-btn::before,
+  .portfolio-nav-arrow::before,
+  .brand::before {
+    content: '';
+    position: absolute;
+    inset: -0.375rem;
+  }
+
+  /* Underlined text links: growing them would push the underline away from
+     the words, so they get the invisible extension too. */
+  .founder__links a::before {
+    content: '';
+    position: absolute;
+    inset: -0.625rem -0.25rem;
+  }
+}
+
 /* --- Reduced motion --------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 
+  /* Movement goes, fades stay. Keyframe sequences end at once, and transforms
+     (button lifts, the menu's scale-in, the portfolio deck fanning) now change
+     instantly, because only non-spatial properties may transition. Colour,
+     border, shadow and opacity keep one short, undelayed fade, so hover, focus,
+     the menu opening and a card coming forward still read as a change of state
+     rather than a jump. (JS-driven reveals and the hero figure sequence don't
+     run at all under this setting - see main.js.) */
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
+    transition-property: color, background-color, border-color, box-shadow, opacity, filter, visibility !important;
+    transition-duration: var(--duration-fast) !important;
+    transition-delay: 0s !important;
   }
 }

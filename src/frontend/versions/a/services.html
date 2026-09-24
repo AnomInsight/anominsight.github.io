@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="AnomInsight service packages: a free discovery call, data audits, one-off ML and anomaly-detection projects, integrated implementation with full handover, and ongoing (weekly or monthly) monitoring and reporting. Every package is quoted individually." />
+    <meta name="robots" content="noindex" />
+    <title data-i18n="packages.pageTitle">Services – AnomInsight</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="../../../../images/favicon-circle-32.png?v=4" />
+    <link rel="icon" type="image/png" sizes="192x192" href="../../../../images/favicon-circle-192.png?v=4" />
+    <link rel="apple-touch-icon" href="../../../../images/favicon-circle-512.png?v=4" />
+    <!-- Self-hosted fonts (see @font-face in style.css); preload the two latin files every page needs. -->
+    <link rel="preload" href="../../../../fonts/source-sans-3-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="../../../../fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#top" data-i18n="a11y.skip">Skip to content</a>
+    <!-- Referenced by aria-describedby on every link that opens a new tab. -->
+    <span id="newTabHint" hidden data-i18n="a11y.newTab">Opens in a new tab</span>
+
+    <header class="site-header">
+      <div class="shell site-header__inner">
+        <a class="brand" href="index.html">
+          <span class="brand__mark"><img src="../../../../images/logo-circle-96.png" alt="" width="30" height="30" loading="eager" /></span>
+          <span class="brand__name">AnomInsight</span>
+        </a>
+
+        <button class="menu-toggle" type="button" aria-label="Menu" data-i18n-aria="a11y.menu" aria-expanded="false" aria-controls="navLinks">
+          <span></span><span></span><span></span>
+        </button>
+
+        <div class="nav-actions" id="navLinks">
+          <nav class="nav-links" aria-label="Main navigation" data-i18n-aria="a11y.primaryNav">
+            <a href="services.html" aria-current="page" data-i18n="nav.services">Services</a>
+            <a href="index.html#projects" data-i18n="nav.projects">Projects</a>
+            <a href="index.html#about" data-i18n="nav.about">About</a>
+            <a href="index.html#method" data-i18n="nav.method">How it works</a>
+            <a href="#contact" data-i18n="nav.contact">Contact</a>
+          </nav>
+          <button class="lang" type="button" data-lang-toggle data-i18n-aria="lang.switchAria" aria-label="Switch to Hungarian">
+            <span data-i18n="lang.switchTo">EN</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="top" tabindex="-1">
+      <section class="page-intro" aria-labelledby="services-title">
+        <div class="shell page-intro__grid">
+          <h1 id="services-title" data-i18n="packages.heading">Service packages, scoped to your data</h1>
+          <div class="page-intro__body">
+            <p class="page-intro__lead" data-i18n="packages.intro">Most packages deliver reports and dashboard views, and the underlying code and methodology stay with me. If you need the solution running inside your own systems, Integrated Implementation hands it over to you.</p>
+            <p class="page-intro__note" data-i18n="packages.quoteNote">There is no fixed price list: every package is scoped to your data and quoted individually.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section packages-section" aria-labelledby="services-title">
+        <div class="shell">
+          <ol class="packages">
+            <li>
+              <article class="package" aria-labelledby="pkg-discovery">
+                <div class="package__head">
+                  <h2 id="pkg-discovery" data-i18n="packages.discovery.title">Free Discovery Call</h2>
+                  <p class="package__meta" data-i18n="packages.discovery.meta">30 minutes · Free</p>
+                </div>
+                <p class="package__text" data-i18n="packages.discovery.text">A free 30-minute call to understand your problem – no obligation.</p>
+                <a class="btn btn--ghost package__cta" href="https://calendar.app.google/ckrBNEpqXD8Vm8Ji6" target="_blank" rel="noopener noreferrer" aria-describedby="newTabHint" data-i18n="offer.discoveryCta">Book a free discovery call</a>
+              </article>
+            </li>
+            <li>
+              <article class="package" aria-labelledby="pkg-audit">
+                <div class="package__head">
+                  <h2 id="pkg-audit" data-i18n="packages.audit.title">Data Audit</h2>
+                  <p class="package__meta" data-i18n="packages.audit.meta">One-off · PDF/PPT report</p>
+                </div>
+                <p class="package__text" data-i18n="packages.audit.text">Exploratory data analysis, data quality assessment, and a recommendations package – delivered as a PDF/PPT report.</p>
+                <a class="btn btn--ghost package__cta" href="#contact" data-quote-package="pkg-audit" data-i18n="packages.quoteCta">Get a custom quote</a>
+              </article>
+            </li>
+            <li>
+              <article class="package package--featured" aria-labelledby="pkg-project">
+                <div class="package__head">
+                  <div class="package__title-row">
+                    <h2 id="pkg-project" data-i18n="packages.project.title">One-off Project Delivery</h2>
+                    <span class="package__badge">
+                      <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M8 1.2l2.03 4.3 4.67.6-3.43 3.23.87 4.63L8 11.7l-4.14 2.26.87-4.63L1.3 6.1l4.67-.6z" fill="currentColor" /></svg>
+                      <span data-i18n="packages.featured">Featured</span>
+                    </span>
+                  </div>
+                  <p class="package__meta" data-i18n="packages.project.meta">One-off · Dashboard walkthrough + report</p>
+                </div>
+                <p class="package__text" data-i18n="packages.project.text">A custom ML model, anomaly detection, or automation solution built for your specific problem. Includes a dashboard walkthrough and a written report reflecting the data at delivery time – the code and pipeline are not handed over.</p>
+                <a class="btn btn--primary package__cta" href="#contact" data-quote-package="pkg-project" data-i18n="packages.quoteCta">Get a custom quote</a>
+              </article>
+            </li>
+            <li>
+              <article class="package package--premium" aria-labelledby="pkg-integrated">
+                <div class="package__head">
+                  <div class="package__title-row">
+                    <h2 id="pkg-integrated" data-i18n="packages.integrated.title">Integrated Implementation (Full Handover)</h2>
+                    <span class="package__badge">
+                      <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M8 1.2l2.03 4.3 4.67.6-3.43 3.23.87 4.63L8 11.7l-4.14 2.26.87-4.63L1.3 6.1l4.67-.6z" fill="currentColor" /></svg>
+                      <span data-i18n="packages.integrated.badge">Most complete</span>
+                    </span>
+                  </div>
+                  <p class="package__meta" data-i18n="packages.integrated.meta">One-off · Deployment-ready solution + integration support</p>
+                </div>
+                <p class="package__text" data-i18n="packages.integrated.text">You receive a complete, deployment-ready solution that can be integrated directly into your production or operational systems. You receive the necessary rights to use the project-specific solution; general-purpose, reusable code components, methodologies, and technical approaches remain available for reuse by the provider in other projects.</p>
+                <a class="btn btn--ghost package__cta" href="#contact" data-quote-package="pkg-integrated" data-i18n="packages.quoteCta">Get a custom quote</a>
+              </article>
+            </li>
+            <li>
+              <article class="package" aria-labelledby="pkg-monitoring">
+                <div class="package__head">
+                  <h2 id="pkg-monitoring" data-i18n="packages.monitoring.title">Ongoing Monitoring &amp; Reporting</h2>
+                  <p class="package__meta" data-i18n="packages.monitoring.meta">Weekly or monthly · report + 30-min review</p>
+                </div>
+                <p class="package__text" data-i18n="packages.monitoring.text">Weekly or monthly data refresh, an updated dashboard view, a PDF report, and a 30-minute review meeting each cycle – for continuous, up-to-date visibility.</p>
+                <a class="btn btn--ghost package__cta" href="#contact" data-quote-package="pkg-monitoring" data-i18n="packages.quoteCta">Get a custom quote</a>
+              </article>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="section contact" id="contact">
+        <div class="shell contact__grid">
+          <div>
+            <h2 data-i18n="contact.heading">Get in touch</h2>
+            <p data-i18n="contact.copy">Have questions? Fill out the form and I will get back to you within 24 hours, or reach me directly by email.</p>
+            <dl class="contact__meta">
+              <div>
+                <dt data-i18n="contact.emailLabel">Email</dt>
+                <dd><a href="mailto:hello@anominsight.com">hello@anominsight.com</a></dd>
+              </div>
+              <div>
+                <dt data-i18n="contact.locationLabel">Location</dt>
+                <dd data-i18n="contact.locationValue">Remote / worldwide</dd>
+              </div>
+              <div>
+                <dt data-i18n="contact.responseLabel">Response time</dt>
+                <dd data-i18n="contact.responseValue">Within 24 hours</dd>
+              </div>
+            </dl>
+            <a class="btn btn--ghost" href="https://calendar.app.google/ckrBNEpqXD8Vm8Ji6" target="_blank" rel="noopener noreferrer" aria-describedby="newTabHint" data-i18n="contact.bookCallButton">Book a call</a>
+          </div>
+
+          <form class="form" id="contactForm" action="https://formspree.io/f/xjykwlyk" method="POST">
+            <h3 data-i18n="contact.formHeading">Send me a message</h3>
+            <div class="field">
+              <label for="name" data-i18n="contact.formName">Name</label>
+              <input type="text" id="name" name="name" autocomplete="name" required data-i18n-placeholder="contact.formNamePlaceholder" placeholder="Your name" />
+            </div>
+            <div class="field">
+              <label for="email" data-i18n="contact.formEmail">Email</label>
+              <input type="email" id="email" name="email" autocomplete="email" required data-i18n-placeholder="contact.formEmailPlaceholder" placeholder="you@company.com" />
+            </div>
+            <div class="field">
+              <label for="message" data-i18n="contact.formMessage">Message</label>
+              <textarea id="message" name="message" rows="4" required data-i18n-placeholder="contact.formMessagePlaceholder" placeholder="Tell me about your project..."></textarea>
+            </div>
+            <input type="hidden" name="package" value="" />
+            <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="honeypot" aria-hidden="true" />
+            <button class="btn btn--primary" type="submit" data-i18n="contact.formSubmit">Send message</button>
+            <p class="form__status" id="formStatus" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="shell footer__inner">
+        <p>© <span id="year">2026</span> AnomInsight. <span data-i18n="footer.tagline">AI-powered data analytics for modern businesses.</span></p>
+      </div>
+    </footer>
+
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

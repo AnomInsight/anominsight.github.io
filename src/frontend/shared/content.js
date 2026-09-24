@@ -1,8 +1,8 @@
-// Canonical product copy and portfolio data shared by the alternative design
+// Canonical product copy shared by the alternative design
 // directions (versions/b, versions/c). The baseline build (index01.html) keeps
 // its own js/i18n.js and js/portfolio.js untouched; this module is the single
 // source of truth for everything built after it, so copy edits land once
-// instead of three times.
+// instead of three times. Portfolio case-study data lives in portfolio-data.js.
 //
 // Voice: first person singular throughout. AnomInsight is one identifiable
 // person (see PRODUCT.md, Product Principles 2), so the site says "I", never
@@ -26,8 +26,14 @@ export const translations = {
     'nav.contact': 'Contact',
     'lang.switchTo': 'EN',
     'lang.switchAria': 'Switch to Hungarian',
+    'home.pageTitle': 'AnomInsight – AI analytics and anomaly detection for industry',
+    'a11y.skip': 'Skip to content',
+    'a11y.menu': 'Menu',
+    'a11y.primaryNav': 'Main navigation',
+    'a11y.newTab': 'Opens in a new tab',
 
-    'hero.heading': 'AI-powered analytics that turn data into decisions',
+    // Two clauses, rendered as two line groups in the h1.
+    'hero.heading': 'See what your data is hiding.',
     'hero.copy': 'I help companies understand their data, detect anomalies, and predict future outcomes using modern machine learning and interactive dashboards.',
     'hero.ctaPrimary': 'Get a free data audit',
     'hero.ctaSecondary': 'Book a call',
@@ -37,6 +43,15 @@ export const translations = {
     'hero.preparedValue': 'Bence Csomor, founder',
     'hero.basisLabel': 'Evidence',
     'hero.basisValue': 'Three case studies, public source code',
+    'hero.callNote': 'You speak with me directly – 30 minutes, no obligation.',
+    // Hero figure: a schematic example, captioned as one.
+    'hero.signal.chartAria': 'Line chart: a torque reading stays inside its expected range, then one reading breaks out of it and is flagged as an anomaly.',
+    'hero.signal.band': 'Expected range',
+    'hero.signal.anomalyKey': 'Anomaly',
+    'hero.signal.anomaly': 'Torque breaks out of its expected range.',
+    'hero.signal.insightKey': 'Insight',
+    'hero.signal.insight': 'Early tool wear – plan a tool change before the next shift.',
+    'hero.signal.caption': 'Illustrative example – CNC machine torque',
 
     'proof.heading': 'Measured results',
     'proof.note': 'Every figure below comes from the case study linked beside it. Nothing here is a projection.',
@@ -53,16 +68,7 @@ export const translations = {
     'proof.repos.label': 'case studies published with public source code',
     'proof.repos.source': 'github.com/AnomInsight',
 
-    'credentials.item1.title': '4+ years',
-    'credentials.item1.text': 'Working with production and industrial data',
-    'credentials.item2.title': 'Industrial focus',
-    'credentials.item2.text': 'Manufacturing process analytics',
-    'credentials.item3.title': 'Proven results',
-    'credentials.item3.text': 'Real case studies with measurable outcomes, published on GitHub',
-    'credentials.item4.title': 'Continuous development',
-    'credentials.item4.text': 'New analytics capabilities in active development',
-
-    'problem.title': 'Most companies have data - but no clarity',
+    'problem.title': 'Most companies have data – but no clarity',
     'problem.text': 'Businesses collect large amounts of data every day, but struggle to turn it into actionable insights. Errors, inconsistencies, and hidden patterns often go unnoticed.',
     'problem.issue1': 'Unexpected downtime',
     'problem.issue1.detail': 'Machines fail without warning and production stops mid-shift.',
@@ -89,6 +95,48 @@ export const translations = {
     'services.card2.text': 'Custom dashboards with real-time charts and KPIs for full business visibility.',
     'services.card3.title': 'Automated reporting',
     'services.card3.text': 'Scheduled PDF or email reports summarising key insights and performance metrics.',
+    'services.ctaAll': 'See all service packages',
+    'capabilities.heading': 'What I deliver',
+    'capabilities.text': 'Most engagements start with a data audit, dashboards or reporting. Anomaly detection, forecasting and predictive maintenance are built on request, around your data.',
+
+    // The free entry offer is the discovery call (decided 2026-09-24); the data
+    // audit is a quoted package. Version A uses these; b/c still carry the
+    // older free-audit keys above.
+    'offer.discoveryCta': 'Book a free discovery call',
+    'offer.servicesCta': 'See services and packages',
+    'offer.title': 'What the free discovery call covers',
+    'offer.text': 'A free 30-minute call to understand your problem – no obligation.',
+    'offer.item1': 'Your problem, your data sources, and what a useful result would look like',
+    'offer.item2': 'An honest view of whether data analysis or machine learning is the right tool for it',
+    'offer.item3': 'A recommended next step and, if it fits, a custom quote',
+
+    // services.html. No fixed prices anywhere: every paid package is quoted.
+    'packages.pageTitle': 'Services – AnomInsight',
+    'packages.heading': 'Service packages, scoped to your data',
+    'packages.intro': 'Most packages deliver reports and dashboard views, and the underlying code and methodology stay with me. If you need the solution running inside your own systems, Integrated Implementation hands it over to you.',
+    'packages.quoteNote': 'There is no fixed price list: every package is scoped to your data and quoted individually.',
+    'packages.featured': 'Featured',
+    'packages.quoteCta': 'Get a custom quote',
+    'packages.quoteMessage': 'I would like a custom quote for: {package}.',
+    'packages.discovery.title': 'Free Discovery Call',
+    'packages.discovery.meta': '30 minutes · Free',
+    'packages.discovery.text': 'A free 30-minute call to understand your problem – no obligation.',
+    'packages.audit.title': 'Data Audit',
+    'packages.audit.meta': 'One-off · PDF/PPT report',
+    'packages.audit.text': 'Exploratory data analysis, data quality assessment, and a recommendations package – delivered as a PDF/PPT report.',
+    'packages.project.title': 'One-off Project Delivery',
+    'packages.project.meta': 'One-off · Dashboard walkthrough + report',
+    'packages.project.text': 'A custom ML model, anomaly detection, or automation solution built for your specific problem. Includes a dashboard walkthrough and a written report reflecting the data at delivery time – the code and pipeline are not handed over.',
+    // Marketing copy only: the client gets rights to the project-specific
+    // solution; general reusable components stay reusable by me. Never word
+    // this as full/exclusive ownership of all code (contract defines terms).
+    'packages.integrated.title': 'Integrated Implementation (Full Handover)',
+    'packages.integrated.badge': 'Most complete',
+    'packages.integrated.meta': 'One-off · Deployment-ready solution + integration support',
+    'packages.integrated.text': 'You receive a complete, deployment-ready solution that can be integrated directly into your production or operational systems. You receive the necessary rights to use the project-specific solution; general-purpose, reusable code components, methodologies, and technical approaches remain available for reuse by the provider in other projects.',
+    'packages.monitoring.title': 'Ongoing Monitoring & Reporting',
+    'packages.monitoring.meta': 'Weekly or monthly · report + 30-min review',
+    'packages.monitoring.text': 'Weekly or monthly data refresh, an updated dashboard view, a PDF report, and a 30-minute review meeting each cycle – for continuous, up-to-date visibility.',
 
     'advanced.title': 'Advanced analytics',
     'advanced.subtitle': 'Available on request',
@@ -111,6 +159,7 @@ export const translations = {
     'portfolio.navAria': 'Portfolio navigation',
     'portfolio.navPrev': 'Previous project',
     'portfolio.navNext': 'Next project',
+    'portfolio.pauseRotation': 'Pause automatic rotation',
     'portfolio.navDotsAria': 'Project pages',
     'portfolio.filterAll': 'All',
     'portfolio.clearAllFilters': 'Clear all filters',
@@ -126,6 +175,7 @@ export const translations = {
     'portfolio.statLabelProjects': 'Case studies published',
     'portfolio.statLabelIndustries': 'Industries covered',
     'portfolio.statLabelRepos': 'Public repositories',
+    'portfolio.statLabelTypes': 'Solution types',
     'portfolio.ctaText': 'Have a similar challenge in your operation?',
     'portfolio.ctaButton': 'Let\'s talk',
 
@@ -200,7 +250,7 @@ export const translations = {
     'contact.formMessagePlaceholder': 'Tell me about your data and what you need from it',
     'contact.formSubmit': 'Send message',
     'contact.formSending': 'Sending…',
-    'contact.formSuccess': 'Thanks — your message has been sent. I will get back to you within 24 hours.',
+    'contact.formSuccess': 'Thanks – your message has been sent. I will get back to you within 24 hours.',
     'contact.formError': 'Something went wrong. Please email me directly at hello@anominsight.com.',
 
     'footer.tagline': 'AI-powered data analytics for modern businesses.',
@@ -216,8 +266,13 @@ export const translations = {
     'nav.contact': 'Kapcsolat',
     'lang.switchTo': 'HU',
     'lang.switchAria': 'Váltás angol nyelvre',
+    'home.pageTitle': 'AnomInsight – MI-alapú adatelemzés és anomáliafelismerés',
+    'a11y.skip': 'Ugrás a tartalomra',
+    'a11y.menu': 'Menü',
+    'a11y.primaryNav': 'Fő navigáció',
+    'a11y.newTab': 'Új lapon nyílik meg',
 
-    'hero.heading': 'MI-alapú adatelemzés, amelyből jobb döntések születnek',
+    'hero.heading': 'Lásd meg, amit az adataid elrejtenek.',
     'hero.copy': 'Segítek a vállalatoknak megérteni az adataikat, felismerni az anomáliákat és előre jelezni a várható alakulásokat modern gépi tanulási módszerekkel és interaktív adatvizualizációval.',
     'hero.ctaPrimary': 'Ingyenes adataudit kérése',
     'hero.ctaSecondary': 'Időpont foglalása',
@@ -227,6 +282,14 @@ export const translations = {
     'hero.preparedValue': 'Csomor Bence, alapító',
     'hero.basisLabel': 'Bizonyíték',
     'hero.basisValue': 'Három esettanulmány, nyilvános forráskóddal',
+    'hero.callNote': 'Közvetlenül velem beszélsz – 30 perc, kötelezettség nélkül.',
+    'hero.signal.chartAria': 'Vonaldiagram: a nyomaték a várható tartományon belül mozog, majd egy mérés kilép belőle, és a rendszer anomáliaként jelöli.',
+    'hero.signal.band': 'Várható tartomány',
+    'hero.signal.anomalyKey': 'Anomália',
+    'hero.signal.anomaly': 'A nyomaték kilép a várható tartományból.',
+    'hero.signal.insightKey': 'Meglátás',
+    'hero.signal.insight': 'Kezdődő szerszámkopás – a cserét érdemes a következő műszak előtt betervezni.',
+    'hero.signal.caption': 'Szemléltető példa – CNC-gép nyomatéka',
 
     'proof.heading': 'Mért eredmények',
     'proof.note': 'Az alábbi számok mind a mellettük hivatkozott esettanulmányból származnak. Egyik sem becslés.',
@@ -243,16 +306,7 @@ export const translations = {
     'proof.repos.label': 'esettanulmány nyilvános forráskóddal publikálva',
     'proof.repos.source': 'github.com/AnomInsight',
 
-    'credentials.item1.title': '4+ év',
-    'credentials.item1.text': 'Termelési és ipari adatok elemzésében szerzett tapasztalat',
-    'credentials.item2.title': 'Ipari fókusz',
-    'credentials.item2.text': 'Gyártási folyamatok adatalapú elemzése',
-    'credentials.item3.title': 'Igazolt eredmények',
-    'credentials.item3.text': 'Valós esettanulmányok mérhető eredményekkel, GitHubon publikálva',
-    'credentials.item4.title': 'Folyamatos fejlesztés',
-    'credentials.item4.text': 'Új analitikai megoldások folyamatos fejlesztése',
-
-    'problem.title': 'A legtöbb cégnél van adat — de nincs tisztánlátás',
+    'problem.title': 'A legtöbb cégnél van adat – de nincs tisztánlátás',
     'problem.text': 'A vállalatok naponta nagy mennyiségű adatot gyűjtenek, mégis nehezen alakítják át ezeket valóban hasznos, döntést támogató információvá. A hibák, az eltérések és a rejtett mintázatok gyakran észrevétlenek maradnak.',
     'problem.issue1': 'Váratlan leállások',
     'problem.issue1.detail': 'A gépek előjel nélkül meghibásodhatnak, és leállhat a termelés a műszak közben.',
@@ -279,6 +333,42 @@ export const translations = {
     'services.card2.text': 'Egyedi dashboardok valós idejű diagramokkal és KPI-okkal, hogy átlásd az üzleti teljesítményt.',
     'services.card3.title': 'Automatizált riportálás',
     'services.card3.text': 'Ütemezett PDF- vagy e-mail-riportok a legfontosabb megállapításokkal és mutatókkal.',
+    'services.ctaAll': 'Az összes szolgáltatáscsomag',
+    'capabilities.heading': 'Amiben segíteni tudok',
+    'capabilities.text': 'A legtöbb együttműködés adataudittal, dashboardokkal vagy riportálással kezdődik. Az anomáliafelismerést, az előrejelzést és a prediktív karbantartást kérésre, a te adataidra szabva építem meg.',
+
+    'offer.discoveryCta': 'Ingyenes discovery call foglalása',
+    'offer.servicesCta': 'Szolgáltatások és csomagok',
+    'offer.title': 'Miről szól az ingyenes discovery call',
+    'offer.text': '30 perces beszélgetés a problémád felmérésére – nincs kötelezettség.',
+    'offer.item1': 'A problémád, az adatforrásaid, és hogy számodra mi lenne a hasznos eredmény',
+    'offer.item2': 'Őszinte vélemény arról, hogy az adatelemzés vagy a gépi tanulás valóban jó eszköz-e rá',
+    'offer.item3': 'Javasolt következő lépés, és ha illik hozzád, egyedi ajánlat',
+
+    'packages.pageTitle': 'Szolgáltatások – AnomInsight',
+    // Soft hyphen: lets the long compound break cleanly on narrow phones.
+    'packages.heading': 'Szolgáltatás­csomagok, a te adataidra szabva',
+    'packages.intro': 'A legtöbb csomag riportot és dashboard-nézetet biztosít – a mögöttes kód és módszertan nálam marad. Ha a megoldást a saját rendszeredben szeretnéd futtatni, az Integrált Megvalósítás teljes átadással jár.',
+    'packages.quoteNote': 'Fix árlista nincs: minden csomagot a te adataidhoz igazítok, és egyedi ajánlatot adok rá.',
+    'packages.featured': 'Kiemelt',
+    'packages.quoteCta': 'Egyedi ajánlatért írj',
+    'packages.quoteMessage': 'Egyedi ajánlatot kérnék erre a csomagra: {package}.',
+    'packages.discovery.title': 'Ingyenes Discovery Call',
+    'packages.discovery.meta': '30 perc · Ingyenes',
+    'packages.discovery.text': '30 perces beszélgetés a problémád felmérésére – nincs kötelezettség.',
+    'packages.audit.title': 'Adat Audit',
+    'packages.audit.meta': 'Egyszeri · PDF/PPT riport',
+    'packages.audit.text': 'Adatfeltárás (EDA), adatminőség-felmérés és javaslatcsomag – PDF/PPT riport formájában.',
+    'packages.project.title': 'Egyszeri Projektmegvalósítás',
+    'packages.project.meta': 'Egyszeri · Dashboard-bemutató + riport',
+    'packages.project.text': 'Egyedi ML modell, anomália-detektálás vagy automatizálás a te problémádra szabva. Dashboard-bemutató és írásos riport a leszállításkori adatállapotra – a kód és a pipeline nem kerül átadásra.',
+    'packages.integrated.title': 'Integrált Megvalósítás (teljes átadással)',
+    'packages.integrated.badge': 'Legteljesebb',
+    'packages.integrated.meta': 'Egyszeri · Üzembe helyezhető megoldás + integrációs támogatás',
+    'packages.integrated.text': 'Teljes, üzembe helyezésre kész megoldást kapsz, amelyet közvetlenül beépíthetsz a saját gyártási vagy üzemi rendszeredbe. A projekt-specifikus megoldás felhasználási joga az ügyfelet illeti; az általános, újrafelhasználható kódelemek, módszertanok és technikai megoldások azonban továbbra is a szolgáltató által más projektekben is felhasználhatók.',
+    'packages.monitoring.title': 'Rendszeres Monitoring & Reporting',
+    'packages.monitoring.meta': 'Heti vagy havi · PDF riport + 30 perces review',
+    'packages.monitoring.text': 'Heti vagy havi adatfrissítés, frissített dashboard-nézet, PDF riport és ciklusonként 30 perces review meeting – a folyamatos, friss rálátásért.',
 
     'advanced.title': 'Haladó analitika',
     'advanced.subtitle': 'Kérésre elérhető',
@@ -301,6 +391,7 @@ export const translations = {
     'portfolio.navAria': 'Portfólió navigáció',
     'portfolio.navPrev': 'Előző projekt',
     'portfolio.navNext': 'Következő projekt',
+    'portfolio.pauseRotation': 'Automatikus léptetés szüneteltetése',
     'portfolio.navDotsAria': 'Projekt oldalak',
     'portfolio.filterAll': 'Összes',
     'portfolio.clearAllFilters': 'Szűrők törlése',
@@ -316,6 +407,7 @@ export const translations = {
     'portfolio.statLabelProjects': 'Publikált esettanulmányok',
     'portfolio.statLabelIndustries': 'Lefedett iparágak',
     'portfolio.statLabelRepos': 'Nyilvános repók',
+    'portfolio.statLabelTypes': 'Megoldástípusok',
     'portfolio.ctaText': 'Hasonló kihívással nézel szembe a saját működésedben?',
     'portfolio.ctaButton': 'Beszéljünk',
 
@@ -326,7 +418,7 @@ export const translations = {
     'method.step2.title': 'Elemzés',
     'method.step2.text': 'Feldolgozom és megtisztítom az adatokat fejlett elemzési módszerekkel és gépi tanulási modellekkel.',
     'method.step3.title': 'Eredmények',
-    'method.step3.text': 'Irányítópultokat, riportokat és konkrét javaslatokat kapsz.',
+    'method.step3.text': 'Dashboardokat, riportokat és konkrét javaslatokat kapsz.',
     'method.step4.title': 'Folyamatos fejlesztés',
     'method.step4.text': 'Opcionális folyamatos monitorozás és modellfrissítés.',
 
@@ -350,7 +442,7 @@ export const translations = {
     'roadmap.available': 'Jelenleg elérhető',
     'roadmap.developing': 'Fejlesztés alatt',
     'roadmap.item1': 'Adataudit',
-    'roadmap.item2': 'Irányítópultok',
+    'roadmap.item2': 'Dashboardok',
     'roadmap.item3': 'Automatizált riportálás',
     'roadmap.item4': 'Valós idejű anomáliafelismerés',
     'roadmap.item5': 'Prediktív analitika',
@@ -390,148 +482,10 @@ export const translations = {
     'contact.formMessagePlaceholder': 'Írd le, milyen adatokkal rendelkezel, és mit szeretnél megtudni belőlük',
     'contact.formSubmit': 'Üzenet küldése',
     'contact.formSending': 'Küldés…',
-    'contact.formSuccess': 'Köszönöm — az üzeneted sikeresen elküldve. 24 órán belül válaszolok.',
+    'contact.formSuccess': 'Köszönöm – az üzeneted sikeresen elküldve. 24 órán belül válaszolok.',
     'contact.formError': 'Hiba történt. Kérlek írj közvetlenül a hello@anominsight.com címre.',
 
     'footer.tagline': 'MI-alapú adatelemzés modern vállalatoknak.',
     'footer.rights': 'Minden jog fenntartva.',
   },
-};
-
-// The three real case studies. Facts, metrics and repository links are taken
-// verbatim from the baseline build — no claim here may be invented or inflated.
-export const portfolioProjects = [
-  {
-    id: 'cnc-predictive-maintenance',
-    kind: { en: 'Manufacturing', hu: 'Gyártás' },
-    status: 'caseStudy',
-    title: {
-      en: 'Predictive maintenance for CNC operations',
-      hu: 'Prediktív karbantartás CNC-üzemekhez',
-    },
-    description: {
-      en: 'A machine learning model that watches CNC machine sensors and flags the ones likely to break down soon. In testing, it caught 96% of real failures before they happened.',
-      hu: 'Gépi tanulási modell, amely a CNC-gépek szenzoradatait figyeli, és jelzi, mely gépeknél várható hamarosan meghibásodás. A tesztelés során a valós meghibásodások 96%-át még bekövetkezésük előtt felismerte.',
-    },
-    overview: {
-      en: 'Unplanned breakdowns are costly on a 24/7 CNC production line, so this project builds an early-warning system for machine failure. It looks at real sensor readings, such as temperature, power draw, and torque, to flag machines likely to fail within the next day or two, before anything actually breaks. After comparing a few different approaches, I settled on a LightGBM model (a fast, tree-based machine learning method) tuned to catch as many real failures as possible: in testing it caught 96% of actual breakdowns, at the cost of roughly two false alarms for every real one it found. The idea isn\'t to replace maintenance engineers. It\'s to hand them a prioritized daily list so they can focus their attention where it matters, with the alert sensitivity adjustable to match how many false alarms the team can realistically handle.',
-      hu: 'A váratlan leállások sokba kerülnek egy folyamatosan üzemelő CNC-gyártásban, ezért ez a projekt korai figyelmeztető rendszert épít a gépleállások előrejelzésére. A modell valós szenzoradatokat figyel, például hőmérsékletet, teljesítményfelvételt és nyomatékot, hogy jelezze, mely gépek állhatnak le a következő egy-két napban, még mielőtt bármi elromlana. Több módszer kipróbálása után egy LightGBM modell mellett döntöttem (ez egy gyors, fákra épülő gépi tanulási módszer), amelyet úgy hangoltam, hogy a lehető legtöbb valós meghibásodást elkapja: a tesztelés során az esetek 96%-ában időben jelzett, cserébe nagyjából két téves riasztás valódi meghibásodásonként. A cél nem az, hogy kiváltsa a karbantartó mérnököket, hanem hogy egy priorizált napi listát adjon a kezükbe, amelyre érdemes figyelniük. A riasztási küszöb pedig állítható, hogy illeszkedjen ahhoz, mennyi téves riasztást bír el a csapat.',
-    },
-    metrics: [
-      {
-        value: '96%',
-        label: { en: 'of real failures caught in testing', hu: 'valós meghibásodás elkapva teszteléskor' },
-      },
-      {
-        value: '~2:1',
-        label: { en: 'false alarms per true catch', hu: 'téves riasztás valós találatonként' },
-      },
-      {
-        value: 'LightGBM',
-        label: { en: 'model selected after comparison', hu: 'modell összehasonlítás után kiválasztva' },
-      },
-    ],
-    categories: ['predictiveMaintenance', 'anomalyDetection', 'decisionSupport'],
-    // 02_Portfolio_Project is the ai4i2020 predictive-maintenance repo; 01 is the
-    // MNIST one. The two were previously swapped here (and still are in the
-    // untouched ORIGINAL reference copy).
-    githubUrl: 'https://github.com/AnomInsight/02_Portfolio_Project',
-  },
-  {
-    id: 'digit-classifier-mail-sorting',
-    kind: { en: 'Logistics', hu: 'Logisztika' },
-    status: 'caseStudy',
-    title: {
-      en: 'Handwritten digit classifier for mail sorting',
-      hu: 'Kézzel írt számjegyek osztályozása levélválogatáshoz',
-    },
-    description: {
-      en: 'Compared five different AI models for reading handwritten ZIP codes automatically. The best one, a neural network, got it right 99.27% of the time.',
-      hu: 'Öt különböző MI-modellt hasonlítottam össze kézzel írt irányítószámok automatikus felismerésére. A legjobb, egy neurális háló, az esetek 99,27%-ában helyesen ismerte fel a számjegyeket.',
-    },
-    overview: {
-      en: 'Sorting mail by handwritten ZIP code is slow and error-prone when done by hand at scale, so this project explores whether AI can take over that job reliably. Starting from a simple baseline and working up through logistic regression, random forests, and support vector machines, I landed on a convolutional neural network (a type of model built specifically for recognizing images), which correctly read digits 99.27% of the time. Beyond just accuracy, I checked which digits the model tends to confuse with each other, looked closely at its most confident mistakes, and tested how well it holds up against rotated, noisy, or poorly lit scans. The practical takeaway: send anything the model isn\'t confident about to a human for a second look, and keep monitoring its mistakes after it goes live.',
-      hu: 'A kézzel írt irányítószámok kézi feldolgozása lassú és hibalehetőségekkel teli, ha nagy mennyiségű küldeményt kell feldolgozni. Ez a projekt azt vizsgálja, hogy egy MI megbízhatóan át tudja-e venni ezt a feladatot. Egy egyszerű alapmodellből kiindulva, logisztikus regresszión, random forest modellen és support vector machine (SVM) modelleken keresztül végül egy konvolúciós neurális hálónál kötöttem ki (ez egy kifejezetten képfelismerésre kitalált modelltípus), amely az esetek 99,27%-ában helyesen ismerte fel a számjegyeket. A pontosságon túl azt is megvizsgáltam, mely számjegyeket keveri össze a modell egymással, alaposan átnéztem azokat a hibás előrejelzéseket, amelyekben a modell a legbiztosabb volt, és teszteltem, hogyan teljesít elforgatott, zajos vagy rosszul megvilágított képeken. A gyakorlati tanulság: azokat az eseteket, amelyekben a modell bizonytalan, azt küldjük emberi ellenőrzésre, és élesben is érdemes folyamatosan figyelni a hibáit.',
-    },
-    metrics: [
-      {
-        value: '99.27%',
-        label: { en: 'accuracy, best model (CNN)', hu: 'pontosság, legjobb modell (CNN)' },
-      },
-      {
-        value: '5',
-        label: { en: 'model families compared', hu: 'összehasonlított modellcsalád' },
-      },
-      {
-        value: 'CNN',
-        label: { en: 'architecture selected', hu: 'kiválasztott architektúra' },
-      },
-    ],
-    categories: ['imageClassification', 'deepLearning', 'computerVision'],
-    githubUrl: 'https://github.com/AnomInsight/01_Portfolio_Project',
-  },
-  {
-    id: 'restaurant-ai-chatbot',
-    kind: { en: 'Hospitality', hu: 'Vendéglátás' },
-    status: 'caseStudy',
-    title: {
-      en: 'AI chatbot for restaurant ordering and support',
-      hu: 'MI-chatbot éttermi rendeléshez és ügyfélszolgálathoz',
-    },
-    description: {
-      en: 'An AI chat widget built for a demo pizzeria website that answers questions about the menu, hours, and orders. It is designed to stick to food that is actually on the menu.',
-      hu: 'MI-alapú chatwidget egy demó pizzéria weboldalához, amely válaszol a menüvel, a nyitvatartással és a rendelésekkel kapcsolatos kérdésekre. Úgy készült, hogy csak a menüben ténylegesen szereplő ételekről beszéljen.',
-    },
-    overview: {
-      en: 'Small businesses often lose customers simply because nobody\'s around to answer a quick question like "are you open right now?" or "what\'s your best-selling pizza?". This project shows how a lightweight AI chatbot can fill that gap. I built a demo pizzeria website with a chat widget powered by a fast large language model (via Groq), and kept it honest by only letting it talk about real menu items, prices, and hours pulled straight from the business\'s own data, which keeps it grounded and much less likely to make up a dish that doesn\'t exist. It remembers the conversation while you\'re chatting, keeps track of which items get ordered most, and includes basic safeguards like rate limiting and API key protection. The widget itself is just plain HTML, CSS, and JavaScript, so it can be dropped into almost any existing website.',
-      hu: 'A kisvállalkozások gyakran veszítenek el ügyfeleket csak azért, mert senki sincs ott, hogy megválaszoljon egy egyszerű kérdést, mint például „nyitva vannak most?” vagy „melyik a legnépszerűbb pizzájuk?”. Ez a projekt azt mutatja be, hogyan tud egy könnyű MI-chatbot pótolni ezt a hiányt. Egy demó pizzéria weboldalt építettem egy chat widgettel, amely egy gyors nagy nyelvi modellre épül (Groq-on keresztül), és úgy állítottam be, hogy kizárólag a vállalkozás saját adataira, étlapjára, áraira és nyitvatartására támaszkodjon, ami sokkal kisebb eséllyel eredményez nem létező ételeket. A beszélgetés során figyelembe veszi a korábbi üzeneteket, nyomon követi, mely ételeket rendelik a leggyakrabban, és alapvető védelmi mechanizmusokat is alkalmaz, például a kérések számának korlátozását és az API-kulcs védelmét. Maga a widget egyszerű HTML, CSS és JavaScript, így szinte bármelyik meglévő weboldalba beilleszthető.',
-    },
-    metrics: [
-      {
-        value: 'Groq',
-        label: { en: 'LLM provider behind the widget', hu: 'a widget mögötti LLM-szolgáltató' },
-      },
-      {
-        value: 'Demo',
-        label: { en: 'project, not a paying client', hu: 'projekt, nem fizető ügyfél' },
-      },
-      {
-        value: 'HTML/CSS/JS',
-        label: { en: 'drop-in, no framework needed', hu: 'beilleszthető, keretrendszer nélkül' },
-      },
-    ],
-    categories: ['chatbot', 'llmIntegration', 'customerExperience'],
-    githubUrl: 'https://github.com/AnomInsight/03_Portfolio_Project',
-  },
-];
-
-export const portfolioCategoryLabels = {
-  predictiveMaintenance: { en: 'Predictive maintenance', hu: 'Prediktív karbantartás' },
-  anomalyDetection: { en: 'Anomaly detection', hu: 'Anomáliafelismerés' },
-  decisionSupport: { en: 'Decision support', hu: 'Döntéstámogatás' },
-  imageClassification: { en: 'Image classification', hu: 'Képosztályozás' },
-  deepLearning: { en: 'Deep learning', hu: 'Mélytanulás' },
-  computerVision: { en: 'Computer vision', hu: 'Számítógépes látás' },
-  chatbot: { en: 'AI chatbot', hu: 'MI-chatbot' },
-  llmIntegration: { en: 'LLM integration', hu: 'LLM-integráció' },
-  customerExperience: { en: 'Customer experience', hu: 'Ügyfélélmény' },
-};
-
-export const portfolioStatusLabels = {
-  live: { en: 'Live', hu: 'Aktív' },
-  pilot: { en: 'Pilot', hu: 'Próbaüzem' },
-  caseStudy: { en: 'Case study', hu: 'Esettanulmány' },
-  prototype: { en: 'Prototype', hu: 'Prototípus' },
-  workInProgress: { en: 'Work in progress', hu: 'Fejlesztés alatt' },
-  ongoing: { en: 'Ongoing', hu: 'Folyamatban' },
-  planned: { en: 'Planned', hu: 'Tervezett' },
-  testing: { en: 'Testing', hu: 'Tesztelés alatt' },
-};
-
-export const getLabel = (dict, id, lang) => {
-  const entry = dict[id];
-  if (!entry) {
-    return id;
-  }
-  return entry[lang] || entry.en;
 };

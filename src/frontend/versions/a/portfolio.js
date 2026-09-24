@@ -1,5 +1,5 @@
 // Version A's portfolio: the SAME deck-carousel mechanic as the original build
-// (DESIGN.md marks this component's structure protected — filters, 3D card
+// (DESIGN.md marks this component's structure protected - filters, 3D card
 // deck, auto-rotate, detail modal), adapted only to pull its data and labels
 // from the shared content module instead of a locally embedded copy, and to
 // subscribe to the shared language controller instead of exporting its own
@@ -10,7 +10,7 @@ import {
   portfolioCategoryLabels,
   portfolioStatusLabels,
   getLabel,
-} from '../../shared/content.js';
+} from '../../shared/portfolio-data.js';
 
 const GITHUB_ICON_SVG =
   '<svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>';
@@ -24,12 +24,23 @@ let currentLang = 'en';
 let portfolioFilterTransitionToken = 0;
 let activePortfolioDetailProject = null;
 let portfolioDetailCloseTimer = null;
+// The element that opened the detail dialog, so focus can return to it.
+let portfolioDetailOpener = null;
+// Rotation stops while keyboard focus is inside the deck, and for good once
+// the visitor presses the pause control (WCAG 2.2.2).
+let isPortfolioFocusWithin = false;
+let isPortfolioRotationPaused = false;
 
 const closePortfolioDetails = () => {
   const modal = document.getElementById('portfolioDetailModal');
   if (!modal || modal.getAttribute('aria-hidden') === 'true') {
     return;
   }
+
+  if (portfolioDetailOpener && document.contains(portfolioDetailOpener)) {
+    portfolioDetailOpener.focus({ preventScroll: true });
+  }
+  portfolioDetailOpener = null;
 
   modal.classList.add('is-closing');
   if (portfolioDetailCloseTimer) {
@@ -93,6 +104,10 @@ const openPortfolioDetails = (project, lang, t) => {
     metaNode.appendChild(chip);
   });
 
+  if (modal.getAttribute('aria-hidden') !== 'false' && !modal.contains(document.activeElement)) {
+    portfolioDetailOpener = document.activeElement;
+  }
+
   activePortfolioDetailProject = project;
   modal.setAttribute('aria-hidden', 'false');
   document.body.classList.add('portfolio-detail-open');
@@ -130,12 +145,15 @@ const renderPortfolioStats = (lang, t) => {
 
   const projectCount = portfolioProjects.length;
   const industryCount = new Set(portfolioProjects.map((project) => project.kind.en)).size;
-  const repoCount = portfolioProjects.filter((project) => project.githubUrl).length;
+  // Distinct solution types, from the same category tags as the "Refine by
+  // type" filter. Replaces a repository count that only repeated the project
+  // count (every card already links its repository).
+  const typeCount = new Set(portfolioProjects.flatMap((project) => project.categories)).size;
 
   const stats = [
     { value: projectCount, label: t('portfolio.statLabelProjects') },
     { value: industryCount, label: t('portfolio.statLabelIndustries') },
-    { value: repoCount, label: t('portfolio.statLabelRepos') },
+    { value: typeCount, label: t('portfolio.statLabelTypes') },
   ];
 
   host.innerHTML = '';
@@ -345,7 +363,8 @@ const renderPortfolioNavDots = (count, t) => {
     const dot = document.createElement('button');
     dot.type = 'button';
     dot.className = 'portfolio-nav-dot';
-    dot.setAttribute('role', 'tab');
+    // Plain buttons, not role="tab": there are no tab panels and no
+    // arrow-key behaviour, so tab semantics would promise the wrong thing.
     dot.setAttribute('aria-label', labelTemplate.replace('{n}', String(i + 1)));
     dot.addEventListener('click', () => setPortfolioFocus(i));
     dotsHost.appendChild(dot);
@@ -406,7 +425,7 @@ const renderPortfolio = (lang, t, options = {}) => {
     const expandLabel = t('portfolio.expand');
     const githubLabel = t('portfolio.githubLabel');
     const githubLink = project.githubUrl
-      ? `<a class="portfolio-expand-btn portfolio-github-btn" href="${project.githubUrl}" target="_blank" rel="noopener noreferrer" aria-label="${githubLabel}" title="${githubLabel}">${GITHUB_ICON_SVG}</a>`
+      ? `<a class="portfolio-expand-btn portfolio-github-btn" href="${project.githubUrl}" target="_blank" rel="noopener noreferrer" aria-describedby="newTabHint" aria-label="${githubLabel}" title="${githubLabel}">${GITHUB_ICON_SVG}</a>`
       : '';
 
     card.innerHTML = `
@@ -417,14 +436,14 @@ const renderPortfolio = (lang, t, options = {}) => {
             <span class="portfolio-stage">${stage}</span>
             ${githubLink}
             <button type="button" class="portfolio-expand-btn" aria-label="${expandLabel}" title="${expandLabel}">
-              <img src="../../../../images/expand-arrows.png" alt="" />
+              <img src="../../../../images/icons/expand-arrows.png" alt="" width="64" height="64" />
             </button>
           </div>
         </div>
         <h3>${title}</h3>
         <p>${description}</p>
       </div>
-      <div class="portfolio-meta" aria-label="${t('portfolio.metaPrefix')}: ${categories}">
+      <div class="portfolio-meta" role="group" aria-label="${t('portfolio.metaPrefix')}: ${categories}">
         ${categoryLabels.map((category) => `<span>${category}</span>`).join('')}
       </div>
     `;
@@ -530,7 +549,11 @@ const updatePortfolioClasses = () => {
   dots.forEach((dot, index) => {
     const isActive = index === activePortfolioIndex;
     dot.classList.toggle('is-active', isActive);
-    dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    if (isActive) {
+      dot.setAttribute('aria-current', 'true');
+    } else {
+      dot.removeAttribute('aria-current');
+    }
   });
 };
 
@@ -553,7 +576,12 @@ const setPortfolioFocus = (index) => {
 const startPortfolioAutoRotate = () => {
   clearInterval(portfolioAutoRotateTimer);
 
-  if (isPortfolioTrackHovered || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (
+    isPortfolioTrackHovered ||
+    isPortfolioFocusWithin ||
+    isPortfolioRotationPaused ||
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  ) {
     return;
   }
 
@@ -562,8 +590,11 @@ const startPortfolioAutoRotate = () => {
     return;
   }
 
+  // A single card has nothing to rotate to; two already alternate (the
+  // arrows swap them), so rotation runs for any filtered set of 2 or more.
+  // It used to require 3, which left most type filters sitting still.
   const cards = track.querySelectorAll('.portfolio-card');
-  if (cards.length < 3) {
+  if (cards.length < 2) {
     return;
   }
 
@@ -618,12 +649,64 @@ export function initPortfolioInteraction() {
       isPortfolioTrackHovered = false;
       startPortfolioAutoRotate();
     });
+
+    // Keyboard users get the same pause as hover: the deck never moves
+    // while focus is on one of its cards.
+    track.addEventListener('focusin', () => {
+      isPortfolioFocusWithin = true;
+      clearInterval(portfolioAutoRotateTimer);
+    });
+
+    track.addEventListener('focusout', (event) => {
+      if (event.relatedTarget && track.contains(event.relatedTarget)) {
+        return;
+      }
+      isPortfolioFocusWithin = false;
+      startPortfolioAutoRotate();
+    });
+  }
+
+  const pauseBtn = document.getElementById('portfolioNavPause');
+  if (pauseBtn) {
+    // Nothing rotates under reduced motion, so there is nothing to pause.
+    pauseBtn.hidden = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    pauseBtn.addEventListener('click', () => {
+      isPortfolioRotationPaused = !isPortfolioRotationPaused;
+      pauseBtn.setAttribute('aria-pressed', String(isPortfolioRotationPaused));
+      if (isPortfolioRotationPaused) {
+        clearInterval(portfolioAutoRotateTimer);
+      } else {
+        startPortfolioAutoRotate();
+      }
+    });
   }
 
   if (modal) {
     modal.addEventListener('click', (event) => {
       if (event.target && event.target.dataset && event.target.dataset.closePortfolioDetail === 'true') {
         closePortfolioDetails();
+      }
+    });
+
+    // Keep Tab inside the open dialog (it is aria-modal).
+    modal.addEventListener('keydown', (event) => {
+      if (event.key !== 'Tab' || modal.getAttribute('aria-hidden') !== 'false') {
+        return;
+      }
+      const focusables = Array.from(
+        modal.querySelectorAll('a[href]:not([hidden]), button:not([disabled]):not([hidden])'),
+      );
+      if (!focusables.length) {
+        return;
+      }
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
       }
     });
   }

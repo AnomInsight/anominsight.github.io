@@ -12,7 +12,7 @@ Primary users are decision-makers (owners, ops/plant managers, technical leads) 
 
 ## Product Purpose
 
-AnomInsight is a founder-led AI data-analytics practice (founder: Bence Csomor) that turns a client's raw operational or business data into anomaly detection, predictive maintenance, forecasting, dashboards, and automated reporting. Success is a client engagement that starts from a free data audit and ends in a working, decision-useful analytics deliverable.
+AnomInsight is a founder-led AI data-analytics practice (founder: Bence Csomor) that turns a client's raw operational or business data into anomaly detection, predictive maintenance, forecasting, dashboards, and automated reporting. Success is a client engagement that starts from a free 30-minute discovery call and ends in a working, decision-useful analytics deliverable. Paid work is sold as service packages (Data Audit, One-off Project Delivery, Integrated Implementation (Full Handover), Ongoing Monitoring & Reporting – weekly or monthly), each quoted individually — no fixed prices are published. Most packages deliver reports and dashboard views, and the underlying code, pipeline and methodology are not handed over. Integrated Implementation is the exception: a deployment-ready solution with integration support, where the client receives rights to use the project-specific solution while general-purpose, reusable components and methods stay reusable by the provider. Site copy must never claim exclusive or full ownership of all code; exact IP terms are set in the contract.
 
 ## Positioning
 
@@ -20,22 +20,22 @@ Confirmed as deliberately dual: this is a solo consulting practice today, and th
 
 ## Operating Context
 
-- Bilingual audience: site content ships in English and Hungarian (`data-i18n` attributes + a translation dictionary in `src/frontend/js/i18n.js`); Hungarian is a first-class audience, not an afterthought.
-- Client contact happens through a Formspree-backed contact form, a Google Calendar booking link, and direct email (info@anominsight.com).
+- Bilingual audience: site content ships in English and Hungarian (`data-i18n` attributes + the translation dictionary in `src/frontend/shared/content.js`); Hungarian is a first-class audience, not an afterthought.
+- Client contact happens through a Formspree-backed contact form, a Google Calendar booking link, and direct email (hello@anominsight.com).
 - Case studies link out to public GitHub repos under the `AnomInsight` org for anyone who wants to inspect the actual work.
 - Hosted on GitHub Pages (custom domain via `CNAME`, `.nojekyll`), as fully static HTML/CSS/JS with no build step or package manager.
 
 ## Capabilities and Constraints
 
-- Two front-end surfaces currently coexist: the live homepage (`index.html`, root) is a "Coming Soon" placeholder; the fuller marketing/portfolio build (`src/frontend/index01.html`, with `style01.css` and the `src/frontend/js/*` modules: `main.js`, `i18n.js`, `portfolio.js`, `contactForm.js`, `closingRotor.js`) is more complete and is confirmed to be the intended near-term homepage replacement — future work should treat promoting/merging it to root as live, not as a hypothetical.
-- Portfolio content is data-driven from a single collection (`portfolioProjects` in `portfolio.js`), tagged with status (e.g., case study, live, pilot, prototype) and category, so new projects or filters can be added without a redesign.
+- Two front-end surfaces currently coexist: the live root (`index.html`, `style.css`, `script.js`) is only a temporary "Coming Soon" placeholder; the main site is Version A at `src/frontend/versions/a/` (`index.html` homepage + `services.html`, sharing `style.css` and `main.js`, with copy in `src/frontend/shared/content.js`). Version A is the intended homepage replacement — future work should treat promoting it to root as live, not as a hypothetical.
+- Portfolio content is data-driven from a single collection (`portfolioProjects` in `src/frontend/shared/content.js`), tagged with status (e.g., case study, live, pilot, prototype) and category, so new projects or filters can be added without a redesign.
 - No framework, bundler, or CMS is in use; any new capability should default to staying static/vanilla unless there's a concrete reason to introduce tooling.
 
 ## Brand Commitments
 
 - Name: AnomInsight. Founder: Bence Csomor (linked from the site to his LinkedIn).
 - Existing logo (`images/Logo_small_2.png`), favicon set, and GitHub org (`github.com/AnomInsight`) are established assets to reuse, not replace casually.
-- Contact email: info@anominsight.com.
+- Contact email: hello@anominsight.com (site contact and call booking; replaces info@anominsight.com, which only the temporary root placeholder still shows).
 
 ## Evidence on Hand
 
