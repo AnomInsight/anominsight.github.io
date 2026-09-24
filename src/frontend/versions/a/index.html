@@ -3,19 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="AnomInsight — a founder-led AI data analytics practice for manufacturing and industrial operations. Anomaly detection, predictive maintenance, forecasting and dashboards, with published case studies." />
+    <meta name="description" content="AnomInsight – a founder-led AI data analytics practice for manufacturing and industrial operations. Anomaly detection, predictive maintenance, forecasting and dashboards, with published case studies." />
     <meta name="robots" content="noindex" />
-    <title>AnomInsight — Reimagined (Direction A)</title>
+    <title data-i18n="home.pageTitle">AnomInsight – AI analytics and anomaly detection for industry</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../../../../images/favicon-circle-32.png?v=4" />
     <link rel="icon" type="image/png" sizes="192x192" href="../../../../images/favicon-circle-192.png?v=4" />
     <link rel="apple-touch-icon" href="../../../../images/favicon-circle-512.png?v=4" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- Self-hosted fonts (see @font-face in style.css); preload the two latin files every page needs. -->
+    <link rel="preload" href="../../../../fonts/source-sans-3-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="../../../../fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="style.css" />
+    <link rel="modulepreload" href="portfolio.js" />
+    <link rel="modulepreload" href="../../shared/portfolio-data.js" />
   </head>
   <body>
-    <a class="skip-link" href="#top">Skip to content</a>
+    <a class="skip-link" href="#top" data-i18n="a11y.skip">Skip to content</a>
+    <!-- Referenced by aria-describedby on every link that opens a new tab. -->
+    <span id="newTabHint" hidden data-i18n="a11y.newTab">Opens in a new tab</span>
 
     <header class="site-header">
       <div class="shell site-header__inner">
@@ -24,16 +28,16 @@
           <span class="brand__name">AnomInsight</span>
         </a>
 
-        <button class="menu-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navLinks">
+        <button class="menu-toggle" type="button" aria-label="Menu" data-i18n-aria="a11y.menu" aria-expanded="false" aria-controls="navLinks">
           <span></span><span></span><span></span>
         </button>
 
         <div class="nav-actions" id="navLinks">
-          <nav class="nav-links" aria-label="Primary">
-            <a href="#services" data-i18n="nav.services">Services</a>
+          <nav class="nav-links" aria-label="Main navigation" data-i18n-aria="a11y.primaryNav">
+            <a href="services.html" data-i18n="nav.services">Services</a>
             <a href="#projects" data-i18n="nav.projects">Projects</a>
-            <a href="#method" data-i18n="nav.method">How it works</a>
             <a href="#about" data-i18n="nav.about">About</a>
+            <a href="#method" data-i18n="nav.method">How it works</a>
             <a href="#contact" data-i18n="nav.contact">Contact</a>
           </nav>
           <button class="lang" type="button" data-lang-toggle data-i18n-aria="lang.switchAria" aria-label="Switch to Hungarian">
@@ -43,51 +47,61 @@
       </div>
     </header>
 
-    <main id="top">
-      <section class="hero">
-        <div class="hero__field" aria-hidden="true"></div>
+    <main id="top" tabindex="-1">
+      <section class="hero" aria-labelledby="hero-title">
         <div class="shell hero__grid">
           <div class="hero__copy">
-            <h1 data-i18n="hero.heading">AI-powered analytics that turn data into decisions</h1>
+            <h1 id="hero-title" data-i18n="hero.heading">See what your data is hiding.</h1>
             <p class="hero__lead" data-i18n="hero.copy">I help companies understand their data, detect anomalies, and predict future outcomes using modern machine learning and interactive dashboards.</p>
             <div class="hero__actions">
-              <a class="btn btn--primary" href="#contact" data-i18n="hero.ctaPrimary">Get a free data audit</a>
-              <a class="btn btn--ghost" href="https://calendar.app.google/ckrBNEpqXD8Vm8Ji6" target="_blank" rel="noopener noreferrer" data-i18n="hero.ctaSecondary">Book a call</a>
+              <a class="btn btn--primary" href="https://calendar.app.google/ckrBNEpqXD8Vm8Ji6" target="_blank" rel="noopener noreferrer" aria-describedby="newTabHint" data-i18n="offer.discoveryCta">Book a free discovery call</a>
+              <a class="btn btn--ghost" href="services.html" data-i18n="offer.servicesCta">See services and packages</a>
+            </div>
+            <!-- Puts a face and a name to the "I" in the lead, beside the call it refers to. -->
+            <div class="hero__byline">
+              <picture>
+                <source srcset="../../../../images/founder-bence-csomor-256.webp" type="image/webp" />
+                <img src="../../../../images/founder-bence-csomor.png" alt="" width="56" height="56" decoding="async" />
+              </picture>
+              <div class="hero__byline-text">
+                <p><strong data-i18n="about.name">Bence Csomor</strong> <span class="hero__byline-role" data-i18n="about.role">Founder and data scientist</span></p>
+                <p class="hero__byline-note" data-i18n="hero.callNote">You speak with me directly – 30 minutes, no obligation.</p>
+              </div>
             </div>
           </div>
 
-          <div class="credentials" aria-label="Why companies trust this practice">
-            <ul class="credentials__list">
-              <li>
-                <span class="credentials__mark" aria-hidden="true"></span>
-                <div>
-                  <strong data-i18n="credentials.item1.title">4+ years</strong>
-                  <span data-i18n="credentials.item1.text">Working with production and industrial data</span>
-                </div>
-              </li>
-              <li>
-                <span class="credentials__mark" aria-hidden="true"></span>
-                <div>
-                  <strong data-i18n="credentials.item2.title">Industrial focus</strong>
-                  <span data-i18n="credentials.item2.text">Manufacturing process analytics</span>
-                </div>
-              </li>
-              <li>
-                <span class="credentials__mark" aria-hidden="true"></span>
-                <div>
-                  <strong data-i18n="credentials.item3.title">Proven results</strong>
-                  <span data-i18n="credentials.item3.text">Real case studies with measurable outcomes, published on GitHub</span>
-                </div>
-              </li>
-              <li>
-                <span class="credentials__mark" aria-hidden="true"></span>
-                <div>
-                  <strong data-i18n="credentials.item4.title">Continuous development</strong>
-                  <span data-i18n="credentials.item4.text">New analytics capabilities in active development</span>
-                </div>
-              </li>
-            </ul>
-          </div>
+          <!-- The name, drawn: a reading leaves the range learned from history
+               (anomaly), and gets read as a cause and a next step (insight).
+               Schematic, and captioned as such - no real data is implied. -->
+          <figure class="signal">
+            <div class="signal__plot">
+              <svg viewBox="0 24 520 172" role="img" aria-label="Line chart: a torque reading stays inside its expected range, then one reading breaks out of it and is flagged as an anomaly." data-i18n-aria="hero.signal.chartAria">
+                <g class="signal__grid">
+                  <path d="M0 40H520M0 80H520M0 120H520M0 160H520" />
+                </g>
+                <path class="signal__band" d="M6,103 L14,105.8 L22,108.1 L30,109.8 L38,110.9 L46,111.2 L54,110.8 L62,109.8 L70,108.4 L78,106.8 L86,105.1 L94,103.7 L102,102.5 L110,101.8 L118,101.6 L126,101.7 L134,102.1 L142,102.7 L150,103.3 L158,103.6 L166,103.5 L174,102.8 L182,101.5 L190,99.6 L198,97.2 L206,94.3 L214,91.1 L222,88 L230,85 L238,82.4 L246,80.4 L254,79.1 L262,78.4 L270,78.5 L278,79.1 L286,80.2 L294,81.5 L302,82.8 L310,84 L318,84.8 L326,85.3 L334,85.3 L342,84.9 L350,84.2 L358,83.4 L366,82.6 L374,82 L382,81.9 L390,82.4 L398,83.5 L406,85.3 L414,87.6 L422,90.5 L430,93.6 L438,96.9 L446,100 L454,102.7 L462,104.9 L470,106.5 L478,107.4 L486,107.7 L494,107.4 L502,106.6 L510,105.6 L514,105.1 L514,149.1 L510,149.6 L502,150.6 L494,151.4 L486,151.7 L478,151.4 L470,150.5 L462,148.9 L454,146.7 L446,144 L438,140.9 L430,137.6 L422,134.5 L414,131.6 L406,129.3 L398,127.5 L390,126.4 L382,125.9 L374,126 L366,126.6 L358,127.4 L350,128.2 L342,128.9 L334,129.3 L326,129.3 L318,128.8 L310,128 L302,126.8 L294,125.5 L286,124.2 L278,123.1 L270,122.5 L262,122.4 L254,123.1 L246,124.4 L238,126.4 L230,129 L222,132 L214,135.1 L206,138.3 L198,141.2 L190,143.6 L182,145.5 L174,146.8 L166,147.5 L158,147.6 L150,147.3 L142,146.7 L134,146.1 L126,145.7 L118,145.6 L110,145.8 L102,146.5 L94,147.7 L86,149.1 L78,150.8 L70,152.4 L62,153.8 L54,154.8 L46,155.2 L38,154.9 L30,153.8 L22,152.1 L14,149.8 L6,147 Z" />
+                <path class="signal__axis" d="M0 184H520M58 184v5M162 184v5M266 184v5M370 184v5M474 184v5" />
+                <polyline class="signal__reading" points="6,115 16,136.8 25.9,126.8 35.9,126.9 45.8,137.7 55.8,133.2 65.8,127.7 75.7,134.3 85.7,132.3 95.6,126.3 105.6,127.8 115.6,126.3 125.5,130 135.5,119.1 145.5,122.4 155.4,129.7 165.4,129.4 175.3,115.7 185.3,126.5 195.3,119.4 205.2,125 215.2,118.8 225.1,101.2 235.1,105.5 245.1,111.1 255,104.7 265,103.2 274.9,102.4 284.9,110.3 294.9,111.8 304.8,102.7 314.8,103.2 324.7,114 334.7,103.9 344.7,99.7 354.6,85.7 364.6,44.7 374.5,95 384.5,112.8 394.5,106.1 404.4,111.4 414.4,117.3 424.4,104.5 434.3,112.8 444.3,122.5 454.2,125 464.2,125.9 474.2,122.9 484.1,137.9 494.1,120.4 504,125.7 514,124" />
+                <polyline class="signal__excursion" points="354.6,85.7 364.6,44.7 374.5,95" />
+                <path class="signal__leader" d="M364.6 57V184" />
+                <circle class="signal__ring" cx="364.6" cy="44.7" r="11" />
+                <circle class="signal__point" cx="364.6" cy="44.7" r="4.5" />
+              </svg>
+              <span class="signal__band-label" aria-hidden="true" data-i18n="hero.signal.band">Expected range</span>
+            </div>
+            <div class="signal__readout">
+              <p class="signal__step">
+                <span class="signal__key" data-i18n="hero.signal.anomalyKey">Anomaly</span>
+                <span data-i18n="hero.signal.anomaly">Torque breaks out of its expected range.</span>
+              </p>
+              <svg class="signal__arrow" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M4 10h11M11 5.5L15.5 10 11 14.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              <p class="signal__step">
+                <span class="signal__key" data-i18n="hero.signal.insightKey">Insight</span>
+                <span data-i18n="hero.signal.insight">Early tool wear – plan a tool change before the next shift.</span>
+              </p>
+            </div>
+            <figcaption data-i18n="hero.signal.caption">Illustrative example – CNC machine torque</figcaption>
+          </figure>
         </div>
       </section>
 
@@ -124,77 +138,73 @@
 
       <section class="approach" id="approach">
         <div class="shell approach__grid">
-          <h2 class="approach__heading approach__heading--problem" data-i18n="problem.title">Most companies have data — but no clarity</h2>
+          <h2 class="approach__heading approach__heading--problem" data-i18n="problem.title">Most companies have data – but no clarity</h2>
           <p class="approach__lead approach__lead--problem" data-i18n="problem.text">Businesses collect large amounts of data every day, but struggle to turn it into actionable insights. Errors, inconsistencies, and hidden patterns often go unnoticed.</p>
           <ul class="approach__list approach__list--problem">
-            <li><span class="approach__icon"><img src="../../../../images/bolt.png" alt="" loading="lazy" /></span><span data-i18n="problem.issue1">Unexpected downtime</span></li>
-            <li><span class="approach__icon"><img src="../../../../images/cheap-dollar.png" alt="" loading="lazy" /></span><span data-i18n="problem.issue2">Revenue loss from inefficiencies</span></li>
-            <li><span class="approach__icon"><img src="../../../../images/chat-arrow-down.png" alt="" loading="lazy" /></span><span data-i18n="problem.issue3">Poor forecasting</span></li>
-            <li><span class="approach__icon"><img src="../../../../images/snail.png" alt="" loading="lazy" /></span><span data-i18n="problem.issue4">Slow decision-making</span></li>
+            <li><span class="approach__icon"><img src="../../../../images/icons/bolt.png" alt="" width="64" height="64" loading="lazy" /></span><span data-i18n="problem.issue1">Unexpected downtime</span></li>
+            <li><span class="approach__icon"><img src="../../../../images/icons/cheap-dollar.png" alt="" width="64" height="64" loading="lazy" /></span><span data-i18n="problem.issue2">Revenue loss from inefficiencies</span></li>
+            <li><span class="approach__icon"><img src="../../../../images/icons/chat-arrow-down.png" alt="" width="64" height="64" loading="lazy" /></span><span data-i18n="problem.issue3">Poor forecasting</span></li>
+            <li><span class="approach__icon"><img src="../../../../images/icons/snail.png" alt="" width="64" height="64" loading="lazy" /></span><span data-i18n="problem.issue4">Slow decision-making</span></li>
           </ul>
 
           <h2 class="approach__heading approach__heading--solution" data-i18n="solution.title">I turn raw data into actionable intelligence</h2>
           <p class="approach__lead approach__lead--solution" data-i18n="solution.text">I analyse your data and transform it into clear, interactive insights that help you make better decisions faster.</p>
           <ul class="approach__list approach__list--solution">
-            <li><span class="approach__icon"><img src="../../../../images/data-report.png" alt="" loading="lazy" /></span><span data-i18n="solution.feature1">Data engineering</span></li>
-            <li><span class="approach__icon"><img src="../../../../images/brain-circuit.png" alt="" loading="lazy" /></span><span data-i18n="solution.feature2">Machine learning</span></li>
-            <li><span class="approach__icon"><img src="../../../../images/chart-simple.png" alt="" loading="lazy" /></span><span data-i18n="solution.feature3">Visualisation</span></li>
-            <li><span class="approach__icon"><img src="../../../../images/crystal-ball.png" alt="" loading="lazy" /></span><span data-i18n="solution.feature4">Predictive analytics</span></li>
+            <li><span class="approach__icon"><img src="../../../../images/icons/data-report.png" alt="" width="64" height="64" loading="lazy" /></span><span data-i18n="solution.feature1">Data engineering</span></li>
+            <li><span class="approach__icon"><img src="../../../../images/icons/brain-circuit.png" alt="" width="64" height="64" loading="lazy" /></span><span data-i18n="solution.feature2">Machine learning</span></li>
+            <li><span class="approach__icon"><img src="../../../../images/icons/chart-simple.png" alt="" width="64" height="64" loading="lazy" /></span><span data-i18n="solution.feature3">Visualisation</span></li>
+            <li><span class="approach__icon"><img src="../../../../images/icons/crystal-ball.png" alt="" width="64" height="64" loading="lazy" /></span><span data-i18n="solution.feature4">Predictive analytics</span></li>
           </ul>
         </div>
       </section>
 
-      <section class="section" id="services">
-        <div class="shell">
-          <div class="section-heading">
-            <h2 data-i18n="services.heading">Core services</h2>
-            <p data-i18n="services.subtitle">Where most engagements start.</p>
+      <!-- Core and advanced services as one index (previously two identical
+           card grids). The full package list lives on services.html. -->
+      <section class="section capabilities" id="services" aria-labelledby="capabilities-title">
+        <div class="shell capabilities__grid">
+          <div class="capabilities__intro">
+            <h2 id="capabilities-title" data-i18n="capabilities.heading">What I deliver</h2>
+            <p data-i18n="capabilities.text">Most engagements start with a data audit, dashboards or reporting. Anomaly detection, forecasting and predictive maintenance are built on request, around your data.</p>
+            <a class="btn btn--ghost" href="services.html">
+              <span data-i18n="services.ctaAll">See all service packages</span>
+              <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M4 10h11M11 5.5L15.5 10 11 14.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </a>
           </div>
-          <div class="cards">
-            <article class="card">
-              <div class="card__icon"><img src="../../../../images/chart-simple.png" alt="" loading="lazy" /></div>
-              <h3 data-i18n="services.card1.title">Data audit and quality assessment</h3>
-              <p data-i18n="services.card1.text">I analyse your datasets to identify missing values, inconsistencies, and structural issues.</p>
-            </article>
-            <article class="card">
-              <div class="card__icon"><img src="../../../../images/dashboard-monitor.png" alt="" loading="lazy" /></div>
-              <h3 data-i18n="services.card2.title">Interactive dashboards</h3>
-              <p data-i18n="services.card2.text">Custom dashboards with real-time charts and KPIs for full business visibility.</p>
-            </article>
-            <article class="card">
-              <div class="card__icon"><img src="../../../../images/data-report.png" alt="" loading="lazy" /></div>
-              <h3 data-i18n="services.card3.title">Automated reporting</h3>
-              <p data-i18n="services.card3.text">Scheduled PDF or email reports summarising key insights and performance metrics.</p>
-            </article>
-          </div>
-          <div class="section-cta">
-            <a class="btn btn--primary" href="#contact" data-i18n="services.cta">Get a free data audit</a>
-          </div>
-        </div>
-      </section>
-
-      <section class="section section--alt" id="advanced">
-        <div class="shell">
-          <div class="section-heading">
-            <h2 data-i18n="advanced.title">Advanced analytics</h2>
-            <p data-i18n="advanced.subtitle">Available on request</p>
-          </div>
-          <div class="cards">
-            <article class="card card--advanced">
-              <div class="card__icon"><img src="../../../../images/triangle-warning.png" alt="" loading="lazy" /></div>
-              <h3 data-i18n="advanced.card1.title">Anomaly detection</h3>
-              <p data-i18n="advanced.card1.text">Automatically detect unusual patterns in your operational or business data.</p>
-            </article>
-            <article class="card card--advanced">
-              <div class="card__icon"><img src="../../../../images/crystal-ball.png" alt="" loading="lazy" /></div>
-              <h3 data-i18n="advanced.card2.title">Forecasting models</h3>
-              <p data-i18n="advanced.card2.text">Predict future trends in sales, production, or operational metrics.</p>
-            </article>
-            <article class="card card--advanced">
-              <div class="card__icon"><img src="../../../../images/tools.png" alt="" loading="lazy" /></div>
-              <h3 data-i18n="advanced.card3.title">Predictive maintenance</h3>
-              <p data-i18n="advanced.card3.text">Identify potential failures before they happen using historical and real-time data.</p>
-            </article>
+          <div class="capabilities__groups">
+            <div class="capabilities__group">
+              <h3 data-i18n="services.heading">Core services</h3>
+              <ul class="capabilities__list">
+                <li>
+                  <h4 data-i18n="services.card1.title">Data audit and quality assessment</h4>
+                  <p data-i18n="services.card1.text">I analyse your datasets to identify missing values, inconsistencies, and structural issues.</p>
+                </li>
+                <li>
+                  <h4 data-i18n="services.card2.title">Interactive dashboards</h4>
+                  <p data-i18n="services.card2.text">Custom dashboards with real-time charts and KPIs for full business visibility.</p>
+                </li>
+                <li>
+                  <h4 data-i18n="services.card3.title">Automated reporting</h4>
+                  <p data-i18n="services.card3.text">Scheduled PDF or email reports summarising key insights and performance metrics.</p>
+                </li>
+              </ul>
+            </div>
+            <div class="capabilities__group">
+              <h3><span data-i18n="advanced.title">Advanced analytics</span> <span class="capabilities__note" data-i18n="advanced.subtitle">Available on request</span></h3>
+              <ul class="capabilities__list">
+                <li>
+                  <h4 data-i18n="advanced.card1.title">Anomaly detection</h4>
+                  <p data-i18n="advanced.card1.text">Automatically detect unusual patterns in your operational or business data.</p>
+                </li>
+                <li>
+                  <h4 data-i18n="advanced.card2.title">Forecasting models</h4>
+                  <p data-i18n="advanced.card2.text">Predict future trends in sales, production, or operational metrics.</p>
+                </li>
+                <li>
+                  <h4 data-i18n="advanced.card3.title">Predictive maintenance</h4>
+                  <p data-i18n="advanced.card3.text">Identify potential failures before they happen using historical and real-time data.</p>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
@@ -215,15 +225,19 @@
             <p class="portfolio-note" data-i18n="portfolio.note">Every project links to its public repository, so you can inspect the actual work.</p>
           </div>
           <div class="portfolio-main">
-            <div class="portfolio-stats" id="portfolioStats" aria-label="Portfolio highlights" data-i18n-aria="portfolio.statsAria"></div>
-            <div class="portfolio-rotator" id="portfolioTrack" aria-label="Portfolio projects" data-i18n-aria="portfolio.trackAria"></div>
-            <div class="portfolio-nav" id="portfolioNav" aria-label="Portfolio navigation" data-i18n-aria="portfolio.navAria">
+            <div class="portfolio-stats" id="portfolioStats" role="group" aria-label="Portfolio highlights" data-i18n-aria="portfolio.statsAria"></div>
+            <div class="portfolio-rotator" id="portfolioTrack" role="group" aria-label="Portfolio projects" data-i18n-aria="portfolio.trackAria"></div>
+            <div class="portfolio-nav" id="portfolioNav" role="group" aria-label="Portfolio navigation" data-i18n-aria="portfolio.navAria">
               <button type="button" class="portfolio-nav-arrow portfolio-nav-prev" id="portfolioNavPrev" aria-label="Previous project" data-i18n-aria="portfolio.navPrev">
                 <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
-              <div class="portfolio-nav-dots" id="portfolioNavDots" role="tablist" aria-label="Project pages" data-i18n-aria="portfolio.navDotsAria"></div>
+              <div class="portfolio-nav-dots" id="portfolioNavDots" role="group" aria-label="Project pages" data-i18n-aria="portfolio.navDotsAria"></div>
               <button type="button" class="portfolio-nav-arrow portfolio-nav-next" id="portfolioNavNext" aria-label="Next project" data-i18n-aria="portfolio.navNext">
                 <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button type="button" class="portfolio-nav-arrow portfolio-nav-pause" id="portfolioNavPause" aria-pressed="false" aria-label="Pause automatic rotation" data-i18n-aria="portfolio.pauseRotation">
+                <svg class="icon-pause" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M9 6v12M15 6v12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+                <svg class="icon-play" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M9 6.5v11l8.5-5.5z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
               </button>
             </div>
             <div class="portfolio-cta">
@@ -245,7 +259,7 @@
           <p id="portfolioDetailText"></p>
           <div class="portfolio-detail-meta" id="portfolioDetailMeta"></div>
           <div class="portfolio-detail-actions">
-            <a class="btn btn--ghost portfolio-detail-github" id="portfolioDetailGithub" href="#" target="_blank" rel="noopener noreferrer" hidden>
+            <a class="btn btn--ghost portfolio-detail-github" id="portfolioDetailGithub" href="#" target="_blank" rel="noopener noreferrer" aria-describedby="newTabHint" hidden>
               <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
               <span data-i18n="portfolio.githubButton">View on GitHub</span>
             </a>
@@ -260,7 +274,10 @@
       <section class="section founder" id="about">
         <div class="shell founder__grid">
           <div class="founder__portrait" aria-hidden="true">
-            <img src="../../../../images/founder-bence-csomor.png" alt="" loading="lazy" />
+            <picture>
+              <source srcset="../../../../images/founder-bence-csomor-256.webp" type="image/webp" />
+              <img src="../../../../images/founder-bence-csomor.png" alt="" width="256" height="256" loading="lazy" decoding="async" />
+            </picture>
           </div>
           <div class="founder__body">
             <h2 data-i18n="about.title">Who you are working with</h2>
@@ -269,8 +286,8 @@
             <p data-i18n="about.bio1">AnomInsight is a one-person practice. Every audit, model and dashboard is built and delivered by me, so there is no account layer between you and the person doing the work.</p>
             <p data-i18n="about.bio2">I have spent four years and more working with production and industrial data, and I publish what I build: every case study on this page links to a public repository you can read, run, and judge for yourself.</p>
             <p class="founder__links">
-              <a href="https://www.linkedin.com/in/bence-csomor-923a8b3b2/" target="_blank" rel="noopener noreferrer" data-i18n="about.linkedin">LinkedIn profile</a>
-              <a href="https://github.com/AnomInsight" target="_blank" rel="noopener noreferrer" data-i18n="about.github">GitHub organisation</a>
+              <a href="https://www.linkedin.com/in/bence-csomor-923a8b3b2/" target="_blank" rel="noopener noreferrer" aria-describedby="newTabHint" data-i18n="about.linkedin">LinkedIn profile</a>
+              <a href="https://github.com/AnomInsight" target="_blank" rel="noopener noreferrer" aria-describedby="newTabHint" data-i18n="about.github">GitHub organisation</a>
             </p>
           </div>
         </div>
@@ -368,15 +385,15 @@
       <section class="section final-cta" id="final-cta">
         <div class="shell final-cta__grid">
           <div>
-            <h2 data-i18n="finalcta.title">What is included in your free data audit</h2>
-            <p data-i18n="finalcta.text">A quick, no-obligation look at your data before you commit to anything.</p>
+            <h2 data-i18n="offer.title">What the free discovery call covers</h2>
+            <p data-i18n="offer.text">A free 30-minute call to understand your problem – no obligation.</p>
             <p class="final-cta__note" data-i18n="finalcta.note">No long-term commitment required.</p>
-            <a class="btn btn--primary btn--large" href="#contact" data-i18n="finalcta.cta">Get a free data audit</a>
+            <a class="btn btn--primary btn--large" href="https://calendar.app.google/ckrBNEpqXD8Vm8Ji6" target="_blank" rel="noopener noreferrer" aria-describedby="newTabHint" data-i18n="offer.discoveryCta">Book a free discovery call</a>
           </div>
           <ul class="final-cta__list">
-            <li data-i18n="finalcta.item1">Data quality check: missing values, inconsistencies, and structural issues</li>
-            <li data-i18n="finalcta.item2">A short written summary of key findings and quick-win recommendations</li>
-            <li data-i18n="finalcta.item3">A follow-up call to walk through the results together</li>
+            <li data-i18n="offer.item1">Your problem, your data sources, and what a useful result would look like</li>
+            <li data-i18n="offer.item2">An honest view of whether data analysis or machine learning is the right tool for it</li>
+            <li data-i18n="offer.item3">A recommended next step and, if it fits, a custom quote</li>
           </ul>
         </div>
       </section>
@@ -400,7 +417,7 @@
                 <dd data-i18n="contact.responseValue">Within 24 hours</dd>
               </div>
             </dl>
-            <a class="btn btn--ghost" href="https://calendar.app.google/ckrBNEpqXD8Vm8Ji6" target="_blank" rel="noopener noreferrer" data-i18n="contact.bookCallButton">Book a call</a>
+            <a class="btn btn--ghost" href="https://calendar.app.google/ckrBNEpqXD8Vm8Ji6" target="_blank" rel="noopener noreferrer" aria-describedby="newTabHint" data-i18n="contact.bookCallButton">Book a call</a>
           </div>
 
           <form class="form" id="contactForm" action="https://formspree.io/f/xjykwlyk" method="POST">
