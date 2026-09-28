@@ -108,6 +108,7 @@
   --ground: #0c0a08;          /* page base under the body gradients */
   --ground-warm-1: #1c1712;   /* body gradient stops */
   --ground-warm-2: #1a150f;
+  --ground-band: #17130f;     /* raised chapter band (.band), one step above --ground */
   --on-accent: #1d160f;       /* text on amber fills */
   --nav-text: #ecdfc4;        /* nav links: brighter than --muted for AA on the blurred bar */
   --chip-text: #f7e8cd;
@@ -176,13 +177,11 @@ body {
   padding-top: 76px;
   font-family: var(--font-body);
   color: var(--text);
-  /* Solid base under the gradients (their darkest stop), so the page is never
-     light if a gradient fails to paint and contrast tools resolve a real ground. */
+  /* One flat ground. The warm atmosphere lives on the page's opening section
+     (.hero / .page-intro) and section changes are drawn by .band - a
+     page-long gradient here made the base tone drift with page length, which
+     read as accidental colour shifts rather than structure. */
   background-color: var(--ground);
-  background-image:
-    radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.14), transparent 32%),
-    radial-gradient(circle at top right, rgba(var(--accent-2-rgb), 0.08), transparent 26%),
-    linear-gradient(150deg, var(--ground-warm-1), var(--ground) 55%, var(--ground-warm-2));
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
@@ -508,6 +507,26 @@ button {
   transform: translateY(18px);
 }
 
+/* Sections that paint their own ground (bands, the page opener) stay put:
+   the ground is structure, so only their contents fade up. */
+.reveal:is(.band, .hero, .page-intro) {
+  transition: none;
+}
+
+.reveal--pending:is(.band, .hero, .page-intro) {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal:is(.band, .hero, .page-intro) > * {
+  transition: opacity var(--duration-slow) var(--ease-out), transform var(--duration-slow) var(--ease-out);
+}
+
+.reveal--pending:is(.band, .hero, .page-intro) > * {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
 .steps > *,
 .value-list > *,
 .roadmap > *,
@@ -535,13 +554,36 @@ button {
   overflow: clip;
 }
 
+/* The page opener's warm atmosphere (homepage hero, services intro): two
+   corner glows over a warm diagonal, settling to the flat ground at the
+   bottom edge so the first band below starts from a clean base. */
+.hero,
+.page-intro {
+  background:
+    linear-gradient(180deg, transparent 55%, var(--ground)),
+    radial-gradient(ellipse at 0 0, rgba(var(--accent-rgb), 0.16), transparent 65%),
+    radial-gradient(ellipse at 100% 0, rgba(var(--accent-2-rgb), 0.08), transparent 55%),
+    linear-gradient(150deg, var(--ground-warm-1), var(--ground) 70%);
+}
+
 .hero__grid {
   display: grid;
-  /* The copy column gets the extra width so each headline clause can hold a
-     single line on desktop; the figure reads fine from ~360px up. */
+  /* Two-column band below 68.75em: the copy keeps most of the width so the
+     CTAs stay on one row; the figure stacks its readout (container query). */
   grid-template-columns: minmax(0, 1.22fr) minmax(0, 0.78fr);
   gap: var(--space-7);
   align-items: center;
+}
+
+/* Desktop: the copy column is sized to its own measure (the 54ch lead, which
+   also holds both CTAs on one row in Hungarian), growing only with the wide
+   shell steps; the figure takes everything else, instead of the copy column
+   holding ~300px of empty space in the middle of the hero. */
+@media (min-width: 68.75em) {
+  .hero__grid {
+    grid-template-columns: minmax(0, max(36rem, 47%)) minmax(0, 1fr);
+    gap: var(--space-8);
+  }
 }
 
 .hero h1 {
@@ -577,8 +619,8 @@ button {
 }
 
 .hero__byline img {
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 4.5rem;
+  height: 4.5rem;
   border-radius: 50%;
   object-fit: cover;
   border: 1px solid rgba(var(--accent-rgb), 0.4);
@@ -859,8 +901,6 @@ button {
 
 .proof {
   padding-block: var(--space-7);
-  border-block: 1px solid rgba(var(--accent-rgb), 0.14);
-  background: rgba(var(--accent-rgb), 0.035);
 }
 
 .proof__grid {
@@ -1009,8 +1049,37 @@ button {
   position: relative;
 }
 
-.section + .section::before,
-.approach + .section::before {
+/* Chapters. The page reads as a handful of thoughts (evidence, offer, proof
+   of work, person + process, fit, roadmap, next step); each chapter alternates
+   between the flat ground and a raised .band, so a change of thought is a
+   change of ground. Consecutive sections inside one chapter share its ground
+   and are split only by the faint centred hairline below.
+
+   The band is painted with border-image rather than background so it bleeds
+   to the viewport edges even on a width-capped section (the portfolio's
+   .container) without changing its markup; border-image outset is ink
+   overflow, so it never creates horizontal scroll. The two 1px edge rows are
+   the chapter's hairline borders; where two bands meet they turn to band
+   colour, so a chapter spanning two sections has no seam. */
+.band {
+  --band-edge: rgba(var(--accent-rgb), 0.16);
+  --band-edge-top: var(--band-edge);
+  --band-edge-bottom: var(--band-edge);
+  border-image:
+    linear-gradient(
+      var(--band-edge-top) 0 1px,
+      var(--ground-band) 1px calc(100% - 1px),
+      var(--band-edge-bottom) calc(100% - 1px)
+    ) fill 0 / 0 / 0 100vmax;
+}
+
+.band + .band { --band-edge-top: var(--ground-band); }
+.band:has(+ .band) { --band-edge-bottom: var(--ground-band); }
+
+/* In-chapter divider: only between two sections on the same ground. */
+.section:not(.band) + .section:not(.band)::before,
+.approach + .section:not(.band)::before,
+.band + .section.band::before {
   content: '';
   position: absolute;
   top: 0;
@@ -1019,11 +1088,6 @@ button {
   height: 1px;
   transform: translateX(-50%);
   background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb), 0.26), transparent);
-}
-
-.section--alt {
-  background: linear-gradient(180deg, rgba(var(--accent-2-rgb), 0.055), transparent);
-  border-block: 1px solid rgba(var(--accent-rgb), 0.08);
 }
 
 .section-heading {
