@@ -46,6 +46,7 @@
 ## 5. Design system
 - Source: `DESIGN.md` (brand rules, protected Portfolio) + tokens at top of `versions/a/style.css`.
 - Warm near-black ground, amber/gold accents (`--accent #d9a36b`, `--accent-2 #f0c882`), text `#f7f2de`, muted `#e3d2b3`.
+- Grounds: body is one flat `--ground`; the warm glow lives only on the page opener (`.hero`, `.page-intro`). Sections are grouped into chapters by thought, alternating flat ground and `.band` (`--ground-band` + hairline edges, painted full-bleed via `border-image` so it works on the width-capped portfolio `.container`). Homepage bands: proof · portfolio · use cases + value · final CTA + contact; services: contact. A change of thought = a change of ground; the faint centred divider only splits sections inside one chapter. Reveal animates a band's/opener's children, never the painted section itself. (2026-09-27)
 - Every colour in `versions/a/style.css` is a `:root` token (hex tokens such as `--ground`, `--on-accent`, `--error`, plus `*-rgb` triplets for alpha, e.g. `rgba(var(--surface-rgb), 0.6)`). No raw hex/rgba outside `:root`; add a token instead.
 - Type: Manrope (display) + Source Sans 3 (body). 4px spacing scale `--space-1..9`.
 - Buttons: `.btn` + `.btn--primary` (gradient, neutral dark shadow — no amber glow) / `.btn--ghost`. One primary per group.
@@ -54,6 +55,7 @@
 - Fonts are self-hosted in `/fonts` (variable woff2, latin + latin-ext only; SIL OFL licences alongside), declared via @font-face at the top of `versions/a/style.css`, latin files preloaded. No Google Fonts requests. Weights in use: Manrope 600–800, Source Sans 3 400–700.
 - Icons: Version A uses 64px copies in `images/icons/` (originals in `images/` are 512px, kept for other versions). Still recoloured white via CSS filter.
 - Panels/dialogs are edge-defined (1px accent border, no wide drop shadow).
+- Hero grid ≥68.75em: copy column `max(36rem, 47%)` (lead measure; holds both HU CTAs on one row), figure takes the rest (~655px at 1440; 42% / ~715px was too wide per user). Below that the old 1.22fr/0.78fr split. (2026-09-27)
 - Hero figure `.signal`: inline-SVG schematic (hairline grid, dashed expected-range band, one trace, one flagged reading + ring) with an HTML "Anomaly → Insight" readout; labels are HTML so they stay legible when scaled; readout stacks via container query under 26rem. Captioned "Illustrative example" – it must never show real-looking numbers or imply client data. Its one-time entrance sequence is the page's single authored motion moment: left-to-right `clip-path` scan of the plot → ring contracts onto the flagged point → marker drops → readout Anomaly → arrow → Insight (~1.25s, then fully static; `backwards` fill so nothing lingers). `main.js` arms it with `.signal--pending` and swaps to `.signal--play` when the figure itself is 40% in view (phones: below the fold). No loops, pulses or count-ups; never runs without JS or under reduced motion; the "Illustrative example" caption is never hidden.
 - Links with `target="_blank"` carry `aria-describedby="newTabHint"` (hidden, translated span on each page). Carousel dots are plain buttons with `aria-current`, not tabs.
 - Breakpoints: 900px (grids collapse), 840px (single column); wide-desktop shell steps at 1440/1760/2200. Text-driven breakpoints are in `em` so they follow the browser's text-size setting: mobile nav at `52.5em` (= 840px), capabilities stack at `68.75em` (= 1100px). Layout breakpoints stay px.
@@ -123,6 +125,8 @@
 - [open] `docs/product-understanding.md` still describes a free data audit as the entry offer; it's a historical analysis snapshot — update or leave? (found 2026-09-24)
 
 ## 13. Changelog
+- 2026-09-27 — Hero figure widened (copy column sized to its measure); sections grouped into chapters with alternating flat/band grounds; page-long body gradient replaced by a hero-only atmosphere; `.section--alt` removed.
+- 2026-09-24 — Hero founder photo enlarged 56px → 72px (user request).
 - 2026-09-24 — Portfolio: auto-rotation now also runs with 2 filtered cards (minimum was 3, so most type filters froze the deck).
 - 2026-09-24 — P3 audit items: all colours tokenised, nav + capabilities breakpoints in em (no overflow at 1.25–2× browser text), gentler reduced motion; portfolio third stat → solution types. Default rendering verified pixel-identical.
 - 2026-09-24 — Monitoring package is no longer monthly-only: now "Ongoing / Rendszeres Monitoring & Reporting", weekly or monthly, review meeting each cycle.
