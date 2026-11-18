@@ -218,3 +218,6 @@ __marimo__/
 .codex/
 /src/frontend/versions/b/
 /src/frontend/versions/c/
+
+version_images/
+skills-lock.json
