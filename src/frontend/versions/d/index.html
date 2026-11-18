@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="AnomInsight – a founder-led data analytics and machine learning practice for small and medium-sized businesses: data audits, dashboards and reporting, anomaly detection, forecasting and regression, classification, clustering and predictive maintenance, with published case studies." />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#0B0A09" />
+    <title data-i18n="home.pageTitleD">AnomInsight – data analytics, dashboards and machine learning for SMEs</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="../../../../images/favicon-circle-32.png?v=4" />
+    <link rel="icon" type="image/png" sizes="192x192" href="../../../../images/favicon-circle-192.png?v=4" />
+    <link rel="apple-touch-icon" href="../../../../images/favicon-circle-512.png?v=4" />
+    <!-- Self-hosted fonts (see @font-face in style.css); preload the two latin files every page needs. -->
+    <link rel="preload" href="../../../../fonts/source-sans-3-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="../../../../fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="modulepreload" href="signal-story.js" />
+    <link rel="modulepreload" href="signal-data.js" />
+    <!-- Lets CSS arm script-only states (e.g. the stage swapping its poster for the canvas). -->
+    <script>document.documentElement.classList.add('js');</script>
+  </head>
+  <body>
+    <a class="skip-link" href="#top" data-i18n="a11y.skip">Skip to content</a>
+    <!-- Referenced by aria-describedby on every link that opens a new tab. -->
+    <span id="newTabHint" hidden data-i18n="a11y.newTab">Opens in a new tab</span>
+
+    <header class="site-header">
+      <div class="shell site-header__inner">
+        <a class="brand" href="#top">
+          <span class="brand__mark"><img src="../../../../images/logo-circle-96.png" alt="" width="32" height="32" /></span>
+          <span class="brand__name">AnomInsight</span>
+        </a>
+
+        <button class="menu-toggle" type="button" aria-label="Menu" data-i18n-aria="a11y.menu" aria-expanded="false" aria-controls="navLinks">
+          <span></span><span></span><span></span>
+        </button>
+
+        <div class="nav-actions" id="navLinks">
+          <nav class="nav-links" aria-label="Main navigation" data-i18n-aria="a11y.primaryNav">
+            <a href="#method" data-i18n="nav.method">How it works</a>
+            <a href="services.html" data-i18n="nav.services">Services</a>
+            <a href="#projects" data-i18n="nav.projects">Projects</a>
+            <a href="#about" data-i18n="nav.about">About</a>
+            <a href="#contact" data-i18n="nav.contact">Contact</a>
+          </nav>
+          <button class="lang" type="button" data-lang-toggle data-i18n-aria="lang.switchAria" aria-label="Switch to Hungarian">
+            <span data-i18n="lang.switchTo">EN</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="top" tabindex="-1">
+      <!-- Hero and "How it works" share one stage: on wide screens it stays in
+           view (sticky) while the text column scrolls, and the canvas inside it
+           moves from noise to a flagged signal to a decision. Every block in the
+           text column names the stage state it belongs to (data-state). -->
+      <div class="signal-story" data-signal-story>
+        <section class="hero" aria-labelledby="hero-title" data-state="0">
+          <div class="hero__copy">
+            <h1 id="hero-title" data-i18n="hero.heading">See what your data is hiding.</h1>
+            <p class="hero__lead" data-i18n="hero.copyD">I help small and medium-sized businesses understand their data, detect anomalies and forecast important changes – with machine learning and interactive dashboards.</p>
+            <div class="hero__actions">
+              <a class="btn btn--primary" href="https://calendar.app.google/ckrBNEpqXD8Vm8Ji6" target="_blank" rel="noopener noreferrer" aria-describedby="newTabHint" data-i18n="offer.discoveryCtaD">Book a free discovery call</a>
+              <a class="btn btn--secondary" href="services.html" data-i18n="offer.servicesCta">See services and packages</a>
+            </div>
+            <div class="hero__byline">
+              <picture>
+                <source srcset="../../../../images/founder-bence-csomor-256.webp" type="image/webp" />
+                <img src="../../../../images/founder-bence-csomor.png" alt="" width="56" height="56" decoding="async" />
+              </picture>
+              <div class="hero__byline-text">
+                <p><strong data-i18n="about.name">Bence Csomor</strong> <span class="hero__byline-role" data-i18n="about.role">Founder and data scientist</span></p>
+                <p class="hero__byline-note" data-i18n="hero.callNote">You speak with me directly – 30 minutes, no obligation.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="stage" data-stage>
+          <div class="stage__frame">
+            <!-- Shown without script (and in print): the finished state of the
+                 illustration, drawn from the same example data as the canvas. -->
+            <svg class="stage__poster" viewBox="0 24 520 172" aria-hidden="true" focusable="false">
+              <path class="poster__grid" d="M0 40H520M0 80H520M0 120H520M0 160H520" />
+              <path class="poster__band" d="M6,103 L14,105.8 L22,108.1 L30,109.8 L38,110.9 L46,111.2 L54,110.8 L62,109.8 L70,108.4 L78,106.8 L86,105.1 L94,103.7 L102,102.5 L110,101.8 L118,101.6 L126,101.7 L134,102.1 L142,102.7 L150,103.3 L158,103.6 L166,103.5 L174,102.8 L182,101.5 L190,99.6 L198,97.2 L206,94.3 L214,91.1 L222,88 L230,85 L238,82.4 L246,80.4 L254,79.1 L262,78.4 L270,78.5 L278,79.1 L286,80.2 L294,81.5 L302,82.8 L310,84 L318,84.8 L326,85.3 L334,85.3 L342,84.9 L350,84.2 L358,83.4 L366,82.6 L374,82 L382,81.9 L390,82.4 L398,83.5 L406,85.3 L414,87.6 L422,90.5 L430,93.6 L438,96.9 L446,100 L454,102.7 L462,104.9 L470,106.5 L478,107.4 L486,107.7 L494,107.4 L502,106.6 L510,105.6 L514,105.1 L514,149.1 L510,149.6 L502,150.6 L494,151.4 L486,151.7 L478,151.4 L470,150.5 L462,148.9 L454,146.7 L446,144 L438,140.9 L430,137.6 L422,134.5 L414,131.6 L406,129.3 L398,127.5 L390,126.4 L382,125.9 L374,126 L366,126.6 L358,127.4 L350,128.2 L342,128.9 L334,129.3 L326,129.3 L318,128.8 L310,128 L302,126.8 L294,125.5 L286,124.2 L278,123.1 L270,122.5 L262,122.4 L254,123.1 L246,124.4 L238,126.4 L230,129 L222,132 L214,135.1 L206,138.3 L198,141.2 L190,143.6 L182,145.5 L174,146.8 L166,147.5 L158,147.6 L150,147.3 L142,146.7 L134,146.1 L126,145.7 L118,145.6 L110,145.8 L102,146.5 L94,147.7 L86,149.1 L78,150.8 L70,152.4 L62,153.8 L54,154.8 L46,155.2 L38,154.9 L30,153.8 L22,152.1 L14,149.8 L6,147 Z" />
+              <path class="poster__axis" d="M0 184H520" />
+              <polyline class="poster__reading" points="6,115 16,136.8 25.9,126.8 35.9,126.9 45.8,137.7 55.8,133.2 65.8,127.7 75.7,134.3 85.7,132.3 95.6,126.3 105.6,127.8 115.6,126.3 125.5,130 135.5,119.1 145.5,122.4 155.4,129.7 165.4,129.4 175.3,115.7 185.3,126.5 195.3,119.4 205.2,125 215.2,118.8 225.1,101.2 235.1,105.5 245.1,111.1 255,104.7 265,103.2 274.9,102.4 284.9,110.3 294.9,111.8 304.8,102.7 314.8,103.2 324.7,114 334.7,103.9 344.7,99.7 354.6,85.7 364.6,44.7 374.5,95 384.5,112.8 394.5,106.1 404.4,111.4 414.4,117.3 424.4,104.5 434.3,112.8 444.3,122.5 454.2,125 464.2,125.9 474.2,122.9 484.1,137.9 494.1,120.4 504,125.7 514,124" />
+              <path class="poster__leader" d="M364.6 57V184" />
+              <circle class="poster__ring" cx="364.6" cy="44.7" r="11" />
+              <circle class="poster__point" cx="364.6" cy="44.7" r="4.5" />
+            </svg>
+
+            <canvas class="stage__canvas" aria-hidden="true"></canvas>
+
+            <!-- Visual duplicates of what the step text already says, placed by
+                 signal-story.js over the canvas. Hidden from assistive tech;
+                 the summary below describes the illustration once. -->
+            <div class="stage__overlay" aria-hidden="true">
+              <span class="stage__lane-label" data-lane="0" data-i18n="stage.stream.torque">Spindle torque</span>
+              <span class="stage__lane-label" data-lane="1" data-i18n="stage.stream.temperature">Temperature</span>
+              <span class="stage__lane-label" data-lane="2" data-i18n="stage.stream.power">Power draw</span>
+              <span class="stage__flag-label" data-i18n="stage.flag">Outside expected range</span>
+
+              <div class="stage-panel" data-stage-panel>
+                <div class="stage-panel__head">
+                  <span class="stage-panel__title" data-i18n="stage.stream.torque">Spindle torque</span>
+                  <span class="stage-panel__legend">
+                    <span class="legend legend--band" data-i18n="hero.signal.band">Expected range</span>
+                    <span class="legend legend--reading" data-i18n="stage.legend.reading">Readings</span>
+                    <span class="legend legend--flag" data-i18n="stage.legend.flagged">Flagged</span>
+                  </span>
+                </div>
+                <div class="stage-panel__chart" data-chart-slot></div>
+                <div class="stage-panel__tiles">
+                  <p class="stage-tile"><span class="stage-tile__value" data-reading-count>52</span> <span class="stage-tile__label" data-i18n="stage.tile.checkedLabel">readings checked</span></p>
+                  <p class="stage-tile stage-tile--flag"><span class="stage-tile__value" data-flag-count>1</span> <span class="stage-tile__label" data-i18n="stage.tile.flaggedLabel">outside expected range</span></p>
+                  <p class="stage-tile"><span class="stage-tile__label" data-i18n="stage.tile.statusLabel">Status</span> <span class="stage-tile__value stage-tile__value--text" data-i18n="stage.tile.statusValue">Review needed</span></p>
+                </div>
+                <p class="stage-panel__alert">
+                  <svg class="flag-glyph" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="10" cy="10" r="7.25" fill="none" stroke="currentColor" stroke-width="1.25" /><circle cx="10" cy="10" r="3" fill="currentColor" /></svg>
+                  <span data-i18n="hero.signal.anomaly">Torque breaks out of its expected range.</span>
+                </p>
+              </div>
+
+              <div class="decision" data-decision>
+                <p class="decision__line">
+                  <span class="decision__key" data-i18n="hero.signal.anomalyKey">Anomaly</span>
+                  <span data-i18n="hero.signal.anomaly">Torque breaks out of its expected range.</span>
+                </p>
+                <svg class="decision__arrow" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M10 4v11M5.5 11L10 15.5 14.5 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                <p class="decision__line">
+                  <span class="decision__key" data-i18n="hero.signal.insightKey">Insight</span>
+                  <span data-i18n="stage.decision.insight">Possible cause: tool wear. Needs further checking.</span>
+                </p>
+                <svg class="decision__arrow" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M10 4v11M5.5 11L10 15.5 14.5 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                <p class="decision__line decision__line--next">
+                  <span class="decision__key" data-i18n="stage.decision.nextKey">Next step</span>
+                  <span data-i18n="stage.decision.next">Check the tool before the next shift and schedule a change if needed.</span>
+                </p>
+                <p class="decision__monitor" data-i18n="stage.decision.monitor">Ongoing monitoring keeps checking the readings after the change.</p>
+              </div>
+            </div>
+
+            <p class="stage__caption" data-i18n="stage.caption">Illustrative example – CNC machine sensor data</p>
+            <button class="stage__pause" type="button" aria-pressed="false" aria-label="Pause animation" data-i18n-aria="stage.pause" hidden>
+              <svg class="icon-pause" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M9 6v12M15 6v12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" /></svg>
+              <svg class="icon-play" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M9 6.5v11l8.5-5.5z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" /></svg>
+            </button>
+            <p class="sr-only" data-i18n="stage.summary">Illustrative example with three sensor data series from a CNC machine. One torque reading departs from its expected range, so it is flagged for review. The deviation points to possible causes and next checks, but on its own it does not prove tool wear.</p>
+          </div>
+        </div>
+
+        <section class="story" id="method" aria-labelledby="story-title">
+          <div class="story__opener" data-state="0">
+            <h2 id="story-title" data-i18n="problem.titleD">Most companies have data – but no clarity</h2>
+            <p class="story__lead" data-i18n="problem.text">Businesses collect large amounts of data every day, but struggle to turn it into actionable insights. Errors, inconsistencies, and hidden patterns often go unnoticed.</p>
+            <ul class="story__issues">
+              <li data-i18n="problem.issue1">Unexpected downtime</li>
+              <li data-i18n="problem.issue2">Revenue loss from inefficiencies</li>
+              <li data-i18n="problem.issue3">Poor forecasting</li>
+              <li data-i18n="problem.issue4">Slow decision-making</li>
+            </ul>
+            <p class="story__bridge" data-i18n="method.subtitle">Four steps from raw export to a decision you can act on.</p>
+          </div>
+
+          <ol class="story__steps">
+            <li class="step" data-state="1">
+              <p class="step__meta"><span class="step__index">01</span></p>
+              <h3 data-i18n="method.step1.titleD">Data intake</h3>
+              <p class="step__discipline" data-i18n="solution.feature1D">Data preparation</p>
+              <p data-i18n="method.step1.textD">You share the data – an export (Excel or CSV), or read access to a database or API where that suits better. I check what it contains and which questions it can answer.</p>
+              <div class="step__frame" data-frame="1"></div>
+            </li>
+            <li class="step" data-state="2">
+              <p class="step__meta"><span class="step__index">02</span></p>
+              <h3 data-i18n="method.step2.title">Analysis</h3>
+              <p class="step__discipline" data-i18n="solution.feature2">Machine learning</p>
+              <p data-i18n="method.step2.text">I process and clean your data using advanced analytics and ML models.</p>
+              <div class="step__frame" data-frame="2"></div>
+            </li>
+            <li class="step" data-state="3">
+              <p class="step__meta"><span class="step__index">03</span></p>
+              <h3 data-i18n="method.step3.title">Insights</h3>
+              <p class="step__discipline" data-i18n="solution.feature3">Visualisation</p>
+              <p data-i18n="method.step3.text">You receive dashboards, reports, and actionable recommendations.</p>
+              <div class="step__frame" data-frame="3"></div>
+            </li>
+            <li class="step" data-state="4">
+              <p class="step__meta"><span class="step__index">04</span></p>
+              <h3 data-i18n="method.step4.title">Continuous improvement</h3>
+              <p class="step__discipline" data-i18n="solution.feature4">Predictive analytics</p>
+              <p data-i18n="story.step4.lead">Every finding ends in a concrete next step.</p>
+              <p data-i18n="method.step4.text">Optional ongoing monitoring and model updates.</p>
+              <div class="step__frame" data-frame="4"></div>
+            </li>
+          </ol>
+
+          <div class="story__close" data-state="4">
+            <h3 data-i18n="solution.title">I turn raw data into actionable intelligence</h3>
+            <p data-i18n="solution.text">I analyse your data and transform it into clear, interactive insights that help you make better decisions faster.</p>
+            <div class="story__actions">
+              <a class="btn btn--primary" href="https://calendar.app.google/ckrBNEpqXD8Vm8Ji6" target="_blank" rel="noopener noreferrer" aria-describedby="newTabHint" data-i18n="offer.discoveryCtaD">Book a free discovery call</a>
+              <a class="btn btn--secondary" href="#services" data-i18n="capabilities.heading">What I deliver</a>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="proof band" id="proof" aria-labelledby="proof-title">
+        <div class="shell proof__grid">
+          <div class="proof__intro">
+            <h2 id="proof-title" data-i18n="proof.heading">Measured results</h2>
+            <p class="proof__bridge" data-i18n="proof.bridge">The example above is illustrative. The two results below were measured in published case studies.</p>
+            <p data-i18n="proof.noteD">The first two figures are measured results from published case studies, each with a public GitHub repository. The other two show professional experience and the number of published case studies.</p>
+          </div>
+          <ul class="proof__ledger">
+            <li class="proof__row">
+              <span class="proof__value" data-i18n="proof.recall.value">96%</span>
+              <span class="proof__label" data-i18n="proof.recall.label">of real CNC failures caught in testing</span>
+              <a class="proof__source" href="https://github.com/AnomInsight/02_Portfolio_Project" target="_blank" rel="noopener noreferrer" aria-describedby="newTabHint" data-i18n="proof.recall.source">Predictive maintenance model</a>
+            </li>
+            <li class="proof__row">
+              <span class="proof__value" data-i18n="proof.accuracy.value">99.27%</span>
+              <span class="proof__label" data-i18n="proof.accuracy.label">best-model accuracy on handwritten digits</span>
+              <a class="proof__source" href="https://github.com/AnomInsight/01_Portfolio_Project" target="_blank" rel="noopener noreferrer" aria-describedby="newTabHint" data-i18n="proof.accuracy.source">Digit classification study</a>
+            </li>
+            <li class="proof__row">
+              <span class="proof__value" data-i18n="proof.experience.value">4+</span>
+              <span class="proof__label" data-i18n="proof.experience.label">years working with production and industrial data</span>
+              <span class="proof__source" data-i18n="proof.experience.sourceD">Professional experience</span>
+            </li>
+            <li class="proof__row">
+              <span class="proof__value" data-i18n="proof.repos.value">3</span>
+              <span class="proof__label" data-i18n="proof.repos.label">case studies published with public source code</span>
+              <a class="proof__source" href="https://github.com/AnomInsight" target="_blank" rel="noopener noreferrer" aria-describedby="newTabHint" data-i18n="proof.repos.source">github.com/AnomInsight</a>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- The services, grouped by the stage of the story they belong to; each
+           row links to the package that delivers it on services.html. -->
+      <section class="section services-map" id="services" aria-labelledby="map-title">
+        <div class="shell">
+          <div class="map__intro">
+            <h2 id="map-title" data-i18n="capabilities.heading">What I deliver</h2>
+            <p data-i18n="capabilities.textD">An engagement can start with a data audit, dashboard development or automated reporting. Machine learning – anomaly detection, forecasting, regression, classification, clustering or predictive maintenance – is built around your business problem and your data.</p>
+            <a class="text-link text-link--arrow" href="services.html">
+              <span data-i18n="services.ctaAll">See all service packages</span>
+              <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M4 10h11M11 5.5L15.5 10 11 14.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </a>
+          </div>
+
+          <!-- The same 52 readings as the story, answering four questions:
+               a picture of the range of work, not a widget collection. Points
+               move between views (modes.js); without script the questions
+               read as a list. Illustrative, and labelled so. -->
+          <div class="modes" data-modes>
+            <div class="modes__side">
+              <h3 id="modes-title" data-i18n="modes.title">Same data, different questions</h3>
+              <p class="modes__lead" data-i18n="modes.lead">Anomaly detection tells you whether anything is unusual. The same readings can also be forecast, grouped or classified – the method follows the decision you need to make.</p>
+              <div class="modes__tabs" role="group" aria-label="Choose a question" data-i18n-aria="modes.groupAria">
+              <button class="modes__tab" type="button" data-mode="detect" aria-pressed="true">
+                <span class="modes__tab-name" data-i18n="modes.detect.name">Detect</span>
+                <span class="modes__tab-q" data-i18n="modes.detect.q">Is anything unusual?</span>
+              </button>
+              <button class="modes__tab" type="button" data-mode="forecast" aria-pressed="false">
+                <span class="modes__tab-name" data-i18n="modes.forecast.name">Forecast</span>
+                <span class="modes__tab-q" data-i18n="modes.forecast.q">What comes next?</span>
+              </button>
+              <button class="modes__tab" type="button" data-mode="group" aria-pressed="false">
+                <span class="modes__tab-name" data-i18n="modes.group.name">Group</span>
+                <span class="modes__tab-q" data-i18n="modes.group.q">What behaves alike?</span>
+              </button>
+              <button class="modes__tab" type="button" data-mode="classify" aria-pressed="false">
+                <span class="modes__tab-name" data-i18n="modes.classify.name">Classify</span>
+                <span class="modes__tab-q" data-i18n="modes.classify.q">Which class does it belong to?</span>
+              </button>
+              </div>
+            </div>
+            <figure class="modes__figure">
+              <svg class="modes__plot" viewBox="0 0 600 340" aria-hidden="true" focusable="false">
+                <path class="modes__grid" d="M48 24H584M48 92H584M48 160H584M48 228H584M48 296H584" />
+                <path class="modes__layer modes__band" data-show="detect" />
+                <g class="modes__layer" data-show="forecast">
+                  <path class="modes__cone" />
+                  <line class="modes__fit" />
+                  <line class="modes__fit modes__fit--ahead" />
+                  <line class="modes__limit" />
+                  <line class="modes__now" />
+                  <text class="modes__label modes__label--now" data-i18n="modes.forecast.now">Now</text>
+                  <text class="modes__label modes__label--limit" data-i18n="modes.forecast.limit">Limit</text>
+                  <circle class="modes__cross" r="5" />
+                </g>
+                <g class="modes__layer modes__hulls" data-show="group"></g>
+                <g class="modes__layer" data-show="classify">
+                  <path class="modes__watch-side" />
+                  <line class="modes__boundary" />
+                  <text class="modes__label modes__label--normal" data-i18n="modes.classify.normal">Normal</text>
+                  <text class="modes__label modes__label--watch" data-i18n="modes.classify.watch">Needs review</text>
+                </g>
+                <g class="modes__points"></g>
+                <circle class="modes__ring" r="10" />
+                <text class="modes__axis modes__axis--x modes__layer" data-show="detect forecast" x="584" y="322" data-i18n="modes.axis.time">Time</text>
+                <text class="modes__axis modes__axis--x modes__layer" data-show="group classify" x="584" y="322" data-i18n="stage.stream.torque">Spindle torque</text>
+                <text class="modes__axis modes__layer" data-show="detect forecast" x="48" y="14" data-i18n="stage.stream.torque">Spindle torque</text>
+                <text class="modes__axis modes__layer" data-show="group classify" x="48" y="14" data-i18n="stage.stream.temperature">Temperature</text>
+              </svg>
+              <div class="modes__copies" aria-live="polite">
+              <div class="modes__copy" data-copy="detect">
+                <p class="modes__text" data-i18n="modes.detect.text">A model learns the expected range from past data and flags what leaves it – early warning for faults, data errors or unusual demand.</p>
+                <p class="modes__methods" data-i18n="modes.detect.methods">Anomaly detection</p>
+              </div>
+              <div class="modes__copy" data-copy="forecast">
+                <p class="modes__text" data-i18n="modes.forecast.text">Forecasting models estimate how a value is likely to develop, based on past data. A range estimated with a suitable method can show the uncertainty – useful for planning demand, load or the timing of maintenance.</p>
+                <p class="modes__methods" data-i18n="modes.forecast.methods">Forecasting · Regression · Predictive maintenance</p>
+              </div>
+              <div class="modes__copy" data-copy="group">
+                <p class="modes__text" data-i18n="modes.group.text">Clustering finds groups nobody has labelled in advance – operating modes, customer segments, product families.</p>
+                <p class="modes__methods" data-i18n="modes.group.methods">Clustering · Segmentation</p>
+              </div>
+              <div class="modes__copy" data-copy="classify">
+                <p class="modes__text" data-i18n="modes.classify.text">A model learns from labelled examples and sorts new cases into classes – fault types, risk levels, document types.</p>
+                <p class="modes__methods" data-i18n="modes.classify.methods">Classification</p>
+              </div>
+              </div>
+              <figcaption class="modes__caption" data-i18n="modes.caption">Illustrative example with 52 synthetic readings. The trend line is a linear regression and the groups come from k-&#8288;means. The expected range, forecast band, limit and class boundary are illustrative; the charts do not show results of validated production models.</figcaption>
+            </figure>
+          </div>
+
+          <ol class="map">
+            <li class="map__row">
+              <div class="map__stage">
+                <svg class="map__glyph" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><g fill="currentColor"><circle cx="6" cy="9" r="1.4" opacity=".45" /><circle cx="12" cy="22" r="1.4" opacity=".45" /><circle cx="19" cy="7" r="1.4" opacity=".45" /><circle cx="25" cy="24" r="1.4" opacity=".45" /><circle cx="7" cy="16" r="1.6" /><circle cx="13" cy="15" r="1.6" /><circle cx="19" cy="17" r="1.6" /><circle cx="25" cy="15" r="1.6" /></g></svg>
+                <h3 data-i18n="map.clean">Clean the noise</h3>
+              </div>
+              <ul class="map__services">
+                <li>
+                  <h4 data-i18n="services.card1.title">Data audit and quality assessment</h4>
+                  <p data-i18n="services.card1.textD">I analyse your datasets to identify missing values, inconsistencies, and structural issues.</p>
+                </li>
+              </ul>
+              <p class="map__packages">
+                <span class="map__packages-label" data-i18n="map.package">Package</span>
+                <a href="services.html#pkg-audit" data-i18n="packages.audit.titleD">Data Audit</a>
+              </p>
+            </li>
+            <li class="map__row">
+              <div class="map__stage">
+                <svg class="map__glyph" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><path d="M3 21c4-1 6-3 9-3s5 2 8 1 5-3 9-3" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="2 2.5" opacity=".6" /><circle class="map__glyph-signal" cx="21" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="1.2" /><circle class="map__glyph-signal" cx="21" cy="9" r="2.2" fill="currentColor" /></svg>
+                <h3 data-i18n="map.find">Find the signal</h3>
+                <p class="map__note" data-i18n="advanced.subtitle">Available on request</p>
+              </div>
+              <ul class="map__services">
+                <li>
+                  <h4 data-i18n="advanced.card1.title">Anomaly detection</h4>
+                  <p data-i18n="advanced.card1.text">Automatically detect unusual patterns in your operational or business data.</p>
+                </li>
+                <li>
+                  <h4 data-i18n="map.forecast.title">Forecasting and regression</h4>
+                  <p data-i18n="advanced.card2.text">Predict future trends in sales, production, or operational metrics.</p>
+                </li>
+                <li>
+                  <h4 data-i18n="map.ml.title">Classification and clustering</h4>
+                  <p data-i18n="map.ml.text">Sort new cases into known classes, or find the groups in your data that behave alike.</p>
+                </li>
+                <li>
+                  <h4 data-i18n="advanced.card3.title">Predictive maintenance</h4>
+                  <p data-i18n="advanced.card3.textD">Analysing past and current operating data can reveal early signs of failure and help you plan maintenance in time.</p>
+                </li>
+              </ul>
+              <p class="map__packages">
+                <span class="map__packages-label" data-i18n="map.package">Package</span>
+                <a href="services.html#pkg-project" data-i18n="packages.project.titleD">One-off Project Delivery</a>
+              </p>
+            </li>
+            <li class="map__row">
+              <div class="map__stage">
+                <svg class="map__glyph" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect x="3.5" y="5.5" width="25" height="21" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".6" /><path d="M7 21l5-6 4 3 4-7 5 4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                <h3 data-i18n="map.show">Show the insight</h3>
+              </div>
+              <ul class="map__services">
+                <li>
+                  <h4 data-i18n="services.card2.title">Interactive dashboards</h4>
+                  <p data-i18n="services.card2.textD">Custom, interactive dashboards that help you follow the business metrics, trends and relationships that matter.</p>
+                </li>
+                <li>
+                  <h4 data-i18n="services.card3.title">Automated reporting</h4>
+                  <p data-i18n="services.card3.text">Scheduled PDF or email reports summarising key insights and performance metrics.</p>
+                </li>
+              </ul>
+              <p class="map__packages">
+                <span class="map__packages-label" data-i18n="map.packages">Packages</span>
+                <a href="services.html#pkg-project" data-i18n="packages.project.titleD">One-off Project Delivery</a>
+                <a href="services.html#pkg-monitoring" data-i18n="packages.monitoring.titleD">Ongoing Monitoring &amp; Reporting</a>
+              </p>
+            </li>
+            <li class="map__row">
+              <div class="map__stage">
+                <svg class="map__glyph" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><path d="M25.5 12.5A10 10 0 1 0 26 19" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" /><path d="M26.5 7.5v5.5H21" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" /><circle cx="16" cy="16" r="2" fill="currentColor" /></svg>
+                <h3 data-i18n="map.keep">Keep watching – or run it yourself</h3>
+              </div>
+              <ul class="map__services">
+                <li>
+                  <h4 data-i18n="packages.monitoring.titleD">Ongoing Monitoring &amp; Reporting</h4>
+                  <p data-i18n="packages.monitoring.metaD">Weekly or monthly · report + 30-min review</p>
+                </li>
+                <li>
+                  <h4 data-i18n="packages.integrated.titleD">Integrated Implementation (Source Code Handover)</h4>
+                  <p data-i18n="packages.integrated.meta">One-off · Deployment-ready solution + integration support</p>
+                </li>
+              </ul>
+              <p class="map__packages">
+                <span class="map__packages-label" data-i18n="map.packages">Packages</span>
+                <a href="services.html#pkg-monitoring" data-i18n="packages.monitoring.titleD">Ongoing Monitoring &amp; Reporting</a>
+                <a href="services.html#pkg-integrated" data-i18n="packages.integrated.titleD">Integrated Implementation (Source Code Handover)</a>
+              </p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="section container portfolio-section band" id="projects">
+        <div class="portfolio-shell">
+          <div class="portfolio-sticky">
+            <h2 data-i18n="portfolio.heading">Selected projects</h2>
+            <p class="section-subtitle" data-i18n="portfolio.subtitle">Real projects, with real results and public source code.</p>
+            <div class="portfolio-filter-header">
+              <p class="portfolio-filter-title" data-i18n="portfolio.statusFiltersTitleD">Browse by status</p>
+              <button type="button" id="portfolioClearFilters" class="portfolio-clear-filters-btn" data-i18n="portfolio.clearAllFilters" disabled>Clear all filters</button>
+            </div>
+            <div class="portfolio-filters portfolio-status-filters" id="portfolioStatusFilters" aria-label="Project status filters, select one or more" data-i18n-aria="portfolio.statusFiltersAriaD" role="group"></div>
+            <p class="portfolio-filter-title" data-i18n="portfolio.filtersTitle">Refine by type</p>
+            <div class="portfolio-filters portfolio-type-filters" id="portfolioFilters" aria-label="Project type filters, select one or more" data-i18n-aria="portfolio.filtersAria" role="group"></div>
+            <p class="portfolio-focus-hint" data-i18n="portfolio.focusHint">Click any card to bring it to focus.</p>
+            <p class="portfolio-note" data-i18n="portfolio.noteD">Every project links to its public repository, so you can inspect the actual work.</p>
+          </div>
+          <div class="portfolio-main">
+            <div class="portfolio-stats" id="portfolioStats" role="group" aria-label="Portfolio highlights" data-i18n-aria="portfolio.statsAria"></div>
+            <div class="portfolio-rotator" id="portfolioTrack" role="group" aria-label="Portfolio projects" data-i18n-aria="portfolio.trackAria"></div>
+            <div class="portfolio-nav" id="portfolioNav" role="group" aria-label="Portfolio navigation" data-i18n-aria="portfolio.navAria">
+              <button type="button" class="portfolio-nav-arrow portfolio-nav-prev" id="portfolioNavPrev" aria-label="Previous project" data-i18n-aria="portfolio.navPrev">
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="portfolio-nav-dots" id="portfolioNavDots" role="group" aria-label="Project pages" data-i18n-aria="portfolio.navDotsAriaD"></div>
+              <button type="button" class="portfolio-nav-arrow portfolio-nav-next" id="portfolioNavNext" aria-label="Next project" data-i18n-aria="portfolio.navNext">
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button type="button" class="portfolio-nav-arrow portfolio-nav-pause" id="portfolioNavPause" aria-pressed="false" aria-label="Pause automatic rotation" data-i18n-aria="portfolio.pauseRotation">
+                <svg class="icon-pause" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M9 6v12M15 6v12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+                <svg class="icon-play" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M9 6.5v11l8.5-5.5z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+            <div class="portfolio-cta">
+              <p data-i18n="portfolio.ctaText">Have a similar challenge in your operation?</p>
+              <a href="#contact" class="btn btn--ghost" data-i18n="portfolio.ctaButton">Let's talk</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="portfolio-detail-modal" id="portfolioDetailModal" aria-hidden="true">
+        <div class="portfolio-detail-backdrop" data-close-portfolio-detail="true"></div>
+        <article class="portfolio-detail-dialog" role="dialog" aria-modal="true" aria-labelledby="portfolioDetailTitle" aria-describedby="portfolioDetailText">
+          <div class="portfolio-detail-top">
+            <p class="portfolio-kind" id="portfolioDetailKind"></p>
+            <span class="portfolio-stage" id="portfolioDetailStage"></span>
+          </div>
+          <h3 id="portfolioDetailTitle">Project overview</h3>
+          <p id="portfolioDetailText"></p>
+          <div class="portfolio-detail-meta" id="portfolioDetailMeta"></div>
+          <div class="portfolio-detail-actions">
+            <a class="btn btn--ghost portfolio-detail-github" id="portfolioDetailGithub" href="#" target="_blank" rel="noopener noreferrer" aria-describedby="newTabHint" hidden>
+              <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+              <span data-i18n="portfolio.githubButton">View on GitHub</span>
+            </a>
+            <button type="button" class="btn btn--ghost portfolio-detail-close" id="portfolioDetailCloseBtn">
+              <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" /></svg>
+              <span class="sr-only" data-i18n="portfolio.detailsClose">Close</span>
+            </button>
+          </div>
+        </article>
+      </div>
+
+      <section class="section founder" id="about" aria-labelledby="about-title">
+        <div class="shell founder__grid">
+          <div class="founder__portrait">
+            <picture>
+              <source srcset="../../../../images/founder-bence-csomor-256.webp" type="image/webp" />
+              <img src="../../../../images/founder-bence-csomor.png" alt="" width="256" height="256" loading="lazy" decoding="async" />
+            </picture>
+          </div>
+          <div class="founder__body">
+            <h2 id="about-title" data-i18n="about.title">Who you are working with</h2>
+            <p class="founder__name"><span data-i18n="about.name">Bence Csomor</span> <span class="founder__role" data-i18n="about.role">Founder and data scientist</span></p>
+            <p data-i18n="about.bio1">AnomInsight is a one-person practice. Every audit, model and dashboard is built and delivered by me, so there is no account layer between you and the person doing the work.</p>
+            <p data-i18n="about.bio2D">I have spent four years and more working with production and industrial data, and I publish what I build: every case study on this page links to a public repository you can read, run, and judge for yourself.</p>
+            <p class="founder__links">
+              <a class="text-link" href="https://www.linkedin.com/in/bence-csomor-923a8b3b2/" target="_blank" rel="noopener noreferrer" aria-describedby="newTabHint" data-i18n="about.linkedin">LinkedIn profile</a>
+              <a class="text-link" href="https://github.com/AnomInsight" target="_blank" rel="noopener noreferrer" aria-describedby="newTabHint" data-i18n="about.github">GitHub organisation</a>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section audience band" id="audience" aria-label="Who this is for" data-i18n-aria="usecases.title">
+        <div class="shell audience__grid">
+          <div class="audience__col">
+            <h2 data-i18n="usecases.title">Who this is for</h2>
+            <p class="audience__lead" data-i18n="usecases.subtitleD">Data solutions for small and medium-sized businesses – from manufacturing and logistics to retail and other services.</p>
+            <ul class="audience__list">
+              <li data-i18n="usecases.item1">Manufacturing companies</li>
+              <li data-i18n="usecases.item2">Logistics and supply chain businesses</li>
+              <li data-i18n="usecases.item3">E-commerce companies</li>
+              <li data-i18n="usecases.item4">Energy and utilities</li>
+              <li data-i18n="usecases.item5">Any data-driven organisation</li>
+            </ul>
+          </div>
+          <div class="audience__col">
+            <h2 data-i18n="value.title">What you gain</h2>
+            <ul class="audience__list audience__list--value">
+              <li data-i18n="value.item1">Better decision-making</li>
+              <li data-i18n="value.item2">Reduced operational costs</li>
+              <li data-i18n="value.item3">Early detection of problems</li>
+              <li data-i18n="value.item4">Clear visibility into business performance</li>
+              <li data-i18n="value.item5">Data-driven strategy instead of guesswork</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section roadmap-section" id="roadmap" aria-labelledby="roadmap-title">
+        <div class="shell roadmap__grid">
+          <div class="roadmap__intro">
+            <h2 id="roadmap-title" data-i18n="roadmap.title">Platform evolution</h2>
+            <p data-i18n="roadmap.subtitle">I am continuously expanding what the practice can deliver.</p>
+          </div>
+          <div class="roadmap">
+            <div class="roadmap__col roadmap__col--live">
+              <h3 data-i18n="roadmap.available">Currently available</h3>
+              <ul>
+                <li data-i18n="roadmap.item1">Data audit</li>
+                <li data-i18n="roadmap.item2">Dashboards</li>
+                <li data-i18n="roadmap.item3">Automated reporting</li>
+              </ul>
+            </div>
+            <div class="roadmap__col roadmap__col--dev">
+              <h3 data-i18n="roadmap.developing">In development</h3>
+              <ul>
+                <li data-i18n="roadmap.item4">Real-time anomaly detection</li>
+                <li data-i18n="roadmap.item5">Predictive analytics</li>
+                <li data-i18n="roadmap.item6D">Data integrations: SQL databases, ERP systems, IoT data sources and APIs</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section final-cta band" id="final-cta" aria-labelledby="final-cta-title">
+          <div class="shell final-cta__grid">
+            <div class="final-cta__copy">
+              <h2 id="final-cta-title" data-i18n="finalcta.titleD">Start with a free discovery call</h2>
+              <p data-i18n="offer.textD">A free 30-minute call to understand your problem – no obligation.</p>
+              <p class="final-cta__note" data-i18n="finalcta.noteD">The call is free and carries no obligation. A detailed data audit and written report are agreed separately.</p>
+              <a class="btn btn--primary" href="https://calendar.app.google/ckrBNEpqXD8Vm8Ji6" target="_blank" rel="noopener noreferrer" aria-describedby="newTabHint" data-i18n="offer.discoveryCtaD">Book a free discovery call</a>
+            </div>
+            <div class="final-cta__covers">
+              <h3 data-i18n="offer.titleD">What the free discovery call covers</h3>
+              <ol class="final-cta__list">
+                <li data-i18n="offer.item1D">Your problem, your data sources, and what a useful result would look like</li>
+                <li data-i18n="offer.item2D">An honest view of whether data analysis or machine learning is the right tool for it</li>
+                <li data-i18n="offer.item3D">A recommended next step and, if it fits, a custom quote</li>
+              </ol>
+            </div>
+          </div>
+      </section>
+
+      <section class="section contact band" id="contact" aria-labelledby="contact-title">
+          <div class="shell contact__grid">
+            <div class="contact__copy">
+              <h2 id="contact-title" data-i18n="contact.heading">Get in touch</h2>
+              <p data-i18n="contact.copy">Have questions? Fill out the form and I will get back to you within 24 hours, or reach me directly by email.</p>
+              <dl class="contact__meta">
+                <div>
+                  <dt data-i18n="contact.emailLabel">Email</dt>
+                  <dd><a class="text-link" href="mailto:hello@anominsight.com">hello@anominsight.com</a></dd>
+                </div>
+                <div>
+                  <dt data-i18n="contact.locationLabel">Location</dt>
+                  <dd data-i18n="contact.locationValueD">Remote / worldwide</dd>
+                </div>
+                <div>
+                  <dt data-i18n="contact.responseLabel">Response time</dt>
+                  <dd data-i18n="contact.responseValueD">Within 24 hours, weekends included</dd>
+                </div>
+              </dl>
+              <a class="btn btn--secondary" href="https://calendar.app.google/ckrBNEpqXD8Vm8Ji6" target="_blank" rel="noopener noreferrer" aria-describedby="newTabHint" data-i18n="offer.discoveryCtaD">Book a free discovery call</a>
+            </div>
+
+            <form class="form" id="contactForm" action="https://formspree.io/f/xjykwlyk" method="POST">
+              <h3 data-i18n="contact.formHeading">Send me a message</h3>
+              <div class="field">
+                <label for="name" data-i18n="contact.formName">Name</label>
+                <input type="text" id="name" name="name" autocomplete="name" required data-i18n-placeholder="contact.formNamePlaceholder" placeholder="Your name" />
+              </div>
+              <div class="field">
+                <label for="email" data-i18n="contact.formEmail">Email</label>
+                <input type="email" id="email" name="email" autocomplete="email" required data-i18n-placeholder="contact.formEmailPlaceholder" placeholder="you@company.com" />
+              </div>
+              <div class="field">
+                <label for="message" data-i18n="contact.formMessage">Message</label>
+                <textarea id="message" name="message" rows="4" required data-i18n-placeholder="contact.formMessagePlaceholder" placeholder="Tell me about your data and what you need from it"></textarea>
+              </div>
+              <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="honeypot" aria-hidden="true" />
+              <button class="btn btn--primary" type="submit" data-i18n="contact.formSubmit">Send message</button>
+              <p class="form__status" id="formStatus" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="shell footer__inner">
+        <p>© <span id="year">2026</span> AnomInsight. <span data-i18n="footer.taglineD">Data into insight. Insight into decisions.</span></p>
+      </div>
+    </footer>
+
+    <script type="module" src="main.js"></script>
+  </body>
+</html>
