@@ -1,0 +1,4066 @@
+/* ===========================================================================
+   Version D - "Signal in Noise"
+
+   One idea carries the page: a field of raw readings is sorted, one reading
+   is flagged, it becomes a readable view and then a decision (the hero and
+   "How it works" share one stage, see signal-story.js). Everything else is
+   quiet type and evidence.
+
+   Rules held across this file (docs/design-system.md):
+   - Every colour is a :root token; alpha goes through the *-rgb triplets.
+   - Gold is signal: the flagged reading, the primary action, measured
+     figures, the active step and focus. Never decoration.
+   - Small radii (2-8px), 1px hairlines, no glass, no wide shadows.
+   - The Portfolio block is Version A's protected deck, copied verbatim; it
+     reads Version A's token names, which are remapped below.
+   =========================================================================== */
+
+/* --- Fonts (self-hosted, same files as Version A) ------------------------- */
+
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600 800;
+  font-display: swap;
+  src: url('../../../../fonts/manrope-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600 800;
+  font-display: swap;
+  src: url('../../../../fonts/manrope-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Source Sans 3';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../../../../fonts/source-sans-3-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Source Sans 3';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('../../../../fonts/source-sans-3-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* --- Tokens ---------------------------------------------------------------- */
+
+:root {
+  color-scheme: dark;
+
+  --font-display: 'Manrope', sans-serif;
+  --font-body: 'Source Sans 3', sans-serif;
+
+  /* Grounds and lines: charcoal with the faint warmth of the logo's black. */
+  --ground: #0B0A09;
+  --ground-band: #121110;
+  --surface: #181715;
+  --surface-2: #201F1C;
+  --line: #2B2925;
+  --line-strong: #3D3A34;
+  --field-border: #75716A;      /* >= 3:1 against every ground (UI component edge) */
+
+  /* Text */
+  --ivory: #F3EEE2;
+  --ivory-muted: #B9B2A4;
+  --ivory-faint: #8D877B;
+
+  /* Signal: the logo's brushed champagne gold. Reserved, see the file header. */
+  --gold-hi: #F1D5A2;
+  --gold: #CFB588;
+  --gold-lo: #A99470;
+  --gold-sheen: #E9CF9E;
+  --on-gold: #15120C;
+  --gold-brushed: linear-gradient(100deg, var(--gold-lo) 0%, var(--gold-sheen) 42%, var(--gold) 68%, var(--gold-lo) 100%);
+
+  /* Data colours (the stage reads these through getComputedStyle). */
+  --data-noise: #6B665D;
+  --data-series: #9C968A;
+  --data-steel: #7F8C95;
+
+  --error: #E08585;
+  --mask-solid: #000;
+  --mask-soft: rgba(0, 0, 0, 0.35);
+
+  /* Alpha triplets */
+  --ground-rgb: 11, 10, 9;
+  --grid-rgb: 243, 238, 226;
+  --gold-rgb: 207, 181, 136;
+  --gold-hi-rgb: 241, 213, 162;
+  --steel-rgb: 127, 140, 149;
+  --shadow-rgb: 0, 0, 0;
+
+  /* Version A token names, read by the protected portfolio block below.
+     Remapped to this palette; the block itself is unchanged. */
+  --bg: var(--ground);
+  --text: var(--ivory);
+  --muted: var(--ivory-muted);
+  --accent: var(--gold);
+  --accent-2: var(--gold-hi);
+  --accent-rgb: 207, 181, 136;
+  --accent-2-rgb: 241, 213, 162;
+  --bg-rgb: 11, 10, 9;
+  --panel-rgb: 24, 23, 21;
+  --surface-rgb: 24, 23, 21;
+  --surface-deep-rgb: 18, 17, 16;
+  --surface-raised-rgb: 32, 31, 28;
+  --scrim-rgb: 6, 6, 5;
+  --text-rgb: 243, 238, 226;
+  --muted-rgb: 185, 178, 164;
+  --sand-rgb: 185, 178, 164;
+  --chip-text: var(--ivory);
+  --dialog-top: #201F1C;
+  --dialog-bottom: #181715;
+
+  /* Radii: precise, not soft. */
+  --r-1: 2px;
+  --r-2: 4px;
+  --r-3: 8px;
+  --radius-sm: var(--r-2);
+  --radius-md: var(--r-3);
+  --radius-lg: var(--r-3);
+  --radius-xl: var(--r-3);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-press: 90ms;
+  --dur-hover: 160ms;
+  --dur-ui: 280ms;
+  --dur-flag: 420ms;
+  --dur-scan: 800ms;
+  --duration-fast: 140ms;
+  --duration-base: 220ms;
+  --duration-slow: 360ms;
+
+  /* Spacing (4px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --space-9: 6.5rem;
+  --space-10: 9rem;
+  --section-pad: clamp(4.5rem, 8vw, 8rem);
+
+  /* Type scale */
+  --fs-display-xl: clamp(3rem, 1.6rem + 4.2vw, 5.5rem);
+  --fs-display-l: clamp(2rem, 1.35rem + 2.2vw, 3.25rem);
+  --fs-heading-l: clamp(1.625rem, 1.25rem + 1.1vw, 2.25rem);
+  --fs-heading-m: clamp(1.375rem, 1.1rem + 0.9vw, 1.875rem);
+  --fs-heading-s: 1.25rem;
+  --fs-figure: clamp(2.25rem, 1.6rem + 2vw, 3.25rem);
+  --fs-lead: clamp(1.0625rem, 0.98rem + 0.35vw, 1.25rem);
+  --fs-small: 0.875rem;
+  --fs-label: 0.75rem;
+
+  /* Layout */
+  --header-h: 4rem;
+  --gutter: 1.25rem;
+  --shell: 1240px;
+  --edge: max(var(--gutter), calc((100% - var(--shell)) / 2));
+}
+
+@media (min-width: 1440px) {
+  :root { --gutter: 2rem; --shell: 1380px; }
+}
+
+@media (min-width: 1760px) {
+  :root { --gutter: 3rem; --shell: 1560px; --fs-display-xl: 5.75rem; }
+}
+
+@media (min-width: 2200px) {
+  :root { --gutter: 4rem; --shell: 1720px; --fs-display-xl: 6rem; }
+}
+
+/* --- Base and browser surfaces ------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + var(--space-4));
+  -webkit-text-size-adjust: 100%;
+  scrollbar-color: var(--line-strong) var(--ground);
+}
+
+body {
+  margin: 0;
+  padding-top: var(--header-h);
+  background-color: var(--ground);
+  color: var(--ivory);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(var(--gold-rgb), 0.34);
+  color: var(--ivory);
+}
+
+input,
+textarea,
+button {
+  font: inherit;
+  color: inherit;
+}
+
+input,
+textarea {
+  caret-color: var(--gold-hi);
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold-hi);
+  outline-offset: 3px;
+  border-radius: var(--r-1);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+h2 {
+  font-size: var(--fs-display-l);
+  font-weight: 760;
+  letter-spacing: -0.025em;
+  line-height: 1.06;
+}
+
+p {
+  margin: 0;
+}
+
+/* Better last lines where they show most; not on every paragraph, which makes
+   each text layout (a language switch re-lays out the whole page) dearer. */
+.hero__lead,
+.story__lead,
+.step > p:not(.step__meta):not(.step__discipline),
+.story__close > p,
+.proof__bridge,
+.map__intro p {
+  text-wrap: pretty;
+}
+
+ul, ol, dl, dd {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+.shell,
+.container {
+  width: min(var(--shell), calc(100% - 2 * var(--gutter)));
+  margin-inline: auto;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: var(--space-4);
+  z-index: 1200;
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+  background: var(--gold-hi);
+  color: var(--on-gold);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--r-2);
+  font-weight: 700;
+}
+
+.skip-link:focus {
+  clip-path: none;
+  width: auto;
+  height: auto;
+  overflow: visible;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* One text-link look: a quiet hairline underline that turns gold on hover.
+   A real text-decoration, so it follows wrapped lines. */
+.text-link,
+a.proof__source,
+.map__packages a {
+  font-weight: 600;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.32em;
+  transition: text-decoration-color var(--dur-hover) ease, color var(--dur-hover) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .text-link:hover,
+  a.proof__source:hover,
+  .map__packages a:hover {
+    text-decoration-color: var(--gold);
+    color: var(--ivory);
+  }
+}
+
+.text-link--arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.text-link--arrow svg {
+  transition: transform var(--dur-hover) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .text-link--arrow:hover svg {
+    transform: translateX(3px);
+  }
+}
+
+/* --- Header --------------------------------------------------------------- */
+
+.site-header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 1000;
+  height: var(--header-h);
+  /* Solid, not translucent: text scrolling under a 96% bar still ghosts. */
+  background: var(--ground);
+  border-bottom: 1px solid var(--line);
+}
+
+.site-header__inner {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.125rem;
+  letter-spacing: -0.01em;
+}
+
+.brand__mark {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid rgba(var(--gold-rgb), 0.45);
+}
+
+.brand__mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.nav-links {
+  display: flex;
+  gap: var(--space-6);
+}
+
+.nav-links a {
+  position: relative;
+  padding-block: var(--space-2);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--ivory-muted);
+  transition: color var(--dur-hover) ease;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.nav-links a[aria-current='page'] {
+  color: var(--ivory);
+}
+
+.nav-links a[aria-current='page']::after {
+  transform: scaleX(1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nav-links a:hover { color: var(--ivory); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+}
+
+.lang {
+  min-height: 2.25rem;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-2);
+  background: transparent;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color var(--dur-hover) ease, background-color var(--dur-hover) ease, transform var(--dur-press) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .lang:hover {
+    border-color: var(--gold-lo);
+    background: var(--surface-2);
+  }
+}
+
+.lang:active,
+.lang[aria-busy='true'] { transform: scale(0.96); }
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: 0;
+  padding: 9px 11px;
+  cursor: pointer;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--ivory);
+  margin: 5px 0;
+  transition: transform var(--duration-fast) var(--ease-out), opacity var(--duration-fast) ease;
+}
+
+.menu-toggle[aria-expanded='true'] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.menu-toggle[aria-expanded='true'] span:nth-child(2) { opacity: 0; }
+.menu-toggle[aria-expanded='true'] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* --- Buttons -------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 3rem;
+  padding: 0.75rem 1.35rem;
+  border: 1px solid transparent;
+  border-radius: var(--r-2);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  line-height: 1.25;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    transform var(--dur-hover) var(--ease-out),
+    filter var(--dur-hover) ease,
+    background-color var(--dur-hover) ease,
+    background-position 600ms var(--ease-out),
+    border-color var(--dur-hover) ease,
+    color var(--dur-hover) ease;
+}
+
+/* The logo's brushed metal. On hover the sheen travels a little, the one
+   place a gradient is allowed to move. */
+.btn--primary {
+  background-color: var(--gold);
+  background-image: var(--gold-brushed);
+  background-size: 160% 100%;
+  background-position: 0% 0;
+  color: var(--on-gold);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn--primary:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.04);
+    background-position: 100% 0;
+  }
+}
+
+.btn--secondary,
+.btn--ghost {
+  background-color: transparent;
+  border-color: var(--line-strong);
+  color: var(--ivory);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn--secondary:hover,
+  .btn--ghost:hover {
+    transform: translateY(-1px);
+    border-color: var(--gold-lo);
+    background-color: var(--surface-2);
+  }
+}
+
+.btn:active {
+  transform: scale(0.98);
+  transition-duration: var(--dur-press);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+  transform: none;
+  filter: none;
+}
+
+.btn--large {
+  min-height: 3.5rem;
+  padding: 0.95rem 1.75rem;
+  font-size: 1rem;
+}
+
+/* --- Signal story: hero + stage + "How it works" --------------------------- */
+
+.signal-story {
+  position: relative;
+}
+
+/* Text sits above the stage: on wide screens the stage is a full-width layer
+   behind the hero and the story. */
+.hero,
+.story {
+  position: relative;
+  z-index: 1;
+}
+
+.hero__copy {
+  max-width: 42rem;
+}
+
+.hero h1 {
+  font-size: var(--fs-display-xl);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  max-width: 13ch;
+}
+
+.hero__lead {
+  margin-top: var(--space-5);
+  max-width: 50ch;
+  font-size: var(--fs-lead);
+  line-height: 1.55;
+  color: var(--ivory-muted);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.hero__byline {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--line);
+  max-width: 34rem;
+}
+
+.hero__byline picture {
+  flex: none;
+}
+
+.hero__byline img {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+}
+
+.hero__byline-text {
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+
+.hero__byline-text strong {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.hero__byline-role {
+  color: var(--ivory-muted);
+  margin-left: var(--space-2);
+  padding-left: var(--space-2);
+  border-left: 1px solid var(--line-strong);
+}
+
+.hero__byline-note {
+  margin-top: 0.15rem;
+  font-size: var(--fs-small);
+  color: var(--ivory-muted);
+}
+
+/* The stage: one canvas layer, a hairline grid, and the HTML overlay. In the
+   hero it is atmosphere – the field fills the screen and fades toward the
+   headline, with no label, a barely-there grid and a quiet pause control.
+   From the first story step the structure appears in the plot area on the
+   right (--plot-left), with its "Illustrative example" label. */
+.stage {
+  position: relative;
+}
+
+.stage__frame {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.stage__frame::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 0 var(--plot-left, 0);
+  z-index: -1;
+  background-image:
+    linear-gradient(to right, rgba(var(--grid-rgb), 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--grid-rgb), 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: -1px -1px;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, var(--mask-solid) 18%);
+  mask-image: linear-gradient(90deg, transparent 0, var(--mask-solid) 18%);
+  opacity: 0.2;
+  transition: opacity 600ms ease;
+}
+
+/* The grid belongs to the analysis, not the atmosphere: it comes up with the
+   story and steps back again once the interface has assembled. */
+.stage[data-story='on'] .stage__frame::before {
+  opacity: 1;
+}
+
+.stage[data-panel='on'] .stage__frame::before {
+  opacity: 0.45;
+}
+
+html:not(.js) .stage__frame::before {
+  opacity: 1;
+}
+
+.stage__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.stage.is-live .stage__canvas {
+  opacity: 1;
+}
+
+/* No-script poster: the finished example, drawn like an engineering figure. */
+.stage__poster {
+  position: absolute;
+  left: var(--plot-left, 8%);
+  top: 50%;
+  width: calc(100% - var(--plot-left, 8%) - var(--stage-pad, 6%));
+  height: auto;
+  transform: translateY(-50%);
+  overflow: visible;
+}
+
+.js .stage:not(.stage--fallback) .stage__poster {
+  display: none;
+}
+
+.poster__grid { fill: none; stroke: rgba(var(--grid-rgb), 0.07); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.poster__band { fill: rgba(var(--steel-rgb), 0.12); stroke: rgba(var(--steel-rgb), 0.55); stroke-width: 1; stroke-dasharray: 3 4; vector-effect: non-scaling-stroke; }
+.poster__axis { fill: none; stroke: var(--line-strong); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.poster__reading { fill: none; stroke: var(--data-series); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.poster__leader { stroke: rgba(var(--gold-hi-rgb), 0.55); stroke-width: 1; stroke-dasharray: 2 4; vector-effect: non-scaling-stroke; }
+.poster__ring { fill: none; stroke: var(--gold-lo); stroke-width: 1.25; vector-effect: non-scaling-stroke; }
+.poster__point { fill: var(--gold-hi); }
+
+.stage__overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.stage__caption {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--plot-left, var(--stage-pad, 7%));
+  z-index: 2;
+  max-width: calc(100% - var(--plot-left, 0px) - 4rem);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ivory-faint);
+  transition: opacity var(--dur-ui) ease;
+}
+
+/* The hero shows only an abstract field (no data, no claims), so the label
+   waits for the first step, where the readings become an example. Without
+   script the finished poster shows, and so does its label. */
+.js .stage:not(.stage--fallback) .stage__caption {
+  opacity: 0;
+}
+
+.js .stage[data-story='on'] .stage__caption {
+  opacity: 1;
+}
+
+/* The one continuous motion's pause control (WCAG 2.2.2): always there while
+   the field drifts, but quiet, in the corner, not a toolbar. */
+.stage__pause {
+  position: absolute;
+  bottom: var(--space-5);
+  right: var(--stage-pad, var(--space-4));
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ivory-muted);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: border-color var(--dur-hover) ease, background-color var(--dur-hover) ease, color var(--dur-hover) ease, transform var(--dur-press) ease;
+}
+
+.stage__pause[hidden] { display: none; }
+.stage__pause .icon-play { display: none; }
+.stage__pause[aria-pressed='true'] .icon-pause { display: none; }
+.stage__pause[aria-pressed='true'] .icon-play { display: block; }
+
+@media (hover: hover) and (pointer: fine) {
+  .stage__pause:hover {
+    border-color: var(--gold-lo);
+    background: var(--surface-2);
+    color: var(--ivory);
+  }
+}
+
+.stage__pause:active { transform: scale(0.94); }
+
+/* Overlay pieces: placed by signal-story.js, shown by the stage's data-*
+   states. Opacity and transform only. */
+.stage__lane-label,
+.stage__flag-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity var(--dur-ui) ease;
+}
+
+.stage__lane-label {
+  color: var(--data-steel);
+}
+
+.stage__flag-label {
+  color: var(--gold-hi);
+  text-transform: none;
+  letter-spacing: 0.01em;
+  font-size: var(--fs-small);
+}
+
+.stage[data-lanes='on'] .stage__lane-label { opacity: 1; }
+.stage[data-flag='on']:not([data-panel='on']) .stage__flag-label { opacity: 1; }
+
+.stage-panel {
+  position: absolute;
+  left: var(--plot-left, var(--stage-pad, 7%));
+  right: var(--stage-pad, 7%);
+  top: 3.75rem;
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-3);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity var(--dur-ui) var(--ease-out), transform var(--dur-ui) var(--ease-out);
+}
+
+.stage-panel__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-5);
+}
+
+.stage-panel__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.stage-panel__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  font-size: var(--fs-label);
+  color: var(--ivory-muted);
+}
+
+.legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legend::before {
+  content: '';
+  flex: none;
+  width: 0.75rem;
+  height: 0.5rem;
+}
+
+.legend--band::before {
+  background: rgba(var(--steel-rgb), 0.18);
+  border: 1px dashed rgba(var(--steel-rgb), 0.7);
+}
+
+.legend--reading::before {
+  height: 1px;
+  background: var(--data-series);
+}
+
+.legend--flag::before {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--gold-hi);
+  box-shadow: 0 0 0 2px var(--ground), 0 0 0 3px var(--gold-lo);
+}
+
+/* Empty on purpose: the canvas draws the chart into this box. */
+.stage-panel__chart {
+  height: clamp(9rem, 26svh, 17rem);
+  border-bottom: 1px solid var(--line-strong);
+}
+
+/* The chart's baseline already rules the top of the row; one rule below. */
+.stage-panel__tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-bottom: 1px solid var(--line);
+}
+
+.stage-tile {
+  min-width: 0;
+  overflow-wrap: break-word;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--fs-small);
+  line-height: 1.3;
+  color: var(--ivory-muted);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity var(--dur-ui) var(--ease-out), transform var(--dur-ui) var(--ease-out);
+}
+
+.stage-tile + .stage-tile {
+  border-left: 1px solid var(--line);
+}
+
+.stage-tile:first-child {
+  padding-left: 0;
+}
+
+.stage-tile__value {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.5rem;
+  line-height: 1.1;
+  color: var(--ivory);
+  font-variant-numeric: tabular-nums;
+}
+
+.stage-tile__value--text {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.stage-tile--flag .stage-tile__value {
+  color: var(--gold-hi);
+}
+
+.stage-panel__alert {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--fs-small);
+  color: var(--ivory);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity var(--dur-ui) var(--ease-out), transform var(--dur-ui) var(--ease-out);
+}
+
+.flag-glyph {
+  flex: none;
+  color: var(--gold-hi);
+}
+
+.stage[data-panel='on'] .stage-panel,
+.stage[data-panel='on'] .stage-tile,
+.stage[data-panel='on'] .stage-panel__alert {
+  opacity: 1;
+  transform: none;
+}
+
+.stage[data-panel='on'] .stage-tile:nth-child(1) { transition-delay: 80ms; }
+.stage[data-panel='on'] .stage-tile:nth-child(2) { transition-delay: 140ms; }
+.stage[data-panel='on'] .stage-tile:nth-child(3) { transition-delay: 200ms; }
+.stage[data-panel='on'] .stage-panel__alert { transition-delay: 260ms; }
+
+.decision {
+  position: absolute;
+  left: var(--plot-left, var(--stage-pad, 7%));
+  right: var(--stage-pad, 7%);
+  bottom: var(--space-6);
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  background: var(--surface-2);
+  border: 1px solid var(--gold-lo);
+  border-radius: var(--r-3);
+  box-shadow: 0 24px 48px -24px rgba(var(--shadow-rgb), 0.6);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 320ms var(--ease-out), transform 320ms var(--ease-out);
+}
+
+.decision__line {
+  display: grid;
+  grid-template-columns: minmax(6.5rem, auto) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: baseline;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity var(--dur-ui) var(--ease-out), transform var(--dur-ui) var(--ease-out);
+}
+
+.decision__key {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  color: var(--ivory-muted);
+}
+
+.decision__line--next .decision__key,
+.decision__line--next span:last-child {
+  color: var(--gold-hi);
+}
+
+.decision__line--next span:last-child {
+  font-weight: 600;
+}
+
+.decision__arrow {
+  margin-left: 2.5rem;
+  color: var(--ivory-faint);
+  opacity: 0;
+  transition: opacity var(--dur-ui) ease;
+}
+
+.decision__monitor {
+  margin-top: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line-strong);
+  font-size: var(--fs-small);
+  color: var(--ivory-muted);
+  opacity: 0;
+  transition: opacity var(--dur-ui) ease;
+}
+
+.stage[data-decision='on'] .decision,
+.stage[data-decision='on'] .decision__line {
+  opacity: 1;
+  transform: none;
+}
+
+.stage[data-decision='on'] .decision__arrow,
+.stage[data-decision='on'] .decision__monitor {
+  opacity: 1;
+}
+
+.stage[data-decision='on'] .decision > :nth-child(2) { transition-delay: 80ms; }
+.stage[data-decision='on'] .decision > :nth-child(3) { transition-delay: 140ms; }
+.stage[data-decision='on'] .decision > :nth-child(4) { transition-delay: 200ms; }
+.stage[data-decision='on'] .decision > :nth-child(5) { transition-delay: 260ms; }
+.stage[data-decision='on'] .decision > :nth-child(6) { transition-delay: 340ms; }
+
+/* "How it works": the text column of the story. */
+.story__opener h2 {
+  max-width: 17ch;
+}
+
+.story__lead {
+  margin-top: var(--space-5);
+  max-width: 46ch;
+  font-size: var(--fs-lead);
+  color: var(--ivory-muted);
+}
+
+.story__issues {
+  margin-top: var(--space-6);
+  max-width: 30rem;
+  border-top: 1px solid var(--line);
+}
+
+.story__issues li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding-block: 0.7rem;
+  border-bottom: 1px solid var(--line);
+  font-weight: 600;
+}
+
+/* A stray reading: the problems are the noise. */
+.story__issues li::before {
+  content: '';
+  flex: none;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background: var(--data-series);
+  transform: translateY(-0.1em);
+}
+
+.story__bridge {
+  margin-top: var(--space-6);
+  max-width: 40ch;
+  color: var(--ivory);
+  font-weight: 600;
+}
+
+.step__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ivory-faint);
+}
+
+.step__index {
+  font-variant-numeric: tabular-nums;
+  transition: color var(--dur-hover) ease;
+}
+
+.step.is-active .step__index {
+  color: var(--gold);
+}
+
+.step__discipline {
+  margin-top: var(--space-2);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--ivory-faint);
+}
+
+.step h3 {
+  margin-top: var(--space-4);
+  font-size: var(--fs-heading-l);
+  font-weight: 760;
+  letter-spacing: -0.025em;
+}
+
+.step > p:not(.step__meta):not(.step__discipline) {
+  margin-top: var(--space-4);
+  max-width: 40ch;
+  font-size: var(--fs-lead);
+  color: var(--ivory-muted);
+}
+
+.step > p:not(.step__meta):not(.step__discipline) + p {
+  margin-top: var(--space-3);
+}
+
+.step__frame:empty {
+  display: none;
+}
+
+.story__close h3 {
+  font-size: var(--fs-heading-l);
+  font-weight: 760;
+  letter-spacing: -0.025em;
+  max-width: 18ch;
+}
+
+.story__close > p {
+  margin-top: var(--space-5);
+  max-width: 44ch;
+  font-size: var(--fs-lead);
+  color: var(--ivory-muted);
+}
+
+.story__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+/* Wide screens: the stage holds the right side, sticky, from the hero to the
+   end of the story; the text column scrolls past it. (60em = 960px; text
+   size raises it, so enlarged text gets the stacked layout.) */
+@media (min-width: 60em) {
+  .signal-story {
+    --story-gap: clamp(2rem, 4vw, 4.5rem);
+    --text-frac: 0.41667;
+    display: grid;
+    grid-template-columns:
+      [edge] var(--edge)
+      [text-start] minmax(0, 5fr)
+      [text-end] var(--story-gap)
+      [stage-start] minmax(0, 7fr)
+      [stage-end];
+    grid-template-rows: auto auto;
+  }
+
+  /* The hero copy may run past the story's text column: the field behind
+     it is faint there, and the story's structure starts at --plot-left. */
+  .hero {
+    grid-column: text-start / stage-end;
+    grid-row: 1;
+    min-height: calc(100svh - var(--header-h));
+    display: flex;
+    align-items: center;
+    padding-block: var(--space-8);
+    /* The hero box spans the stage column above the stage layer; let pointer
+       events through its empty area so the stage's pause button is clickable. */
+    pointer-events: none;
+  }
+
+  .hero__copy {
+    pointer-events: auto;
+  }
+
+  /* --plot-left repeats the grid's own arithmetic (100% is the stage width,
+     which is the grid's width), so the overlay and the no-script poster
+     line up with the stage column without script. */
+  .stage {
+    --stage-pad: clamp(1.5rem, 3.5%, 3rem);
+    --plot-left: calc(var(--edge) + (100% - var(--edge) - var(--story-gap)) * var(--text-frac) + var(--story-gap));
+    grid-column: 1 / -1;
+    grid-row: 1 / span 2;
+    position: sticky;
+    top: var(--header-h);
+    z-index: 0;
+    height: calc(100svh - var(--header-h));
+    align-self: start;
+    pointer-events: none;
+  }
+
+  .story {
+    grid-column: text;
+    grid-row: 2;
+  }
+
+  .story__opener,
+  .step,
+  .story__close {
+    min-height: 72svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: var(--space-8);
+  }
+
+  /* The last block holds the finished state a little longer before the
+     stage scrolls away with it. */
+  .story__close {
+    min-height: 84svh;
+  }
+}
+
+/* Between 960 and 1200px the copy column needs half the width, or the
+   Hungarian headline runs to four lines. */
+@media (min-width: 60em) and (max-width: 74.99em) {
+  .signal-story {
+    --text-frac: 0.5;
+    grid-template-columns:
+      [edge] var(--edge)
+      [text-start] minmax(0, 6fr)
+      [text-end] var(--story-gap)
+      [stage-start] minmax(0, 6fr)
+      [stage-end];
+  }
+
+  .stage-panel__head { flex-direction: column; align-items: flex-start; }
+}
+
+/* Short wide screens (laptops at 768px tall): a smaller chart keeps the
+   panel and the decision card apart. */
+@media (min-width: 60em) and (max-height: 50em) {
+  .stage-panel { top: 3.25rem; padding: var(--space-4); gap: var(--space-3); }
+  .stage-panel__chart { height: clamp(7rem, 22svh, 12rem); }
+  .decision { bottom: var(--space-4); padding: var(--space-4); }
+  .decision__monitor { display: none; }
+}
+
+/* Narrow screens: no pinned stage. The hero field is a band under the copy
+   and every step gets its own small frame (built by signal-story.js) that
+   plays its one transition when it comes into view. */
+@media (max-width: 59.99em) {
+  .hero {
+    padding-block: var(--space-7) var(--space-6);
+  }
+
+  .hero__copy {
+    width: min(var(--shell), calc(100% - 2 * var(--gutter)));
+    margin-inline: auto;
+    max-width: none;
+  }
+
+  .stage {
+    --stage-pad: var(--gutter);
+  }
+
+  .stage__frame {
+    width: 100%;
+    height: min(75vw, 32rem);
+  }
+
+  .stage__frame::before,
+  .stage__canvas {
+    -webkit-mask-image: linear-gradient(to bottom, transparent, var(--mask-soft) 10%, var(--mask-solid) 30%, var(--mask-solid) 75%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, var(--mask-soft) 10%, var(--mask-solid) 30%, var(--mask-solid) 75%, transparent);
+  }
+
+  .stage__frame::before {
+    inset: 0;
+  }
+
+  /* The band is the noise only; the step frames below carry the label. */
+  .js .stage:not(.stage--fallback) .stage__caption {
+    display: none;
+  }
+
+  .stage__pause {
+    bottom: var(--space-3);
+    right: var(--gutter);
+  }
+
+  .stage .stage__lane-label,
+  .stage .stage__flag-label,
+  .stage .stage-panel,
+  .stage .decision {
+    display: none;
+  }
+
+  .story {
+    width: min(var(--shell), calc(100% - 2 * var(--gutter)));
+    margin-inline: auto;
+    padding-bottom: var(--space-8);
+  }
+
+  .story__opener {
+    padding-block: var(--space-8) var(--space-6);
+  }
+
+  .step {
+    padding-block: var(--space-7);
+    border-top: 1px solid var(--line);
+  }
+
+  .story__close {
+    padding-top: var(--space-7);
+    border-top: 1px solid var(--line);
+  }
+}
+
+/* Per-step frames (narrow screens only; created by signal-story.js). */
+.step__frame-caption {
+  margin-top: var(--space-2);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ivory-faint);
+}
+
+.step__frame {
+  position: relative;
+  margin-top: var(--space-5);
+}
+
+.frame-canvas {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  max-height: 26rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-3);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.frame-canvas::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(to right, rgba(var(--grid-rgb), 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--grid-rgb), 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.frame-canvas canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.frame-canvas .stage__lane-label,
+.frame-canvas .stage__flag-label {
+  transition-delay: 0ms;
+}
+
+.frame-canvas.is-played .stage__lane-label,
+.frame-canvas.is-played .stage__flag-label {
+  opacity: 1;
+}
+
+.step__frame .stage-panel,
+.step__frame .decision {
+  position: relative;
+  inset: auto;
+  opacity: 1;
+  transform: none;
+}
+
+.step__frame .stage-panel {
+  padding: var(--space-4);
+  gap: var(--space-3);
+}
+
+.step__frame .stage-panel__chart {
+  height: auto;
+  aspect-ratio: 16 / 9;
+  position: relative;
+}
+
+.step__frame .stage-tile,
+.step__frame .stage-panel__alert,
+.step__frame .decision__line,
+.step__frame .decision__arrow,
+.step__frame .decision__monitor {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.step__frame.is-played .stage-tile,
+.step__frame.is-played .stage-panel__alert,
+.step__frame.is-played .decision__line,
+.step__frame.is-played .decision__arrow,
+.step__frame.is-played .decision__monitor {
+  opacity: 1;
+  transform: none;
+}
+
+.step__frame.is-played .stage-tile:nth-child(2) { transition-delay: 60ms; }
+.step__frame.is-played .stage-tile:nth-child(3) { transition-delay: 120ms; }
+.step__frame.is-played .stage-panel__alert { transition-delay: 200ms; }
+.step__frame.is-played .decision > :nth-child(2) { transition-delay: 80ms; }
+.step__frame.is-played .decision > :nth-child(3) { transition-delay: 140ms; }
+.step__frame.is-played .decision > :nth-child(4) { transition-delay: 200ms; }
+.step__frame.is-played .decision > :nth-child(5) { transition-delay: 260ms; }
+.step__frame.is-played .decision > :nth-child(6) { transition-delay: 340ms; }
+
+/* In the narrow frames the three tiles read as a short list: count or state
+   on the left, what it is on the right. No orphan tile, no clipped words. */
+.step__frame .stage-panel__tiles {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.step__frame .stage-tile {
+  flex-direction: row;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+}
+
+.step__frame .stage-tile + .stage-tile {
+  border-left: 0;
+  border-top: 1px solid var(--line);
+}
+
+.step__frame .stage-tile__value {
+  flex: none;
+  min-width: 2.5rem;
+}
+
+.step__frame .stage-tile__value {
+  font-size: 1.25rem;
+}
+
+.step__frame .stage-tile__value--text {
+  font-size: 0.875rem;
+}
+
+.step__frame .decision {
+  box-shadow: none;
+}
+
+/* --- Sections (shared rhythm) --------------------------------------------- */
+
+.section {
+  position: relative;
+  padding-block: var(--section-pad);
+}
+
+/* Chapter bands (as in Version A): a change of thought is a change of ground,
+   painted full-bleed through border-image so width-capped sections work too. */
+.band {
+  --band-edge: var(--line);
+  --band-edge-top: var(--band-edge);
+  --band-edge-bottom: var(--band-edge);
+  border-image:
+    linear-gradient(
+      var(--band-edge-top) 0 1px,
+      var(--ground-band) 1px calc(100% - 1px),
+      var(--band-edge-bottom) calc(100% - 1px)
+    ) fill 0 / 0 / 0 100vmax;
+}
+
+.band + .band { --band-edge-top: var(--ground-band); }
+.band:has(+ .band) { --band-edge-bottom: var(--ground-band); }
+
+.section-subtitle {
+  margin-top: var(--space-3);
+  color: var(--ivory-muted);
+}
+
+/* --- Measured results ----------------------------------------------------- */
+
+.proof {
+  padding-block: var(--section-pad);
+}
+
+.proof__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.proof__bridge {
+  margin-top: var(--space-5);
+  font-size: var(--fs-lead);
+  color: var(--ivory);
+  max-width: 30ch;
+}
+
+.proof__intro p:not(.proof__bridge) {
+  margin-top: var(--space-4);
+  color: var(--ivory-muted);
+  max-width: 36ch;
+}
+
+/* A ruled ledger rather than stat tiles: figure, what it measures, where it
+   comes from. */
+.proof__ledger {
+  border-top: 1px solid var(--line-strong);
+}
+
+.proof__row {
+  display: grid;
+  grid-template-columns: minmax(0, 13.5rem) minmax(0, 1fr) minmax(0, 14rem);
+  gap: var(--space-3) var(--space-6);
+  align-items: baseline;
+  padding-block: var(--space-5);
+  border-bottom: 1px solid var(--line);
+}
+
+.proof__value {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--fs-figure);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--gold-hi);
+  font-variant-numeric: tabular-nums;
+}
+
+.proof__label {
+  font-size: 1.0625rem;
+  line-height: 1.4;
+}
+
+.proof__source {
+  justify-self: end;
+  text-align: right;
+  font-size: var(--fs-small);
+  color: var(--ivory-muted);
+}
+
+/* --- What I deliver: the service map --------------------------------------- */
+
+.map__intro {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: var(--space-5) var(--space-8);
+  align-items: end;
+}
+
+.map__intro p {
+  max-width: 52ch;
+  color: var(--ivory-muted);
+  font-size: var(--fs-lead);
+}
+
+.map__intro .text-link {
+  grid-column: 2;
+  justify-self: start;
+}
+
+.map {
+  margin-top: var(--space-8);
+  border-top: 1px solid var(--line-strong);
+}
+
+.map__row {
+  display: grid;
+  grid-template-columns: minmax(0, 3.5fr) minmax(0, 5.5fr) minmax(0, 3fr);
+  gap: var(--space-5) var(--space-6);
+  padding-block: var(--space-7);
+  border-bottom: 1px solid var(--line);
+}
+
+.map__stage {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+}
+
+.map__glyph {
+  color: var(--data-series);
+}
+
+.map__glyph-signal {
+  color: var(--gold-hi);
+}
+
+.map__stage h3 {
+  font-size: var(--fs-heading-l);
+  max-width: 14ch;
+}
+
+.map__note {
+  margin-top: calc(var(--space-2) * -1);
+  font-family: var(--font-body);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ivory-faint);
+}
+
+.map__services {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.map__services h4 {
+  font-size: 1.0625rem;
+  letter-spacing: -0.01em;
+}
+
+.map__services p {
+  margin-top: var(--space-2);
+  max-width: 48ch;
+  color: var(--ivory-muted);
+}
+
+.map__packages {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.map__packages-label {
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ivory-faint);
+}
+
+.map__packages a {
+  line-height: 1.35;
+}
+
+/* --- Same data, different questions (opens the service map) ---------------- */
+
+/* The story's readings in four views (modes.js). Same hairlines, steel range,
+   ivory/grey points and one gold reading as the stage, so it reads as the
+   same analytical system, not a widget. */
+.modes {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  /* Right column: the chart, then the figure (text + caption); the side
+     spans both rows, so its height never pushes the text down. */
+  grid-template-rows: auto 1fr;
+  column-gap: var(--space-8);
+  align-items: start;
+  margin-top: var(--space-8);
+  padding-top: var(--space-7);
+  border-top: 1px solid var(--line-strong);
+}
+
+.modes h3 {
+  font-size: var(--fs-heading-l);
+  font-weight: 760;
+  letter-spacing: -0.025em;
+  max-width: 14ch;
+}
+
+.modes__lead {
+  margin-top: var(--space-4);
+  max-width: 40ch;
+  color: var(--ivory-muted);
+}
+
+.modes__tabs {
+  margin-top: var(--space-6);
+  border-top: 1px solid var(--line);
+}
+
+.modes__tab {
+  display: grid;
+  align-content: start;
+  gap: 0.1rem;
+  width: 100%;
+  padding: var(--space-3) 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--dur-hover) ease, box-shadow var(--dur-hover) ease;
+}
+
+/* The active question is marked by more than colour: its rule turns into a
+   2px gold underline (border + inset shadow, so nothing shifts). */
+.modes__tab[aria-pressed='true'] {
+  border-bottom-color: var(--gold-hi);
+  box-shadow: inset 0 -1px 0 var(--gold-hi);
+}
+
+.modes__tab[aria-pressed='true'] .modes__tab-q {
+  color: var(--ivory);
+}
+
+.modes__tab-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  color: var(--ivory);
+  transition: color var(--dur-hover) ease;
+}
+
+.modes__tab-q {
+  font-size: var(--fs-small);
+  color: var(--ivory-muted);
+  transition: color var(--dur-hover) ease;
+}
+
+.modes__tab[aria-pressed='true'] .modes__tab-name {
+  color: var(--gold-hi);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .modes__tab:hover .modes__tab-q {
+    color: var(--ivory);
+  }
+}
+
+.modes__side {
+  grid-row: 1 / span 2;
+}
+
+.modes__plot {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.modes__figure {
+  grid-column: 2;
+  grid-row: 2;
+  margin: 0;
+}
+
+.modes__plot {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.modes__grid {
+  fill: none;
+  stroke: rgba(var(--grid-rgb), 0.07);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.modes__layer {
+  opacity: 0;
+  transition: opacity 450ms ease;
+}
+
+.modes[data-mode='detect'] .modes__layer[data-show~='detect'],
+.modes[data-mode='forecast'] .modes__layer[data-show~='forecast'],
+.modes[data-mode='group'] .modes__layer[data-show~='group'],
+.modes[data-mode='classify'] .modes__layer[data-show~='classify'] {
+  opacity: 1;
+}
+
+.modes__band,
+.modes__hulls ellipse {
+  fill: rgba(var(--steel-rgb), 0.1);
+  stroke: rgba(var(--steel-rgb), 0.55);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+  vector-effect: non-scaling-stroke;
+}
+
+.modes__cone {
+  fill: rgba(var(--steel-rgb), 0.12);
+}
+
+.modes__fit,
+.modes__limit,
+.modes__now,
+.modes__boundary {
+  fill: none;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.modes__fit {
+  stroke: var(--data-series);
+  stroke-width: 1.5;
+}
+
+.modes__fit--ahead {
+  stroke-dasharray: 5 4;
+}
+
+.modes__limit {
+  stroke: var(--line-strong);
+  stroke-dasharray: 2 4;
+}
+
+.modes__now {
+  stroke: var(--line-strong);
+}
+
+.modes__boundary {
+  stroke: var(--data-steel);
+  stroke-dasharray: 5 4;
+}
+
+.modes__watch-side {
+  fill: rgba(var(--grid-rgb), 0.035);
+}
+
+.modes__cross,
+.modes__ring {
+  fill: none;
+  stroke-width: 1.25;
+  vector-effect: non-scaling-stroke;
+}
+
+.modes__cross {
+  stroke: var(--gold-hi);
+}
+
+.modes__ring {
+  stroke: var(--gold-lo);
+}
+
+.modes__label,
+.modes__axis {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  fill: var(--ivory-faint);
+}
+
+.modes__label--limit,
+.modes__label--watch,
+.modes__axis--x {
+  text-anchor: end;
+}
+
+.modes__pt {
+  fill: var(--data-series);
+}
+
+.modes__pt--flag {
+  fill: var(--gold-hi);
+}
+
+/* Groups and classes in neutral tones; gold stays the one flagged reading. */
+.modes[data-mode='group'] .modes__pt[data-cluster='0'],
+.modes[data-mode='classify'] .modes__pt[data-class='watch']:not(.modes__pt--flag) {
+  fill: var(--ivory);
+}
+
+.modes[data-mode='group'] .modes__pt[data-cluster='1'] {
+  fill: var(--data-steel);
+}
+
+.modes.is-ready .modes__pt,
+.modes.is-ready .modes__ring {
+  transition: transform 700ms var(--ease-in-out), fill 400ms ease;
+}
+
+.modes__copies {
+  margin-top: var(--space-4);
+  min-height: 4.5rem;
+}
+
+.modes__text {
+  max-width: 56ch;
+}
+
+.modes__methods {
+  margin-top: var(--space-2);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--ivory-faint);
+}
+
+/* A full sentence (what is and is not computed), so body-small, not label style. */
+.modes__caption {
+  margin-top: var(--space-3);
+  max-width: 64ch;
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--ivory-faint);
+}
+
+/* Without script: the four questions as a plain list, no empty chart. */
+html:not(.js) .modes__plot,
+html:not(.js) .modes__tabs,
+html:not(.js) .modes__caption {
+  display: none;
+}
+
+html:not(.js) .modes__copy + .modes__copy {
+  margin-top: var(--space-4);
+}
+
+@media (max-width: 900px) {
+  .modes {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+  }
+
+  /* One column: heading, lead, chart, the questions right under it (the
+     chart stays above the thumb while switching), then the text. The side
+     box dissolves (a plain div); the chart is aria-hidden, so reading and
+     Tab order stay heading, lead, questions, text. */
+  .modes__side {
+    display: contents;
+  }
+
+  .modes__plot,
+  .modes__figure {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .modes__plot {
+    order: 1;
+    margin-top: var(--space-6);
+  }
+
+  .modes__tabs {
+    order: 2;
+  }
+
+  .modes__figure {
+    order: 3;
+  }
+
+  /* Without script the texts follow the lead: keep the old gap above them. */
+  html:not(.js) .modes__figure {
+    margin-top: var(--space-6);
+  }
+
+  .modes__tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--space-4);
+  }
+
+  /* SVG text scales with the chart: larger units keep it ~12px on phones. */
+  .modes__label,
+  .modes__axis {
+    font-size: 21px;
+  }
+}
+
+/* --- Portfolio (protected) ---------------------------------------------------
+   Copied verbatim from Version A (card base + the deck, its filters, nav and
+   detail dialog). It reads Version A's token names, remapped in :root; do not
+   restyle the structure here (DESIGN.md: protected component). */
+
+/* --- Card base (used by the portfolio cards) ------------------------------ */
+
+.card {
+  background: rgba(var(--surface-rgb), 0.92);
+  border: 1px solid rgba(var(--accent-rgb), 0.14);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  transition: transform var(--duration-base) var(--ease-out), border-color var(--duration-base) ease, box-shadow var(--duration-base) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(var(--accent-rgb), 0.3);
+    box-shadow: 0 22px 44px -18px rgba(var(--shadow-rgb), 0.55);
+  }
+}
+
+.card h3 {
+  font-size: 1.0625rem;
+  margin-bottom: var(--space-3);
+}
+
+.card p {
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+
+/* --- Portfolio (protected - original presentation restored) --------------- */
+
+#services, #projects, #method, #about, #contact {
+  scroll-margin-top: 5.5rem;
+}
+
+/* Everything from here to the Founder section is lifted verbatim from the
+   Original's stylesheet. The portfolio deck is the protected section and its
+   original presentation was the better one, so Version A's redesign stops at
+   the section boundary rather than restyling the deck. */
+.portfolio-shell {
+  display: grid;
+  grid-template-columns: minmax(220px, 360px) minmax(0, 1fr);
+  gap: 1.4rem;
+  align-items: center;
+}
+
+.portfolio-sticky {
+  position: sticky;
+  top: 6.2rem;
+  align-self: start;
+  z-index: 1;
+  isolation: isolate;
+  background: rgba(var(--surface-rgb), 0.6);
+  border: 1px solid rgba(var(--accent-rgb),0.15);
+  border-radius: 1rem;
+  padding: 1.2rem;
+}
+
+.portfolio-sticky::before,
+.portfolio-sticky::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  border: 1px solid rgba(var(--accent-rgb),0.2);
+  background: linear-gradient(140deg, rgba(var(--surface-raised-rgb), 0.75), rgba(var(--surface-rgb), 0.56));
+  pointer-events: none;
+  z-index: -1;
+}
+
+.portfolio-sticky::before {
+  transform: translate(10px, 9px) rotate(1.4deg);
+  opacity: 0.6;
+}
+
+.portfolio-sticky::after {
+  transform: translate(19px, 17px) rotate(2.2deg);
+  opacity: 0.36;
+}
+
+.portfolio-sticky h2 {
+  margin-bottom: 0.65rem;
+}
+
+.portfolio-note {
+  margin: 0.95rem 0 0;
+  font-size: 0.86rem;
+  color: rgba(var(--sand-rgb), 0.9);
+}
+
+.portfolio-filter-title {
+  margin: 1rem 0 0.55rem;
+  font-size: 0.84rem;
+  color: var(--muted);
+}
+
+.portfolio-filter-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.portfolio-filter-header .portfolio-filter-title {
+  margin-top: 0;
+}
+
+.portfolio-clear-filters-btn {
+  border: 1px solid rgba(var(--accent-rgb),0.4);
+  background: transparent;
+  color: var(--accent-2);
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 0.28rem 0.62rem;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, opacity var(--duration-fast) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-clear-filters-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background: rgba(var(--accent-rgb),0.16);
+  }
+}
+
+.portfolio-clear-filters-btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.portfolio-clear-filters-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+  border-color: rgba(var(--accent-rgb),0.18);
+}
+
+.portfolio-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.portfolio-filter-chip {
+  border-radius: 999px;
+  border: 1px solid rgba(var(--accent-rgb),0.26);
+  background: rgba(var(--accent-rgb),0.08);
+  color: var(--text);
+  font-size: 0.75rem;
+  padding: 0.3rem 0.62rem;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-filter-chip:hover {
+    transform: translateY(-1px);
+    background: rgba(var(--accent-rgb),0.16);
+  }
+}
+
+.portfolio-filter-chip:active {
+  transform: scale(0.96);
+}
+
+.portfolio-filter-chip.is-active {
+  background: linear-gradient(90deg, rgba(var(--accent-rgb),0.28), rgba(var(--accent-2-rgb),0.25));
+  border-color: rgba(var(--accent-2-rgb),0.46);
+}
+
+.portfolio-status-filters .portfolio-filter-chip {
+  font-weight: 600;
+}
+
+.portfolio-type-filters .portfolio-filter-chip {
+  font-size: 0.72rem;
+  padding: 0.26rem 0.56rem;
+  opacity: 0.92;
+}
+
+.portfolio-focus-hint {
+  margin: 1rem 0 0;
+  color: var(--accent-2);
+  font-size: 0.84rem;
+}
+
+.portfolio-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+  min-width: 0;
+}
+
+.portfolio-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.portfolio-stat {
+  flex: 0 1 auto;
+  min-width: 200px;
+  border: 1px solid rgba(var(--accent-rgb),0.18);
+  background: rgba(var(--accent-rgb),0.06);
+  border-radius: 0.9rem;
+  padding: 0.85rem 1.6rem;
+  text-align: center;
+}
+
+.portfolio-stat-value {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--accent-2);
+  line-height: 1.2;
+}
+
+.portfolio-stat-label {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+
+.portfolio-rotator {
+  --deck-shift-x: -280px;
+  --deck-shift-y: 0px;
+  position: relative;
+  min-height: 348px;
+  border-radius: 1.6rem;
+  overflow: hidden;
+  perspective: 1100px;
+}
+
+.portfolio-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  /* Pulls the nav row closer to the deck than the parent's 2.4rem flex gap
+     would alone, since dots read best sitting right under the cards. */
+  margin-top: -1.4rem;
+}
+
+.portfolio-nav-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--accent-rgb),0.3);
+  background: rgba(var(--accent-rgb),0.08);
+  color: var(--accent-2);
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-nav-arrow:hover {
+    transform: translateY(-1px);
+    background: rgba(var(--accent-rgb),0.18);
+    border-color: rgba(var(--accent-2-rgb),0.5);
+  }
+}
+
+.portfolio-nav-arrow:active {
+  transform: scale(0.9);
+}
+
+.portfolio-nav-dots {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.portfolio-nav-dot {
+  position: relative;
+  width: 0.5rem;
+  height: 0.5rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--accent-rgb),0.4);
+  background: rgba(var(--accent-rgb),0.18);
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+
+.portfolio-nav-dot::before {
+  /* Invisible tap-target extension: the visible dot stays small, but the
+     actual clickable area grows to ~32px so it doesn't get lost on touch. */
+  content: '';
+  position: absolute;
+  inset: -0.75rem;
+}
+
+.portfolio-nav-dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  border: 1px solid rgba(var(--accent-2-rgb),0.5);
+  transform: translate(-50%, -50%) scaleX(0);
+  transition: transform 170ms ease;
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-nav-dot:hover {
+    transform: scale(1.15);
+  }
+}
+
+.portfolio-nav-dot:active {
+  transform: scale(0.9);
+}
+
+.portfolio-nav-dot.is-active {
+  background: transparent;
+  border-color: transparent;
+}
+
+.portfolio-nav-dot.is-active::after {
+  transform: translate(-50%, -50%) scaleX(1);
+}
+
+.portfolio-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  /* Combined with the parent's 2.4rem flex gap, this restores the ~4.5rem
+     separation the CTA had before the nav row was inserted above it. */
+  margin-top: 2.1rem;
+  border-top: 1px solid rgba(var(--accent-rgb),0.16);
+  padding-top: 1.6rem;
+}
+
+.portfolio-cta p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.portfolio-cta .btn {
+  padding: 0.6rem 1.1rem;
+  font-size: 0.86rem;
+  white-space: nowrap;
+}
+
+.portfolio-card {
+  --distance: 0;
+  --abs-distance: 0;
+  /* The deck card carries `card portfolio-card`, and this stylesheet's own
+     `.card` base differs from the Original's (roomier padding, no shadow,
+     slightly different alpha). Restate the Original's values here so the deck
+     matches it exactly while Version A's own cards keep their redesigned base. */
+  background: rgba(var(--surface-rgb), 0.95);
+  padding: 1.35rem;
+  box-shadow: 0 18px 35px rgba(var(--shadow-rgb), 0.15);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(480px, calc(100% - 1rem));
+  min-height: 270px;
+  display: grid;
+  align-content: space-between;
+  gap: 0.9rem;
+  cursor: pointer;
+  border-radius: 1.6rem;
+  transform:
+    translate(-50%, -50%)
+    translateX(calc(var(--distance) * 120px))
+    translateY(calc(var(--abs-distance) * 14px))
+    scale(calc(1 - var(--abs-distance) * 0.08))
+    rotateY(calc(var(--distance) * -8deg));
+  opacity: calc(1 - var(--abs-distance) * 0.22);
+  z-index: calc(100 - var(--abs-distance));
+  transition: opacity 360ms ease, transform 360ms ease, border-color 210ms ease;
+  transition-delay: var(--deal-delay, 0ms);
+  will-change: transform, opacity;
+}
+
+.portfolio-card.is-beyond-depth {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+.portfolio-card.is-to-deck {
+  opacity: 0 !important;
+  z-index: 1 !important;
+  transform: translate(calc(-50% + var(--deck-shift-x)), calc(-50% + 48px + var(--deck-shift-y))) scale(0.68) rotateY(0deg) !important;
+  transition-delay: var(--stack-delay, 0ms);
+}
+
+.portfolio-card.is-from-deck {
+  opacity: 0 !important;
+  transform: translate(calc(-50% + var(--deck-shift-x)), calc(-50% + 48px + var(--deck-shift-y))) scale(0.68) rotateY(0deg) !important;
+  transition-delay: var(--deal-delay, 0ms);
+}
+
+.portfolio-card:focus-visible {
+  outline: 2px solid rgba(var(--accent-2-rgb),0.8);
+  outline-offset: 2px;
+}
+
+.portfolio-card.is-active {
+  border-color: rgba(var(--accent-2-rgb),0.4);
+}
+
+.portfolio-card:hover {
+  transform:
+    translate(-50%, -50%)
+    translateX(calc(var(--distance) * 120px))
+    translateY(calc(var(--abs-distance) * 14px - 3px))
+    scale(calc(1 - var(--abs-distance) * 0.08))
+    rotateY(calc(var(--distance) * -8deg));
+  border-color: rgba(var(--accent-rgb),0.24);
+}
+
+.portfolio-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.portfolio-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.portfolio-kind {
+  margin: 0;
+  font-size: 0.76rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+}
+
+.portfolio-stage {
+  border-radius: 999px;
+  padding: 0.25rem 0.58rem;
+  font-size: 0.74rem;
+  color: var(--chip-text);
+  background: rgba(var(--accent-rgb),0.12);
+  border: 1px solid rgba(var(--accent-rgb),0.25);
+}
+
+.portfolio-card h3 {
+  margin: 1.25rem 0 0;
+  font-size: 1.06rem;
+}
+
+/* Same reason as the padding above: `.card p` in this stylesheet drops the
+   description to 0.9375rem, where the Original left it at the body size. */
+.portfolio-card p {
+  margin-top: 0.65rem;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.portfolio-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.portfolio-meta span {
+  border-radius: 999px;
+  padding: 0.26rem 0.6rem;
+  font-size: 0.73rem;
+  color: var(--text);
+  border: 1px solid rgba(var(--accent-rgb),0.2);
+  background: rgba(var(--accent-rgb),0.07);
+}
+
+.portfolio-expand-btn {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--accent-rgb),0.3);
+  background: rgba(var(--accent-rgb),0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-shadow: none;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-expand-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(var(--accent-2-rgb),0.44);
+    background: rgba(var(--accent-2-rgb),0.16);
+  }
+}
+
+.portfolio-expand-btn:active {
+  transform: scale(0.92);
+}
+
+.portfolio-expand-btn img {
+  width: 1rem;
+  height: 1rem;
+  object-fit: contain;
+  display: block;
+  filter: brightness(0) invert(1);
+}
+
+.portfolio-github-btn svg {
+  display: block;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-github-btn:hover {
+    color: var(--accent-2);
+  }
+}
+
+.portfolio-detail-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+  transition: opacity 240ms ease;
+}
+
+.portfolio-detail-modal[aria-hidden="true"] {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.portfolio-detail-modal[aria-hidden="false"] {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.portfolio-detail-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(var(--scrim-rgb), 0.72);
+  backdrop-filter: blur(5px);
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.portfolio-detail-dialog {
+  position: relative;
+  width: min(720px, calc(100% - 1rem));
+  max-height: min(86vh, 840px);
+  overflow: auto;
+  z-index: 1;
+  background: linear-gradient(180deg, var(--dialog-top), var(--dialog-bottom));
+  border: 1px solid rgba(var(--accent-2-rgb),0.35);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  /* No drop shadow: the blurred, dimmed backdrop and the accent border
+     already lift the dialog. */
+  display: grid;
+  gap: 0.9rem;
+  opacity: 0;
+  transform: translateY(14px) scale(0.97);
+  transition: transform 240ms cubic-bezier(0.2, 0.85, 0.2, 1), opacity 220ms ease;
+}
+
+.portfolio-detail-modal[aria-hidden="false"] .portfolio-detail-backdrop {
+  opacity: 1;
+}
+
+.portfolio-detail-modal[aria-hidden="false"] .portfolio-detail-dialog {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.portfolio-detail-modal.is-closing .portfolio-detail-backdrop {
+  opacity: 0;
+}
+
+.portfolio-detail-modal.is-closing .portfolio-detail-dialog {
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+}
+
+.portfolio-detail-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding-right: 2.5rem;
+}
+
+.portfolio-detail-dialog h3 {
+  margin: 0;
+}
+
+.portfolio-detail-dialog p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.portfolio-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.portfolio-detail-meta span {
+  border-radius: 999px;
+  padding: 0.3rem 0.62rem;
+  font-size: 0.73rem;
+  color: var(--text);
+  border: 1px solid rgba(var(--accent-rgb),0.22);
+  background: rgba(var(--accent-rgb),0.07);
+}
+
+.portfolio-detail-actions {
+  display: flex;
+  margin-top: 1.25rem;
+}
+
+.portfolio-detail-github {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.portfolio-detail-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  padding: 0;
+  border-radius: 50%;
+}
+
+/* An SVG X, not the "×" glyph the Original used: that character's own ink
+   sits visibly below the vertical center of its line box in this typeface, so
+   `place-items: center` was centering an invisible box, not the mark itself -
+   the close button read as off-center. An SVG centers exactly, the same way
+   the nav arrows and GitHub icon already do here. */
+.portfolio-detail-close svg {
+  display: block;
+}
+
+body.portfolio-detail-open {
+  overflow: hidden;
+}
+
+.portfolio-empty {
+  margin: 0.2rem;
+  padding: 1.2rem;
+  border-radius: 0.9rem;
+  border: 1px dashed rgba(var(--accent-rgb),0.28);
+  color: var(--muted);
+}
+
+.portfolio-empty.is-from-deck {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 260ms ease, transform 260ms ease;
+}
+
+/* The block above is the Original's source verbatim, but a few of its rules
+   never actually won there: the Original also carries a grouped
+   `.hero-copy, .card p, .section p, …` rule at higher specificity, so the
+   sidebar's supporting text rendered at 1rem rather than the 0.84rem written
+   just above, and its heading took the global `h2` size. This stylesheet has no
+   such grouped rule, so those declarations would win here and the section would
+   render smaller than the Original did. These four rules reproduce the
+   Original's *rendering*, which is what was being restored. */
+.portfolio-sticky h2 {
+  /* Matches Version A's own section-heading scale, which lands within half a
+     pixel of the Original's clamp(1.8rem, 3vw, 2.4rem) at every width. */
+  font-size: clamp(1.75rem, 3vw, 2.375rem);
+}
+
+.portfolio-filter-title,
+.portfolio-focus-hint {
+  font-size: 1rem;
+}
+
+.portfolio-note {
+  font-size: 1rem;
+}
+
+
+/* --- About ------------------------------------------------------------------ */
+
+.founder__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.founder__portrait {
+  width: min(100%, 15rem);
+  aspect-ratio: 1;
+  border-radius: var(--r-3);
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.founder__portrait picture {
+  display: contents;
+}
+
+.founder__portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.founder__name {
+  margin-top: var(--space-5);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.founder__role {
+  margin-left: var(--space-2);
+  padding-left: var(--space-3);
+  border-left: 1px solid var(--line-strong);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--ivory-muted);
+}
+
+.founder__body > p:not(.founder__name):not(.founder__links) {
+  margin-top: var(--space-4);
+  max-width: 62ch;
+  color: var(--ivory-muted);
+}
+
+.founder__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-6);
+  margin-top: var(--space-6);
+}
+
+/* --- Who this is for + what you gain --------------------------------------- */
+
+.audience__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-7) var(--space-8);
+}
+
+.audience__lead {
+  margin-top: var(--space-3);
+  color: var(--ivory-muted);
+}
+
+.audience__list {
+  margin-top: var(--space-6);
+  border-top: 1px solid var(--line-strong);
+}
+
+.audience__list li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding-block: 0.85rem;
+  border-bottom: 1px solid var(--line);
+  font-size: 1.0625rem;
+}
+
+.audience__list li::before {
+  content: '';
+  flex: none;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background: var(--data-steel);
+  transform: translateY(-0.15em);
+}
+
+.audience__list--value li::before {
+  width: 0.75rem;
+  height: 1px;
+  border-radius: 0;
+  background: var(--ivory-muted);
+  transform: translateY(-0.3em);
+}
+
+/* --- Platform evolution ----------------------------------------------------- */
+
+.roadmap__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: var(--space-6) var(--space-8);
+}
+
+.roadmap__intro p {
+  margin-top: var(--space-4);
+  max-width: 34ch;
+  color: var(--ivory-muted);
+}
+
+.roadmap {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+}
+
+.roadmap__col {
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--line-strong);
+}
+
+.roadmap__col h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--fs-heading-s);
+}
+
+.roadmap__col h3::before {
+  content: '';
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+}
+
+.roadmap__col--live h3::before {
+  background: var(--gold-hi);
+}
+
+.roadmap__col--dev h3::before {
+  border: 1.5px solid var(--data-steel);
+}
+
+.roadmap__col ul {
+  margin-top: var(--space-4);
+}
+
+.roadmap__col li {
+  padding-block: 0.75rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--ivory-muted);
+}
+
+/* --- Discovery call + contact ------------------------------------------------ */
+
+.final-cta__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-7) var(--space-8);
+  align-items: center;
+}
+
+.final-cta h2 {
+  max-width: 17ch;
+}
+
+.final-cta__copy > p {
+  margin-top: var(--space-4);
+  max-width: 46ch;
+  color: var(--ivory-muted);
+  font-size: var(--fs-lead);
+}
+
+.final-cta__copy > p.final-cta__note {
+  font-size: 0.9375rem;
+}
+
+.final-cta .btn {
+  margin-top: var(--space-6);
+}
+
+/* The list's own label: what the call covers (the h2 is the invitation). */
+.final-cta__covers h3 {
+  margin-bottom: var(--space-4);
+  font-size: var(--fs-heading-s);
+}
+
+.final-cta__list {
+  counter-reset: offer;
+  border-top: 1px solid var(--line-strong);
+}
+
+.final-cta__list li {
+  counter-increment: offer;
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: var(--space-3);
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.final-cta__list li::before {
+  content: counter(offer);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.6;
+}
+
+/* The call and the contact form share one band; a hairline splits them. */
+.final-cta.band {
+  padding-bottom: calc(var(--section-pad) * 0.6);
+}
+
+.final-cta + .contact {
+  padding-top: 0;
+}
+
+.final-cta + .contact > .shell {
+  padding-top: calc(var(--section-pad) * 0.6);
+  border-top: 1px solid var(--line);
+}
+
+.contact__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: var(--space-7) var(--space-8);
+  align-items: start;
+}
+
+.contact__copy > p {
+  margin-top: var(--space-4);
+  max-width: 44ch;
+  color: var(--ivory-muted);
+}
+
+.contact__meta {
+  display: grid;
+  margin: var(--space-6) 0;
+  border-top: 1px solid var(--line);
+}
+
+.contact__meta > div {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: baseline;
+  padding-block: var(--space-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.contact__meta dt {
+  font-size: var(--fs-small);
+  color: var(--ivory-muted);
+}
+
+.contact__meta dd {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.form {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-3);
+}
+
+.form h3 {
+  font-size: var(--fs-heading-s);
+}
+
+.field {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.field label {
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--ivory-muted);
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  min-height: 2.875rem;
+  padding: 0.7rem 0.85rem;
+  background: var(--surface-2);
+  border: 1px solid var(--field-border);
+  border-radius: var(--r-2);
+  color: var(--ivory);
+  resize: vertical;
+  transition: border-color var(--dur-hover) ease;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--ivory-faint);
+}
+
+.field input:focus-visible,
+.field textarea:focus-visible {
+  outline: 2px solid var(--gold-hi);
+  outline-offset: 1px;
+  border-color: var(--gold-lo);
+}
+
+.field input:user-invalid,
+.field textarea:user-invalid {
+  border-color: var(--error);
+}
+
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.form .btn {
+  justify-self: start;
+}
+
+.form__status {
+  min-height: 1.4em;
+  font-size: var(--fs-small);
+  color: var(--ivory-muted);
+}
+
+.form__status[data-state='success'] { color: var(--gold-hi); }
+.form__status[data-state='error'] { color: var(--error); }
+
+/* --- Footer --------------------------------------------------------------- */
+
+.footer {
+  padding-block: var(--space-6) var(--space-7);
+  border-top: 1px solid var(--line);
+}
+
+.footer__inner {
+  color: var(--ivory-faint);
+  font-size: var(--fs-small);
+}
+
+/* --- Services page ---------------------------------------------------------- */
+
+.page-intro {
+  padding-block: var(--space-8) var(--space-6);
+}
+
+.page-intro__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+  gap: var(--space-6) var(--space-8);
+  align-items: end;
+}
+
+.page-intro h1 {
+  font-size: clamp(2.5rem, 1.5rem + 3.2vw, 4.25rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  max-width: 14ch;
+}
+
+.page-intro__lead {
+  font-size: var(--fs-lead);
+  max-width: 48ch;
+}
+
+.page-intro__note {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+  max-width: 48ch;
+  color: var(--ivory-muted);
+}
+
+/* The services header: the same illustrative trace, scanned in once. */
+.trace {
+  position: relative;
+  margin: var(--space-7) 0 0;
+  border-block: 1px solid var(--line);
+}
+
+.trace__plot {
+  position: relative;
+}
+
+/* Reading 36 of the example sits at x 364.6 / 520 and y (44.7 - 24) / 172. */
+.trace__flag {
+  position: absolute;
+  left: 70.12%;
+  top: 12.03%;
+  transform: translate(-50%, -50%);
+  overflow: visible;
+}
+
+.trace::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(var(--grid-rgb), 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--grid-rgb), 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.trace__svg {
+  position: relative;
+  width: 100%;
+  height: clamp(6.5rem, 12vw, 11rem);
+  overflow: visible;
+}
+
+.trace__caption {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + var(--space-2));
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ivory-faint);
+}
+
+.js .trace--pending .trace__plot {
+  clip-path: inset(-12px 100% -12px -12px);
+}
+
+.js .trace--pending .poster__ring,
+.js .trace--pending .poster__leader {
+  opacity: 0;
+}
+
+.trace--play .trace__plot {
+  animation: trace-scan var(--dur-scan) cubic-bezier(0.33, 1, 0.68, 1) 200ms backwards;
+}
+
+.trace--play .trace__flag .poster__ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: flag-lock var(--dur-flag) var(--ease-out) 760ms backwards;
+}
+
+.trace--play .poster__leader {
+  transform-box: fill-box;
+  transform-origin: top;
+  animation: leader-drop 280ms var(--ease-out) 860ms backwards;
+}
+
+@keyframes trace-scan {
+  from { clip-path: inset(-12px 100% -12px -12px); }
+  to { clip-path: inset(-12px -12px -12px -12px); }
+}
+
+@keyframes flag-lock {
+  from { opacity: 0; transform: scale(1.6); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes leader-drop {
+  from { opacity: 0; transform: scaleY(0); }
+  to { opacity: 1; transform: scaleY(1); }
+}
+
+.packages-section {
+  padding-top: var(--space-6);
+}
+
+.packages {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.package {
+  display: grid;
+  grid-template-columns: minmax(0, 18rem) minmax(0, 1fr) auto;
+  gap: var(--space-4) var(--space-7);
+  align-items: center;
+  padding: var(--space-6);
+  border: 1px solid var(--line);
+  border-radius: var(--r-3);
+}
+
+/* Where the package sits in the story (homepage service map), as plain
+   meta under the title, never an eyebrow above it. */
+.package__stage {
+  margin-top: var(--space-2);
+  font-size: var(--fs-small);
+  color: var(--ivory-faint);
+}
+
+.package h2 {
+  font-size: 1.3125rem;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.package__title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+
+.package__meta {
+  margin-top: var(--space-2);
+  font-size: var(--fs-small);
+  color: var(--ivory-muted);
+}
+
+.package__text {
+  max-width: 62ch;
+  color: var(--ivory-muted);
+}
+
+.package__cta {
+  justify-self: end;
+  white-space: nowrap;
+}
+
+/* Featured: the one row with a surface ground and the primary button. */
+.package--featured {
+  padding-block: var(--space-7);
+  background: var(--surface);
+  border-color: var(--line-strong);
+}
+
+.package--featured h2 {
+  font-size: 1.5rem;
+}
+
+.package--featured .package__text {
+  color: var(--ivory);
+}
+
+/* Most complete: a gold edge only, so the two emphasised rows don't compete. */
+.package--premium {
+  border-color: var(--gold-lo);
+}
+
+.package__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--gold-lo);
+  border-radius: var(--r-1);
+  color: var(--gold-hi);
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+}
+
+.package:has(:target) {
+  outline: 1px solid var(--gold-lo);
+  outline-offset: 4px;
+}
+
+/* Portfolio on narrow screens: Version A's rules, verbatim. */
+@media (max-width: 840px) {
+  /* Portfolio: the Original's mobile behaviour, restored verbatim. */
+  .portfolio-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .portfolio-sticky {
+    position: static;
+  }
+
+  .portfolio-sticky::before,
+  .portfolio-sticky::after {
+    display: none;
+  }
+
+  .portfolio-rotator {
+    min-height: auto;
+    display: grid;
+    /* One column that may shrink below its content's natural width - the
+       default `auto` track sized to the widest card row and pushed the page
+       sideways on 320-360px phones (worst in Hungarian). */
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Same fix one level in: the card is a grid too, and its top row
+     (category + status chip + icon buttons) must give way to the width
+     instead of widening the card. The icon buttons keep their size. */
+  .portfolio-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* When category + chip + buttons don't fit, the actions wrap under the
+     category (still right-aligned) rather than the category breaking
+     mid-word. */
+  .portfolio-top {
+    flex-wrap: wrap;
+    row-gap: var(--space-2);
+  }
+
+  .portfolio-top-actions {
+    margin-left: auto;
+  }
+
+  .portfolio-kind {
+    overflow-wrap: break-word;
+  }
+
+  .portfolio-expand-btn {
+    flex: none;
+    gap: 0.85rem;
+    perspective: none;
+    overflow: visible;
+  }
+
+  .portfolio-stats {
+    gap: 0.5rem;
+  }
+
+  .portfolio-stat {
+    flex: 1 1 0;
+    padding: 0.6rem 0.5rem;
+  }
+
+  .portfolio-stat-value {
+    font-size: 1.2rem;
+  }
+
+  .portfolio-nav {
+    /* All cards are already visible as a stacked list at this width, so
+       "browse to the next card" has nothing meaningful left to do. */
+    display: none;
+  }
+
+  .portfolio-cta {
+    justify-content: flex-start;
+    /* Nav is hidden here, so restore the roomier gap it otherwise borrows
+       from (the desktop rule tightens this to make room for the nav row). */
+    margin-top: 4.5rem;
+  }
+
+  .portfolio-card {
+    position: static;
+    width: 100%;
+    opacity: 1;
+    transform: none;
+    cursor: default;
+  }
+
+  .portfolio-card:hover {
+    transform: none;
+  }
+
+  .portfolio-card.is-to-deck,
+  .portfolio-card.is-from-deck {
+    opacity: 1;
+    transform: none;
+  }
+
+  .portfolio-card.is-beyond-depth {
+    opacity: 1 !important;
+    pointer-events: auto;
+  }
+
+  .portfolio-top {
+    align-items: center;
+  }
+
+  .portfolio-expand-btn {
+    width: 2.15rem;
+    height: 2.15rem;
+  }
+
+  .portfolio-detail-modal {
+    padding: 0.75rem;
+  }
+
+  .portfolio-detail-dialog {
+    width: 100%;
+    padding: 1rem;
+  }
+}
+
+/* --- Portfolio rotation pause (a11y addition, WCAG 2.2.2) ----------------- */
+
+/* Shares the arrow buttons' look; shows "pause" while rotating, "play" once
+   paused. */
+.portfolio-nav-pause .icon-play { display: none; }
+.portfolio-nav-pause[aria-pressed='true'] .icon-pause { display: none; }
+.portfolio-nav-pause[aria-pressed='true'] .icon-play { display: block; }
+
+/* --- Portfolio on phones: one-card deck + filter sheet (2026-11-19) ------- */
+
+/* Phone-only parts: nothing of this shows above 840px. */
+.portfolio-bar,
+.portfolio-nav-count {
+  display: none;
+}
+
+/* Native modal <dialog>, opened from #portfolioFilterOpen (phones only). */
+.portfolio-sheet {
+  width: min(100%, 34rem);
+  max-width: none;
+  max-height: calc(100vh - 1.5rem);
+  max-height: calc(100dvh - 1.5rem);
+  margin: auto auto 0;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid rgba(var(--accent-rgb), 0.34);
+  border-radius: 1.375rem 1.375rem 0 0;
+  background: var(--surface);
+  color: var(--text);
+  overflow: hidden;
+}
+
+/* Only while open: a display value on the closed dialog would show it. */
+.portfolio-sheet[open] {
+  display: flex;
+  flex-direction: column;
+  animation: portfolio-sheet-in 280ms var(--ease-out);
+}
+
+/* ::backdrop does not inherit custom properties in every browser yet, so
+   the ground colour also appears as var()'s fallback. */
+.portfolio-sheet::backdrop {
+  background: rgba(var(--ground-rgb, 11, 10, 9), 0.72);
+}
+
+.portfolio-sheet[open]::backdrop {
+  animation: portfolio-fade-in 220ms ease;
+}
+
+@keyframes portfolio-sheet-in {
+  from { transform: translateY(100%); }
+}
+
+@keyframes portfolio-fade-in {
+  from { opacity: 0; }
+}
+
+@keyframes portfolio-deal-in {
+  from { opacity: 0; transform: translateY(0.5rem); }
+}
+
+html.portfolio-sheet-open {
+  overflow: hidden;
+}
+
+.portfolio-sheet-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-3) var(--space-2) var(--space-5);
+}
+
+.portfolio-sheet-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 1.1875rem;
+  line-height: 1.2;
+}
+
+.portfolio-sheet-clear {
+  min-height: 2.75rem;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--accent-2);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Nothing to clear: still readable, plainly inactive (muted ivory, not gold). */
+.portfolio-sheet-clear[aria-disabled='true'] {
+  color: var(--muted);
+  cursor: default;
+}
+
+.portfolio-sheet-close {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
+  border-radius: 50%;
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+}
+
+/* Scrolls only where the list outgrows a short screen; the faint gold edges
+   show only then (local backgrounds cover them at either end). */
+.portfolio-sheet-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 var(--space-5);
+  background:
+    linear-gradient(var(--surface) 40%, rgba(var(--surface-rgb), 0)) top / 100% 2.25rem no-repeat local,
+    linear-gradient(rgba(var(--surface-rgb), 0), var(--surface) 60%) bottom / 100% 2.25rem no-repeat local,
+    radial-gradient(farthest-side at 50% 0, rgba(var(--accent-rgb), 0.24), transparent) top / 100% 0.75rem no-repeat scroll,
+    radial-gradient(farthest-side at 50% 100%, rgba(var(--accent-rgb), 0.24), transparent) bottom / 100% 0.75rem no-repeat scroll;
+}
+
+.portfolio-sheet-group {
+  min-width: 0;
+  margin: 0 0 var(--space-2);
+  padding: 0;
+  border: 0;
+}
+
+.portfolio-sheet-group legend {
+  margin: var(--space-1) 0;
+  padding: 0;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.portfolio-sheet-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  min-height: 2.875rem;
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.1);
+  overflow-wrap: break-word;
+  cursor: pointer;
+}
+
+/* The real checkbox lies invisibly over the drawn box, so touch, keyboard
+   and screen readers all work the native control. */
+.portfolio-sheet-option input {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 1.375rem;
+  height: 1.375rem;
+  margin: -0.6875rem 0 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.portfolio-sheet-box {
+  flex: none;
+  display: grid;
+  place-content: center;
+  width: 1.375rem;
+  height: 1.375rem;
+  border: 1.5px solid rgba(var(--accent-rgb), 0.55);
+  border-radius: 0.375rem;
+  transition: background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+
+.portfolio-sheet-option input:checked + .portfolio-sheet-box {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+.portfolio-sheet-option input:checked + .portfolio-sheet-box::after {
+  content: '';
+  width: 0.625rem;
+  height: 0.3125rem;
+  border-left: 2px solid var(--on-gold);
+  border-bottom: 2px solid var(--on-gold);
+  transform: translateY(-1px) rotate(-45deg);
+}
+
+.portfolio-sheet-option input:focus-visible + .portfolio-sheet-box {
+  outline: 2px solid var(--gold-hi);
+  outline-offset: 3px;
+}
+
+.portfolio-sheet-foot {
+  padding: var(--space-3) var(--space-5) calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--line);
+}
+
+/* The sheet's one primary action: the site's brushed-gold primary button
+   (dark on-gold ink), full width. */
+.portfolio-sheet-apply {
+  width: 100%;
+  font-size: 1rem;
+}
+
+@media (max-width: 840px) {
+  /* One column: heading, filter bar, deck, arrows, then the figures, note
+     and CTA. Only static text moves visually; focus order is unchanged. */
+  .portfolio-shell {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .portfolio-sticky,
+  .portfolio-main {
+    display: contents;
+  }
+
+  .portfolio-sticky h2 { order: 1; }
+  .portfolio-sticky .section-subtitle { order: 2; }
+  .portfolio-bar { order: 3; }
+  .portfolio-rotator { order: 4; }
+  .portfolio-nav { order: 5; }
+  .portfolio-stats { order: 6; }
+  .portfolio-note { order: 7; }
+  .portfolio-cta { order: 8; }
+
+  /* Stats and note come before the deck in the DOM but sit below it here; as scroll
+     anchors they would shift the page when a filter changes the deck's height. */
+  .portfolio-stats,
+  .portfolio-note { overflow-anchor: none; }
+
+  /* The chip rows and the "click any card" hint belong to the desktop deck. */
+  .portfolio-filter-header,
+  .portfolio-filter-title,
+  .portfolio-filters,
+  .portfolio-focus-hint {
+    display: none;
+  }
+
+  .portfolio-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+  }
+
+  html:not(.js) .portfolio-bar {
+    display: none;
+  }
+
+  .portfolio-count {
+    min-width: 0;
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--accent-2);
+  }
+
+  .portfolio-filter-btn {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 2.75rem;
+    padding: 0 var(--space-4);
+    border: 1px solid rgba(var(--accent-rgb), 0.34);
+    border-radius: 999px;
+    background: rgba(var(--accent-rgb), 0.06);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+  }
+
+  .portfolio-filter-btn svg {
+    flex: none;
+    color: var(--accent-2);
+  }
+
+  .portfolio-filter-btn.is-active {
+    border-color: rgba(var(--accent-2-rgb), 0.6);
+    background: rgba(var(--accent-rgb), 0.14);
+  }
+
+  .portfolio-filter-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.375rem;
+    border-radius: 999px;
+    background: var(--gold);
+    color: var(--on-gold);
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .portfolio-filter-badge[hidden] {
+    display: none;
+  }
+
+  /* Every card shares one grid cell, so the deck is as tall as its tallest
+     card and nothing below it moves when the card changes. The bottom
+     padding holds the stacked edges. */
+  .portfolio-rotator {
+    margin-top: var(--space-3);
+    padding-bottom: 1.25rem;
+    border-radius: 0;
+    touch-action: pan-y pinch-zoom;
+  }
+
+  .portfolio-card {
+    grid-area: 1 / 1;
+    transform-origin: 50% 100%;
+    transition: opacity 220ms ease, transform 260ms var(--ease-out), border-color 210ms ease;
+  }
+
+  .portfolio-card[data-deck='front'] { z-index: 3; }
+
+  .portfolio-card[data-deck='layer1'] {
+    z-index: 2;
+    opacity: 0.75;
+    transform: translateY(0.5625rem) scale(0.95);
+  }
+
+  .portfolio-card[data-deck='layer2'] {
+    z-index: 1;
+    opacity: 0.5;
+    transform: translateY(1.125rem) scale(0.9);
+  }
+
+  .portfolio-card[data-deck='rest'] {
+    z-index: 0;
+    opacity: 0;
+    transform: translateY(1.125rem) scale(0.9);
+  }
+
+  /* A turned card leaves to the left, above the stack, as it fades. */
+  .portfolio-card[data-deck='past'] {
+    z-index: 4;
+    opacity: 0;
+    transform: translateX(-2.5rem);
+    pointer-events: none;
+  }
+
+  /* Below the active card only the edges show. */
+  .portfolio-card > * {
+    transition: opacity 160ms ease;
+  }
+
+  .portfolio-card[data-deck^='layer'] > *,
+  .portfolio-card[data-deck='rest'] > * {
+    opacity: 0;
+  }
+
+  .portfolio-card.is-dragging {
+    transition: none;
+  }
+
+  .portfolio-card.is-dealt {
+    animation: portfolio-deal-in 260ms var(--ease-out);
+  }
+
+  .portfolio-empty-clear {
+    justify-self: start;
+    margin-top: var(--space-3);
+  }
+
+  .portfolio-nav {
+    display: flex;
+    gap: var(--space-5);
+    margin-top: var(--space-2);
+  }
+
+  .portfolio-nav.is-single,
+  .portfolio-nav-dots,
+  .portfolio-nav-pause {
+    display: none;
+  }
+
+  .portfolio-nav-arrow {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .portfolio-nav-arrow[aria-disabled='true'] {
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  .portfolio-nav-count {
+    display: block;
+    min-width: 3rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    color: var(--text);
+  }
+
+  .portfolio-stats {
+    margin-top: var(--space-6);
+  }
+
+  .portfolio-cta {
+    margin-top: var(--space-6);
+  }
+}
+
+/* --- Responsive ------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .proof__grid,
+  .map__intro,
+  .founder__grid,
+  .roadmap__grid,
+  .final-cta__grid,
+  .contact__grid,
+  .page-intro__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .map__intro .text-link { grid-column: 1; }
+
+  .map__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+    padding-block: var(--space-6);
+  }
+
+  .map__stage {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .map__stage h3 { max-width: none; }
+
+  .map__note { grid-column: 2; }
+
+  .founder__portrait { width: 8rem; }
+
+  .package {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .package__head { grid-column: 1; }
+  .package__text { grid-column: 1; }
+  .package__cta { grid-column: 2; grid-row: 1 / span 2; }
+}
+
+/* The menu button replaces the links in em, so enlarged text gets it first. */
+@media (max-width: 52.5em) {
+  .menu-toggle { display: block; }
+
+  .nav-actions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    padding: var(--space-4) var(--gutter) var(--space-5);
+    background: var(--ground);
+    border-bottom: 1px solid var(--line-strong);
+    box-shadow: 0 24px 48px -24px rgba(var(--shadow-rgb), 0.6);
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-4);
+    opacity: 0;
+    transform: translateY(-6px);
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity var(--duration-base) var(--ease-out), transform var(--duration-base) var(--ease-out), visibility 0s linear var(--duration-base);
+  }
+
+  .nav-actions.open {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity var(--duration-base) var(--ease-out), transform var(--duration-base) var(--ease-out), visibility 0s linear;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .nav-links a {
+    padding-block: var(--space-3);
+    border-bottom: 1px solid var(--line);
+    font-size: 1.0625rem;
+  }
+
+  .nav-links a::after { display: none; }
+
+  .lang { align-self: flex-start; }
+}
+
+@media (max-width: 840px) {
+  .audience__grid,
+  .roadmap {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .proof__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+
+  .proof__source {
+    justify-self: start;
+    text-align: left;
+  }
+
+  .contact__meta > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.15rem;
+  }
+
+  .package {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--space-5);
+  }
+
+  .package--featured { padding-block: var(--space-6); }
+
+  .package__cta {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero__byline-role {
+    display: block;
+    margin-left: 0;
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .hero__actions .btn,
+  .story__actions .btn,
+  .final-cta .btn {
+    width: 100%;
+  }
+
+  .founder__role {
+    display: block;
+    margin-left: 0;
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .step__frame .stage-panel__head {
+    flex-direction: column;
+  }
+
+  .decision__line {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.1rem;
+  }
+
+  .decision__arrow { margin-left: 0; }
+}
+
+/* --- Touch targets --------------------------------------------------------- */
+
+@media (pointer: coarse) {
+  .portfolio-filter-chip,
+  .portfolio-clear-filters-btn {
+    min-height: 2.75rem;
+  }
+
+  .portfolio-filter-chip { min-width: 2.75rem; }
+
+  .btn,
+  .lang { min-height: 2.75rem; }
+
+  .stage__pause {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .portfolio-expand-btn,
+  .portfolio-nav-arrow,
+  .brand,
+  .text-link,
+  .proof__source,
+  .map__packages a {
+    position: relative;
+  }
+
+  .portfolio-expand-btn::before,
+  .portfolio-nav-arrow::before,
+  .brand::before {
+    content: '';
+    position: absolute;
+    inset: -0.375rem;
+  }
+
+  /* Underlined links keep their underline next to the words and get an
+     invisible hit extension instead. */
+  .text-link::before,
+  a.proof__source::before,
+  .map__packages a::before {
+    content: '';
+    position: absolute;
+    inset: -0.7rem -0.25rem;
+  }
+}
+
+/* --- Reduced motion ---------------------------------------------------------- */
+
+/* Movement goes, fades stay (as in Version A). The stage itself switches to
+   discrete frames in signal-story.js; here only the CSS side settles. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-property: color, background-color, border-color, box-shadow, opacity, filter, visibility !important;
+    transition-duration: var(--duration-fast) !important;
+    transition-delay: 0s !important;
+  }
+}
+
+/* --- Print ------------------------------------------------------------------- */
+
+@media print {
+  .site-header,
+  .stage__canvas,
+  .stage__overlay,
+  .stage__pause,
+  .menu-toggle,
+  .portfolio-nav {
+    display: none !important;
+  }
+
+  body { padding-top: 0; }
+
+  .js .stage .stage__poster { display: block; position: static; transform: none; width: 100%; }
+
+  .signal-story,
+  .stage {
+    display: block;
+    position: static;
+    height: auto;
+  }
+}
