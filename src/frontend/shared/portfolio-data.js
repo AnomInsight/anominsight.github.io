@@ -2,8 +2,9 @@
 // portfolio (e.g. versions/a/services.html) don't download it. UI strings for
 // the portfolio section stay in content.js; only the data lives here.
 
-// The three real case studies. Facts, metrics and repository links are taken
-// verbatim from the baseline build - no claim here may be invented or inflated.
+// The three published case studies. Facts and metrics must match each linked
+// repository's README - no claim here may be invented or inflated. The CNC study
+// uses the synthetic AI4I 2020 dataset and a hypothetical scenario (checked 2026-11-20).
 export const portfolioProjects = [
   {
     id: 'cnc-predictive-maintenance',
@@ -14,21 +15,21 @@ export const portfolioProjects = [
       hu: 'Prediktív karbantartás CNC-üzemekhez',
     },
     description: {
-      en: 'A machine learning model that watches CNC machine sensors and flags the ones likely to break down soon. In testing, it caught 96% of real failures before they happened.',
-      hu: 'Gépi tanulási modell, amely a CNC-gépek szenzoradatait figyeli, és jelzi, mely gépeknél várható hamarosan meghibásodás. A tesztelés során a valós meghibásodások 96%-át még bekövetkezésük előtt felismerte.',
+      en: 'Portfolio case study using the synthetic AI4I 2020 dataset: a machine learning model that flags likely machine failures from sensor data. The model achieved 96% recall on the test data. This result does not constitute validation in a live industrial environment.',
+      hu: 'Portfólió-esettanulmány a szintetikus AI4I 2020 adathalmaz felhasználásával: gépi tanulási modell, amely a szenzoradatok alapján jelzi a várható gépmeghibásodásokat. A modell a tesztadatokon 96%-os visszahívási arányt (recall) ért el. Az eredmény nem jelent éles ipari környezetben igazolt teljesítményt.',
     },
     overview: {
-      en: 'Unplanned breakdowns are costly on a 24/7 CNC production line, so this project builds an early-warning system for machine failure. It looks at real sensor readings, such as temperature, power draw, and torque, to flag machines likely to fail within the next day or two, before anything actually breaks. After comparing a few different approaches, I settled on a LightGBM model (a fast, tree-based machine learning method) tuned to catch as many real failures as possible: in testing it caught 96% of actual breakdowns, at the cost of roughly two false alarms for every real one it found. The idea isn\'t to replace maintenance engineers. It\'s to hand them a prioritized daily list so they can focus their attention where it matters, with the alert sensitivity adjustable to match how many false alarms the team can realistically handle.',
-      hu: 'A váratlan leállások sokba kerülnek egy folyamatosan üzemelő CNC-gyártásban, ezért ez a projekt korai figyelmeztető rendszert épít a gépleállások előrejelzésére. A modell valós szenzoradatokat figyel, például hőmérsékletet, teljesítményfelvételt és nyomatékot, hogy jelezze, mely gépek állhatnak le a következő egy-két napban, még mielőtt bármi elromlana. Több módszer kipróbálása után egy LightGBM modell mellett döntöttem (ez egy gyors, fákra épülő gépi tanulási módszer), amelyet úgy hangoltam, hogy a lehető legtöbb valós meghibásodást elkapja: a tesztelés során az esetek 96%-ában időben jelzett, cserébe nagyjából két téves riasztás valódi meghibásodásonként. A cél nem az, hogy kiváltsa a karbantartó mérnököket, hanem hogy egy priorizált napi listát adjon a kezükbe, amelyre érdemes figyelniük. A riasztási küszöb pedig állítható, hogy illeszkedjen ahhoz, mennyi téves riasztást bír el a csapat.',
+      en: 'Unplanned breakdowns are costly in CNC production, so this self-directed case study builds an early-warning model for machine failure in a hypothetical manufacturing scenario. It uses the synthetic AI4I 2020 dataset, which simulates readings such as air and process temperature, rotational speed, torque and tool wear. After comparing logistic regression, random forest and LightGBM models, I selected LightGBM (a fast, tree-based machine learning method), tuned to catch as many failures as possible: on the held-out test data it achieved 96% recall, at the cost of about 2.4 false alarms for every failure it caught. This result does not constitute validation in a live industrial environment. The idea isn\'t to replace maintenance engineers. It\'s to hand them a prioritized list so they can focus their attention where it matters, with the alert threshold adjustable to match how many false alarms the team can realistically handle.',
+      hu: 'A váratlan leállások sokba kerülnek a CNC-gyártásban, ezért ez az önálló esettanulmány egy feltételezett gyártási forgatókönyvben korai figyelmeztető modellt épít a gépmeghibásodások előrejelzésére. A szintetikus AI4I 2020 adathalmazt használja, amely többek között levegő- és folyamathőmérsékletet, fordulatszámot, nyomatékot és szerszámkopást szimulál. Logisztikus regresszió, random forest és LightGBM modellek összehasonlítása után a LightGBM mellett döntöttem (ez egy gyors, fákra épülő gépi tanulási módszer), amelyet úgy hangoltam, hogy a lehető legtöbb meghibásodást elkapja: a tesztadatokon 96%-os visszahívási arányt (recall) ért el, cserébe minden felismert meghibásodásra nagyjából 2,4 téves riasztás jutott. Az eredmény nem jelent éles ipari környezetben igazolt teljesítményt. A cél nem az, hogy kiváltsa a karbantartó mérnököket, hanem hogy egy priorizált listát adjon a kezükbe, amelyre érdemes figyelniük. A riasztási küszöb pedig állítható, hogy illeszkedjen ahhoz, mennyi téves riasztást bír el a csapat.',
     },
     metrics: [
       {
         value: '96%',
-        label: { en: 'of real failures caught in testing', hu: 'valós meghibásodás elkapva teszteléskor' },
+        label: { en: 'recall on the test data', hu: 'visszahívási arány (recall) a tesztadatokon' },
       },
       {
-        value: '~2:1',
-        label: { en: 'false alarms per true catch', hu: 'téves riasztás valós találatonként' },
+        value: '~2.4:1',
+        label: { en: 'false alarms per caught failure on the test data', hu: 'téves riasztás felismert meghibásodásonként a tesztadatokon' },
       },
       {
         value: 'LightGBM',
@@ -56,6 +57,22 @@ export const portfolioProjects = [
     overview: {
       en: 'Sorting mail by handwritten ZIP code is slow and error-prone when done by hand at scale, so this project explores whether AI can take over that job reliably. Starting from a simple baseline and working up through logistic regression, random forests, and support vector machines, I landed on a convolutional neural network (a type of model built specifically for recognizing images), which correctly read digits 99.27% of the time. Beyond just accuracy, I checked which digits the model tends to confuse with each other, looked closely at its most confident mistakes, and tested how well it holds up against rotated, noisy, or poorly lit scans. The practical takeaway: send anything the model isn\'t confident about to a human for a second look, and keep monitoring its mistakes after it goes live.',
       hu: 'A kézzel írt irányítószámok kézi feldolgozása lassú és hibalehetőségekkel teli, ha nagy mennyiségű küldeményt kell feldolgozni. Ez a projekt azt vizsgálja, hogy egy MI megbízhatóan át tudja-e venni ezt a feladatot. Egy egyszerű alapmodellből kiindulva, logisztikus regresszión, random forest modellen és support vector machine (SVM) modelleken keresztül végül egy konvolúciós neurális hálónál kötöttem ki (ez egy kifejezetten képfelismerésre kitalált modelltípus), amely az esetek 99,27%-ában helyesen ismerte fel a számjegyeket. A pontosságon túl azt is megvizsgáltam, mely számjegyeket keveri össze a modell egymással, alaposan átnéztem azokat a hibás előrejelzéseket, amelyekben a modell a legbiztosabb volt, és teszteltem, hogyan teljesít elforgatott, zajos vagy rosszul megvilágított képeken. A gyakorlati tanulság: azokat az eseteket, amelyekben a modell bizonytalan, azt küldjük emberi ellenőrzésre, és élesben is érdemes folyamatosan figyelni a hibáit.',
+    },
+    // Version D (and the generated public site) read the …D fields; A, B and C keep the ones above.
+    // MNIST benchmark only: 99.27% on the 10,000-image test set; postal use is hypothetical (checked 2026-11-20).
+    // A field, not an industry: D's "Industries covered" count skips projects with a kindD.
+    kindD: { en: 'Computer Vision', hu: 'Számítógépes látás' },
+    titleD: {
+      en: 'Handwritten Digit Recognition with Neural Networks',
+      hu: 'Kézzel írt számjegyek felismerése neurális hálózattal',
+    },
+    descriptionD: {
+      en: 'A CNN-based handwritten digit recognition model achieving 99.27% accuracy on the MNIST test set. Potential applications include document processing and postal code recognition, but the model has not been evaluated in a real-world postal environment.',
+      hu: 'CNN-alapú számjegyfelismerő modell, amely 99,27%-os pontosságot ért el az MNIST tesztadatain. A technológia potenciálisan alkalmazható dokumentumfeldolgozásban és postai irányítószámok felismerésében, de a modellt valós postai környezetben nem teszteltem.',
+    },
+    overviewD: {
+      en: 'A self-directed portfolio project comparing digit recognition models on the MNIST dataset. Starting from a simple baseline and working up through logistic regression, random forests, and support vector machines, I landed on a convolutional neural network (a type of model built specifically for recognizing images), which reached 99.27% accuracy on the 10,000-image MNIST test set. Beyond just accuracy, I checked which digits the model tends to confuse with each other, looked closely at its most confident mistakes, and tested how well it holds up against rotated, noisy, or darkened images. Potential applications include document processing and postal code recognition, but the model has not been evaluated in a real-world postal environment.',
+      hu: 'Önálló portfólióprojekt, amely számjegyfelismerő modelleket hasonlít össze az MNIST adathalmazon. Egy egyszerű alapmodellből kiindulva, logisztikus regresszión, random forest modellen és support vector machine (SVM) modelleken keresztül végül egy konvolúciós neurális hálónál kötöttem ki (ez egy kifejezetten képfelismerésre kitalált modelltípus), amely 99,27%-os pontosságot ért el az MNIST 10 000 képből álló tesztadatain. A pontosságon túl azt is megvizsgáltam, mely számjegyeket keveri össze a modell egymással, alaposan átnéztem azokat a hibás előrejelzéseket, amelyekben a modell a legbiztosabb volt, és teszteltem, hogyan teljesít elforgatott, zajos vagy sötétített képeken. A technológia potenciálisan alkalmazható dokumentumfeldolgozásban és postai irányítószámok felismerésében, de a modellt valós postai környezetben nem teszteltem.',
     },
     metrics: [
       {

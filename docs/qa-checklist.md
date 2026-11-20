@@ -340,3 +340,47 @@ All runs: headless Edge (Chromium) over CDP with real touch, mouse and key input
 | Desktop 900 / 1024 / 1280 / 1440, EN + HU | portfolio section screenshots pixel-identical to a pre-change baseline (run-to-run noise in the baselines themselves: up to 686 px in the sticky filter column); section tops, heights and document heights identical |
 | Fixed during testing | an 11 px page shift after Show at HU 360 (scroll anchoring on the stats, which precede the deck in the DOM: `overflow-anchor: none` on stats and note); disabled arrows raised from 2.9:1 to 3.4:1; the empty state's Clear now announces the count |
 | Not tested | Safari/iOS, Firefox, real phones and tablets, a real screen reader (NVDA, Narrator, VoiceOver, TalkBack) |
+
+### SEO launch build (2026-11-20)
+
+Lab only: headless Edge (Chromium) over CDP with real mouse/touch/key input; `dist/` served on
+:4174 and the source pages on :4173 by the local preview server. Formspree requests were
+intercepted in the browser (a probe confirmed interception first); no enquiry was sent.
+
+| Check | Result |
+|---|---|
+| `node tools/check-site.mjs` | OK: 34 files, all allowlisted; no Markdown, docs, tools, dot-files, `CNAME` or other versions; 4 indexable pages with self canonicals, reciprocal hreflang hu/en/x-default, unique titles and descriptions; sitemap = those 4 URLs with the same alternates; robots allows all, OAI-SearchBot explicitly, no GPTBot rule, sitemap listed; JSON-LD parses, no offer/price/review/address/legal keys; every reference resolves; no retired CNC claim |
+| Checker catches mistakes (mutation test) | planted `CLAUDE.md` + `docs/qa-checklist.md`, a wrong canonical, a broken hreflang and a GPTBot `Disallow`: 12 problems reported, exit 1; clean rebuild passes |
+| Copy before JavaScript, 2 pages × HU/EN | every `data-i18n` text and translated aria-label/placeholder/title in the raw HTML equals the source page rendered by JavaScript in that language (and the generated page after JavaScript); `<html lang>` and `<title>` match |
+| Language fixed by URL | with the other language in localStorage and as browser language, each page stays in its own language, adds no `?lang`, no link carries `lang=`; the switch is an `<a>` to the counterpart page and a click lands there |
+| Old links | `/?lang=en` → `/en/`; `/?lang=hu`, `/?lang=xx` → `/` (parameter dropped); `/en/?lang=hu#contact` → `/#contact`; `/en/?lang=en&utm_source=x` keeps `?utm_source=x`; `/szolgaltatasok/?lang=en#pkg-audit` → `/en/services/#pkg-audit`; old `versions/d/index.html` / `services.html` / `d/` with `?lang` → matching page, without `?lang` → browser language |
+| Links and assets | every same-site `href`/`src`/`srcset` on the 4 pages returns 200; nav targets per page and language correct (services → `/#method`, `/#projects`, `/#about` or `/en/#…`); calendar links, `mailto:hello@anominsight.com`, Formspree action unchanged; all `target=_blank` links `noopener` |
+| Contact form | `/en/services/`, `/szolgaltatasok/` (after a "Get a custom quote" click: hidden `package` field set, message prefilled) and `/`: POST to `https://formspree.io/f/xjykwlyk` with `Accept: application/json`, success message in the page language |
+| No JavaScript | `/` and `/en/` show the three case studies (description, overview, metrics, categories, GitHub link) in the HTML; services pages list all 5 packages; no horizontal overflow at 390 / 1440 |
+| Visual parity, 2 pages × HU/EN × 1440 / 390, reduced motion | geometry of header, sections, headings, buttons, forms, stage and packages identical to the source pages, same document height; top-of-page screenshots pixel-identical (0 px) |
+| Regression suites on the generated pages | integration (hero pause, explorer, mobile portfolio, interference; 1440 / 390 / 320, EN + HU): 42 / 42; transactional filter sheet (320 / 360 / 390, EN + HU): 122 / 122 |
+| Other versions after the shared-file edits | A (home, services), B, C and the source D pages load in EN and HU with no console errors or failed requests; A's portfolio shows the corrected CNC text |
+| Fixed during testing | `images/icons/expand-arrows.png` (referenced from `portfolio.js`) was missing from the artifact – the build now follows page-relative image paths in JS; 404 page spacing; no-JS case-study list clipped by the deck's rounded corner |
+| Not tested | production (nothing deployed), Safari/iOS, Firefox, real devices, screen readers, Google Rich Results Test / Search Console (need the live URL or account access) |
+
+### Pre-commit adjustments (2026-11-20, user-requested)
+
+| Check | Result |
+|---|---|
+| Version A proof label | A renders the new A-only key `proof.recall.labelA`: EN "recall on synthetic test data", HU "visszahívási arány szintetikus tesztadatokon" after the "96%" value; tile layout intact (HU screenshot). B and C still render `proof.recall.label` unchanged; D unchanged; A (home, services), B, C, D load in EN and HU with no console errors or failed requests |
+| x-default | every generated page and the sitemap point `x-default` to the Hungarian page; `check-site.mjs` now enforces it; canonical, hreflang (hu, en, x-default), `og:locale` and JSON-LD `inLanguage` verified in the browser on all 4 pages (45 / 45 SEO checks pass) |
+| Workflow | parsed with js-yaml 3.14.1 (already installed locally inside a VS Code extension; nothing downloaded): valid YAML; only trigger `workflow_dispatch` (no inputs); no other trigger keyword; top-level permission `contents: read`, deploy job `pages: write` + `id-token: write`; build runs exactly build + check; artifact path `dist`; `configure-pages` without `enablement`. Mutation test: an added `push` trigger and a broken indentation are both caught. Not validated against GitHub's own workflow schema or actionlint (not available locally) |
+| Content review of the generated pages | every external link and contact detail: calendar link, `mailto:hello@anominsight.com`, Formspree `xjykwlyk`, GitHub org + 3 repos (200), LinkedIn (same URL as before; LinkedIn answers automated requests with 999, not verifiable); no phone numbers, no `info@`. No other-language strings left on any page (404 is bilingual by design, its English part is `lang="en"`). Fixed: HU static case-study list showed "99.27%" / "~2.4:1" – now "99,27%" / "~2,4:1". Claims checked against the repos and confirmed facts; open item: the digit study's mail-sorting framing (see CLAUDE.md Open questions) |
+| Visual parity | top-of-page screenshots of the 4 generated pages at 1440 and 390 still pixel-identical to the source pages |
+
+### Digit study wording (2026-11-20, user-approved)
+
+| Check | Result |
+|---|---|
+| Facts against the repository | `01_Portfolio_Project` README: CNN 99.27% on the 10,000 MNIST test images; mail sorting is a hypothetical context, no postal data or live operation. Matches the approved wording |
+| Version D, JS-rendered | card title + description and the detail dialog show the new EN / HU wording on the generated `/` and `/en/` (1440 and 390) and on the source D page; repository link unchanged; metrics unchanged (99.27% / 5 / CNN) |
+| No-JS static list | the generated homepages' `#portfolioTrack` list carries the new title, description and overview (HU "99,27%") |
+| Old postal framing | none on any generated page, rendered or static; `check-site.mjs` now fails on it (mutation test: the old title put back into `/en/` is caught) |
+| Category label (`kindD`) | D card, detail dialog and no-JS list read "Computer Vision" / "Számítógépes látás"; D's "Industries covered" tile shows 2 (Manufacturing, Hospitality) on the generated and source pages, EN / HU, 1440 / 390; A still shows "Logistics" and 3 |
+| Versions A, B, C | still render the shared text unchanged ("…for mail sorting" / "…levélválogatáshoz") |
+| Regressions | check-site OK; 45 / 45 SEO checks; top screenshots of the 4 pages at 1440 / 390 pixel-identical (0 px); content review: no leftover-language strings (404 bilingual by design); A, B, C, D smoke unchanged; integration 42 / 42; transactional filter sheet 122 / 122; 0 headless browsers left |

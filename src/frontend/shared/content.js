@@ -57,6 +57,7 @@ export const translations = {
     'proof.note': 'Every figure below comes from the case study linked beside it. Nothing here is a projection.',
     'proof.recall.value': '96%',
     'proof.recall.label': 'of real CNC failures caught in testing',
+    'proof.recall.labelA': 'recall on synthetic test data', // Version A only; B and C keep proof.recall.label
     'proof.recall.source': 'Predictive maintenance model',
     'proof.accuracy.value': '99.27%',
     'proof.accuracy.label': 'best-model accuracy on handwritten digits',
@@ -287,7 +288,7 @@ export const translations = {
     'map.package': 'Package',
     'map.packages': 'Packages',
     'proof.bridge': 'The example above is illustrative. The two results below were measured in published case studies.',
-    'proof.noteD': 'The first two figures are measured results from published case studies, each with a public GitHub repository. The other two show professional experience and the number of published case studies.',
+    'proof.noteD': 'The first two figures are measured results from published case studies, each with a public GitHub repository. The other two show professional experience and the number of published case studies. The 96% recall was measured on the synthetic AI4I 2020 dataset; it does not constitute validation in a live industrial environment.',
 
     // Version D: the scope beyond anomaly detection ("same data, different
     // questions"), and D's broader page title and services lines.
@@ -341,6 +342,14 @@ export const translations = {
     'footer.taglineD': 'Data into insight. Insight into decisions.',
     'about.bio2D': 'I have spent four years and more working with production and industrial data, and I publish what I build: every case study on this page links to a public repository you can read, run, and judge for yourself.',
     'proof.experience.sourceD': 'Professional experience',
+    'proof.recall.labelD': 'recall on the test data – synthetic AI4I 2020 dataset',
+    'portfolio.subtitleD': 'Published portfolio case studies with measured results and public source code.',
+    // Launch pages (tools/build-site.mjs): meta descriptions.
+    'seo.homeDescription': 'Founder-led data analytics and machine learning for SMEs: data audits, dashboards, reporting, anomaly detection and forecasting. Free 30-minute discovery call.',
+    'seo.servicesDescription': 'A free 30-minute discovery call, then individually quoted packages: data audit, one-off project delivery, integrated implementation, and monitoring and reporting.',
+    'notFound.title': 'Page not found',
+    'notFound.text': 'This page does not exist or has moved.',
+    'notFound.home': 'Go to the English homepage',
     'solution.feature1D': 'Data preparation',
     'portfolio.statusFiltersTitleD': 'Browse by status',
     'portfolio.statusFiltersAriaD': 'Project status filters, select one or more',
@@ -408,6 +417,7 @@ export const translations = {
     'proof.note': 'Az alábbi számok mind a mellettük hivatkozott esettanulmányból származnak. Egyik sem becslés.',
     'proof.recall.value': '96%',
     'proof.recall.label': 'meghibásodások felismerési aránya a tesztadatokon',
+    'proof.recall.labelA': 'visszahívási arány szintetikus tesztadatokon',
     'proof.recall.source': 'Prediktív karbantartási modell',
     'proof.accuracy.value': '99,27%',
     'proof.accuracy.label': 'a legjobb modell pontossága kézzel írt számjegyek felismerésében',
@@ -631,7 +641,7 @@ export const translations = {
     'map.package': 'Csomag',
     'map.packages': 'Csomagok',
     'proof.bridge': 'A fenti példa szemléltetés. Az alábbi két eredményt publikált esettanulmányokban mértem.',
-    'proof.noteD': 'Az első két eredmény publikált esettanulmányok mért mutatója, amelyekhez nyilvános GitHub-repozitórium tartozik. A további számok a szakmai tapasztalatot és a publikált esettanulmányokat mutatják.',
+    'proof.noteD': 'Az első két eredmény publikált esettanulmányok mért mutatója, amelyekhez nyilvános GitHub-repozitórium tartozik. A további számok a szakmai tapasztalatot és a publikált esettanulmányokat mutatják. A 96%-os recall a szintetikus AI4I 2020 adathalmazon mért eredmény, és nem jelent éles ipari környezetben igazolt teljesítményt.',
 
     'home.pageTitleD': 'AnomInsight – adatelemzés, dashboardok és gépi tanulás KKV-knak',
     'capabilities.textD': 'Az együttműködés kezdődhet adataudittal, dashboardfejlesztéssel vagy automatizált riportálással. Gépi tanulási megoldásokat – anomáliafelismerést, előrejelzést, regressziót, osztályozást, klaszterezést vagy prediktív karbantartást – az üzleti problémádhoz és az adataidhoz igazítva fejlesztek.',
@@ -682,6 +692,13 @@ export const translations = {
     'footer.taglineD': 'Adatokból felismerések. Felismerésekből döntések.',
     'about.bio2D': 'Több mint négy éve dolgozom termelési és ipari adatokkal. Az AnomInsight keretében ezt a szakmai tapasztalatot adatelemzési és gépi tanulási megoldásokban hasznosítom. A bemutatott esettanulmányokhoz nyilvános forráskód is elérhető, így a módszerek és az eredmények ellenőrizhetők.',
     'proof.experience.sourceD': 'Szakmai tapasztalat',
+    'proof.recall.labelD': 'visszahívási arány (recall) a tesztadatokon – szintetikus AI4I 2020 adathalmaz',
+    'portfolio.subtitleD': 'Publikált portfólió-esettanulmányok mért eredményekkel és nyilvános forráskóddal.',
+    'seo.homeDescription': 'Adatelemzés és gépi tanulás KKV-knak: adataudit, dashboardok, riportálás, anomáliafelismerés és előrejelzés. Kezdésként ingyenes, 30 perces konzultáció.',
+    'seo.servicesDescription': 'Ingyenes, 30 perces konzultáció, majd egyedi ajánlat alapján: adataudit, egyedi projektmegvalósítás, integrált megvalósítás, rendszeres monitorozás és riportálás.',
+    'notFound.title': 'Az oldal nem található',
+    'notFound.text': 'Ez az oldal nem létezik, vagy máshová került.',
+    'notFound.home': 'Vissza a magyar kezdőlapra',
     'solution.feature1D': 'Adat-előkészítés',
     'portfolio.statusFiltersTitleD': 'Szűrés állapot szerint',
     'portfolio.statusFiltersAriaD': 'Projektállapot-szűrők, több állapot is választható',

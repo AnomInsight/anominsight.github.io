@@ -206,7 +206,9 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
-.github/
+# Local agent tooling stays out; the Pages deploy workflow is tracked.
+.github/*
+!.github/workflows/
 
 /CLAUDE.md
 /DESIGN.md

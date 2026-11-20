@@ -352,3 +352,47 @@ Results against these criteria (lab measurements, review outcome, open items) ar
   `overflow-anchor: none`, because they precede the deck in the DOM and, as scroll anchors,
   shifted the page when the deck height changed. Desktop rendering is pixel-identical to before.
   Checks and limits in `qa-checklist.md`.
+
+## 13. SEO launch build (2026-11-20, approved items C1–C7; not deployed)
+
+- **Generated site, not hand-copied pages.** `tools/build-site.mjs` (Node, no dependencies)
+  turns `versions/d/index.html` and `services.html` into one static page per language:
+  `/` and `/szolgaltatasok/` (HU), `/en/` and `/en/services/` (EN). It applies `content.js`
+  exactly like `applyTranslations()` (text, aria-label, placeholder, title; a missing key fails
+  the build), rewrites asset paths to root-absolute and page links to the new URLs (hash kept),
+  turns the language button into a link to the other page, and adds title, meta description,
+  canonical, hreflang (hu, en, x-default → the Hungarian page), Open Graph/Twitter tags and JSON-LD. The
+  homepage gets the three case studies as plain HTML inside `#portfolioTrack`
+  (`.portfolio-static`), which the deck replaces when JavaScript runs.
+- **D's runtime in fixed-language mode.** Generated pages carry `<html data-fixed-lang>`;
+  `versions/d/main.js` then uses a minimal controller (no storage, no `?lang` rewriting) and
+  forwards an old `?lang=` to the other page via the hreflang alternate. The source pages and
+  versions A, B, C keep the shared controller; `shared/i18n.js` is unchanged.
+- **Artifact.** Only files the generated pages reference are copied (HTML, CSS `url()`, JS
+  imports, page-relative image paths in JS) – 34 files, about 1.1 MB. `tools/check-site.mjs`
+  enforces an allowlist and checks canonicals, reciprocal hreflang, sitemap, robots rules,
+  structured-data keys, references and retired CNC claims.
+- **Deploy.** `.github/workflows/deploy-pages.yml` builds, checks and deploys `dist/` with the
+  official Pages actions; manual trigger only, inactive until the Pages source is switched to
+  GitHub Actions. Steps, verification and rollback: `docs/deployment.md`.
+- **CNC accuracy.** The case-study text, metric labels and D's proof row now state the synthetic
+  AI4I 2020 dataset, 96% recall on the test data and that this is not validation in a live
+  industrial environment (repository README checked); the false-alarm ratio is "~2.4:1"
+  (README: 2.39), not "~2:1".
+- **New copy (EN + HU, awaiting review):** `seo.homeDescription`, `seo.servicesDescription`,
+  `notFound.title` / `text` / `home`, `proof.recall.labelD`, `portfolio.subtitleD`; sentence
+  added to `proof.noteD`. CSS: `a.lang` (link version of the switch), `.portfolio-static` and its
+  no-JS rules. Checks in `qa-checklist.md`.
+- **Pre-commit adjustments (same day, user-requested):** `x-default` points to the Hungarian
+  page; Version A's proof row uses a new A-only key `proof.recall.labelA` ("recall on synthetic
+  test data" / "visszahívási arány szintetikus tesztadatokon"; B and C keep `proof.recall.label`);
+  the build writes HU metric values with a decimal comma ("99,27%", "~2,4:1") in the static
+  case-study list; `check-site.mjs` also requires x-default = the HU page.
+- **Digit study (same day, user-approved wording):** Version D and the generated site show the
+  handwritten-digit study as an MNIST benchmark (99.27% on the MNIST test set; postal-code
+  recognition only as a potential application, not evaluated in a real postal environment).
+  D-only fields `kindD` / `titleD` / `descriptionD` / `overviewD` on that project in
+  `portfolio-data.js`; D's `portfolio.js` and the build's static list prefer them; A, B and C
+  keep the shared text. The D label is "Computer Vision / Számítógépes látás"; as that is a
+  field, not an industry, D's "Industries covered" tile no longer counts it (3 → 2).
+  `check-site.mjs` fails if the old postal framing reaches a generated HTML page.

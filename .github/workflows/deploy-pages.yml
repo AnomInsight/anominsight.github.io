@@ -1,0 +1,57 @@
+# Builds the public site from Version D (tools/build-site.mjs -> dist/), checks the
+# artifact (tools/check-site.mjs) and deploys only dist/ to GitHub Pages.
+#
+# INACTIVE until the owner switches it on. It runs only when started by hand
+# (Actions -> "Deploy site" -> Run workflow), and its deploy job can only publish
+# after Settings -> Pages -> Source is set to "GitHub Actions". Until then the site
+# keeps deploying from the main branch root exactly as before.
+# To deploy on every push to main later, add:   push: { branches: [main] }
+name: Deploy site
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # sitemap <lastmod> comes from git history
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Build dist/
+        run: node tools/build-site.mjs
+        env:
+          # Optional repository variables (Settings -> Secrets and variables -> Actions -> Variables).
+          GOOGLE_SITE_VERIFICATION: ${{ vars.GOOGLE_SITE_VERIFICATION }}
+          BING_SITE_VERIFICATION: ${{ vars.BING_SITE_VERIFICATION }}
+      - name: Check the artifact
+        run: node tools/check-site.mjs
+      # Reads the Pages settings only; never enables or changes them.
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

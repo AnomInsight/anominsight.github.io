@@ -481,6 +481,13 @@ a.proof__source,
 .lang:active,
 .lang[aria-busy='true'] { transform: scale(0.96); }
 
+/* Launch pages (tools/build-site.mjs): the switch is a link to the other language. */
+a.lang {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .menu-toggle {
   display: none;
   background: none;
@@ -2234,6 +2241,16 @@ html:not(.js) .modes__copy + .modes__copy {
   overflow: hidden;
   perspective: 1100px;
 }
+
+/* Case studies written into #portfolioTrack by tools/build-site.mjs: readable
+   without JavaScript (crawlers, no-JS visitors); with JS the deck replaces them. */
+.portfolio-static { display: grid; gap: var(--space-6); }
+.portfolio-static h3 { margin-block: var(--space-2); }
+.portfolio-static p,
+.portfolio-static ul { margin-block-end: var(--space-3); }
+.portfolio-static a { text-decoration: underline; }
+.js .portfolio-static { display: none; }
+html:not(.js) .portfolio-rotator { overflow: visible; }
 
 .portfolio-nav {
   display: flex;
