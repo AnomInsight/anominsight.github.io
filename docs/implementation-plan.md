@@ -3,8 +3,9 @@
 Status: **implemented** (2026-11-17). Approved by the user the same day with three refinements: no
 inspection lens in the first release, a simplified non-pinned phone layout, and a review of the new
 copy for technical accuracy. Version D lives in `src/frontend/versions/d/`; Version A, the frozen
-`original`, the root placeholder and the experimental B/C are untouched. Nothing is committed or
-deployed. Measurements: §12.
+`original`, the root placeholder and the experimental B/C are untouched. Committed on branch
+`feature/anominsight-version-d` (pushed to origin; not merged into `main`, not deployed).
+Measurements: §12.
 
 Related: `client-brief.md` (facts) · `creative-direction.md` (concept) · `design-system.md`
 (tokens, components) · `motion-spec.md` (storyboard) · `qa-checklist.md` (verification).
@@ -106,14 +107,16 @@ section.
 | `services.html` | from A | Restyled, stage tags, header scan |
 | `style.css` | from A | New tokens and components; portfolio block kept, token-remapped |
 | `main.js` | from A | Same wiring; `initReveal` removed; imports the story module on the homepage |
-| `portfolio.js` | copy of A | Unchanged logic (protected); copied rather than imported across versions so Version D stands alone at promotion |
+| `portfolio.js` | copy of A | Copied rather than imported across versions so Version D stands alone at promotion. Desktop logic unchanged (protected); at ≤ 840 px the phone deck, swipe and transactional filter sheet (§12, 2026-11-19/20) |
 | `signal-story.js` | new | Canvas 2D renderer (`Scene`), wide controller (sticky, scroll-scrubbed), narrow controller (band + step frames), drift + pause, frame-cost governor, reduced-motion paths (10.0 KB gz) |
 | `signal-data.js` | new | Illustrative streams: Version A's torque polyline and band + two companion streams from a fixed seed (2.1 KB gz) |
 
 **Changed outside the folder**
 - `src/frontend/shared/content.js` – 27 new keys per language, additive only (`stage.*`, `map.*`, `proof.noteD`,
   `story.step4.lead`, `proof.bridge`), EN + HU. No existing key was changed, so A, B and C are
-  unaffected.
+  unaffected. Later rounds added D-only keys and `…D` variants (§12), including 7 phone-portfolio
+  keys (`portfolio.filterButtonD`, `filterSelectedD`, `countAllD`, `countFilteredD`, `applyOneD`,
+  `applyD`, `positionD`).
 - `src/frontend/versions/index.html` – a Version D card in the comparison index.
 - `docs/` – these six documents; `CLAUDE.md` – state and changelog.
 - Local tooling (gitignored): `.claude/launch.json` and `.claude/serve.mjs` (static server with
@@ -136,6 +139,9 @@ section.
 | `.service-map` | HTML list | Four stage rows with services and package links |
 | `.audience` band | HTML | Use cases + value, two typographic columns |
 | `.page-intro__trace` | inline SVG + CSS | Services page header scan |
+| `.portfolio-bar` (phones) | HTML | Result count (`#portfolioCount`) + Filter button with a count badge; hidden above 840 px and without script |
+| `.portfolio-sheet` (phones) | native `<dialog>` + `showModal()` | Bottom sheet: title, Clear, close, type checkboxes (status group only with 2+ statuses), gold `.btn--primary` "Show {n} projects" |
+| Phone deck | existing `.portfolio-card`s, `data-deck` states | One card + two stacked layers, finite, `inert` non-front cards, "n / total" counter, swipe, polite live region `#portfolioLive` |
 
 ## 6. New copy (shipped, EN + HU)
 
@@ -279,7 +285,8 @@ Results against these criteria (lab measurements, review outcome, open items) ar
 8. Lab: LCP ≤ 2.5 s and CLS ≤ 0.1 in Lighthouse mobile, Performance ≥ 90 where achievable; Taste
    perf with no FAIL; no long task over 50 ms from the story module; frame cost within
    `motion-spec.md` §9.
-9. Portfolio structure and interaction identical to A.
+9. Portfolio structure and interaction identical to A above 840 px; on phones, the user-approved
+   deck and transactional filter sheet (§12).
 10. Docs and `CLAUDE.md` describe what was built; open items listed in `qa-checklist.md`.
 
 ## 12. Refinements after review (2026-11-18)
@@ -314,3 +321,34 @@ Results against these criteria (lab measurements, review outcome, open items) ar
   the final CTA section's h2 is the new `finalcta.titleD` and `offer.titleD` labels the list as
   an h3 (`.final-cta__covers`, one small CSS rule); step 1 tag "Data preparation". D content
   approved for the next milestone.
+
+- **Pause-button fix (2026-11-19, after the post-commit quality gate):** on wide screens the
+  hero's layer intercepted pointer events meant for the stage's pause button (the hero spans the
+  stage column above the stage). Fix in the existing `@media (min-width: 60em)` block:
+  `.hero { pointer-events: none; }`, `.hero__copy { pointer-events: auto; }`. No visual,
+  animation or JavaScript change. All 10 EN/HU real-input browser runs pass (1024, 1280, 1440,
+  768, 390); details in `qa-checklist.md`. P2 resolved; D is ready for deployment preparation,
+  subject to final real-device checks.
+
+- **Mobile explorer order (2026-11-19):** in the single-column layout (≤ 900px) the chart now
+  sits above the four questions, so it stays visible above the thumb while switching views. The
+  `aria-hidden` chart moved out of the `<figure>` (which keeps the text and caption);
+  `.modes__side` gets `display: contents` and CSS `order` places the chart first, so reading and
+  Tab order are unchanged. Desktop grid places chart and figure in the right column as before
+  (screenshots byte-identical). Checks in `qa-checklist.md`.
+
+- **Mobile portfolio (2026-11-19, transactional filtering 2026-11-20):** at ≤ 840 px (the
+  breakpoint in CSS and in `portfolio.js`) the shell becomes one flex column (sticky and main
+  columns `display: contents`, CSS `order`): heading, subtitle, a count + Filter bar, the deck,
+  nav (prev · "n / total" · next), stats, note, CTA. The deck shows one card with two stacked
+  layers (`data-deck` front / layer1 / layer2 / rest / past), never wraps, never auto-rotates,
+  keeps non-front cards `inert`, and turns by arrows or swipe (pointer events, 56 px threshold,
+  `touch-action: pan-y pinch-zoom`). Filters live in a native `<dialog>` bottom sheet opened with
+  `showModal()` (Escape, focus trap, inert background; `html.portfolio-sheet-open` locks page
+  scroll). The sheet edits a draft copy of the applied filter sets: only "Show {n} projects"
+  copies it back and re-renders the deck (at card 1, announced in `#portfolioLive`) if the
+  selection changed; X, Escape, backdrop and crossing the breakpoint discard it; Clear empties
+  the draft only. The status group renders only with 2+ statuses. Stats and note get
+  `overflow-anchor: none`, because they precede the deck in the DOM and, as scroll anchors,
+  shifted the page when the deck height changed. Desktop rendering is pixel-identical to before.
+  Checks and limits in `qa-checklist.md`.

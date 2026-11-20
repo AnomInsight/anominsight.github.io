@@ -279,7 +279,9 @@
               </button>
               </div>
             </div>
-            <figure class="modes__figure">
+            <!-- The chart sits outside the figure so phones can show it above the
+                 questions (CSS order); it is aria-hidden, so reading and Tab order
+                 do not change. Desktop places it back above the figure. -->
               <svg class="modes__plot" viewBox="0 0 600 340" aria-hidden="true" focusable="false">
                 <path class="modes__grid" d="M48 24H584M48 92H584M48 160H584M48 228H584M48 296H584" />
                 <path class="modes__layer modes__band" data-show="detect" />
@@ -307,6 +309,7 @@
                 <text class="modes__axis modes__layer" data-show="detect forecast" x="48" y="14" data-i18n="stage.stream.torque">Spindle torque</text>
                 <text class="modes__axis modes__layer" data-show="group classify" x="48" y="14" data-i18n="stage.stream.temperature">Temperature</text>
               </svg>
+            <figure class="modes__figure">
               <div class="modes__copies" aria-live="polite">
               <div class="modes__copy" data-copy="detect">
                 <p class="modes__text" data-i18n="modes.detect.text">A model learns the expected range from past data and flags what leaves it – early warning for faults, data errors or unusual demand.</p>
@@ -438,12 +441,22 @@
           </div>
           <div class="portfolio-main">
             <div class="portfolio-stats" id="portfolioStats" role="group" aria-label="Portfolio highlights" data-i18n-aria="portfolio.statsAria"></div>
+            <!-- Phones only (hidden above 840px): result count + the button that opens the filter sheet. -->
+            <div class="portfolio-bar">
+              <p class="portfolio-count" id="portfolioCount"></p>
+              <button type="button" class="portfolio-filter-btn" id="portfolioFilterOpen" aria-haspopup="dialog" aria-expanded="false" aria-controls="portfolioFilterSheet">
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="15" cy="7" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="9" cy="17" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+                <span data-i18n="portfolio.filterButtonD">Filter</span>
+                <span class="portfolio-filter-badge" id="portfolioFilterBadge" aria-hidden="true" hidden></span>
+              </button>
+            </div>
             <div class="portfolio-rotator" id="portfolioTrack" role="group" aria-label="Portfolio projects" data-i18n-aria="portfolio.trackAria"></div>
             <div class="portfolio-nav" id="portfolioNav" role="group" aria-label="Portfolio navigation" data-i18n-aria="portfolio.navAria">
               <button type="button" class="portfolio-nav-arrow portfolio-nav-prev" id="portfolioNavPrev" aria-label="Previous project" data-i18n-aria="portfolio.navPrev">
                 <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
               <div class="portfolio-nav-dots" id="portfolioNavDots" role="group" aria-label="Project pages" data-i18n-aria="portfolio.navDotsAriaD"></div>
+              <span class="portfolio-nav-count" id="portfolioNavCount" aria-hidden="true"></span>
               <button type="button" class="portfolio-nav-arrow portfolio-nav-next" id="portfolioNavNext" aria-label="Next project" data-i18n-aria="portfolio.navNext">
                 <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
@@ -452,6 +465,7 @@
                 <svg class="icon-play" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M9 6.5v11l8.5-5.5z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
               </button>
             </div>
+            <p class="sr-only" id="portfolioLive" aria-live="polite"></p>
             <div class="portfolio-cta">
               <p data-i18n="portfolio.ctaText">Have a similar challenge in your operation?</p>
               <a href="#contact" class="btn btn--ghost" data-i18n="portfolio.ctaButton">Let's talk</a>
@@ -482,6 +496,21 @@
           </div>
         </article>
       </div>
+
+      <!-- Phones only: the portfolio filter sheet, opened by #portfolioFilterOpen. -->
+      <dialog class="portfolio-sheet" id="portfolioFilterSheet" aria-labelledby="portfolioSheetTitle">
+        <div class="portfolio-sheet-head">
+          <h3 class="portfolio-sheet-title" id="portfolioSheetTitle" data-i18n="portfolio.filterButtonD">Filter</h3>
+          <button type="button" class="portfolio-sheet-clear" id="portfolioSheetClear" data-i18n="portfolio.clearAllFilters">Clear all filters</button>
+          <button type="button" class="portfolio-sheet-close" id="portfolioSheetClose" aria-label="Close" data-i18n-aria="portfolio.detailsClose">
+            <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" /></svg>
+          </button>
+        </div>
+        <div class="portfolio-sheet-body" id="portfolioSheetBody"></div>
+        <div class="portfolio-sheet-foot">
+          <button type="button" class="btn btn--primary portfolio-sheet-apply" id="portfolioSheetApply"></button>
+        </div>
+      </dialog>
 
       <section class="section founder" id="about" aria-labelledby="about-title">
         <div class="shell founder__grid">

@@ -26,8 +26,16 @@ the wide-shell steps. Languages: EN and HU at every width that changes layout.
 - [ ] Service-map package links land on the right package row of `services.html`.
 - [ ] Mobile menu opens and closes, moves focus to the first link, closes on Esc and on link click.
 - [ ] Skip link is the first Tab stop and moves focus to `<main>`.
-- [ ] Portfolio (protected): filters, clear-all, stats, rotation, pause, arrows, dots, card focus,
-      detail dialog (open, focus trap, Esc, focus return), GitHub links – identical behaviour to A.
+- [ ] Portfolio (protected) above 840 px: filters, clear-all, stats, rotation, pause, arrows, dots,
+      card focus, detail dialog (open, focus trap, Esc, focus return), GitHub links – identical
+      behaviour to A.
+- [ ] Portfolio on phones (≤ 840 px): one card at a time, arrows disabled at the ends (no wrap),
+      "n / total" counter, swipe both ways, no auto-rotation; Filter opens the bottom sheet with the
+      applied ticks; ticking changes only the sheet's count; only "Show {n} projects" applies
+      (deck back at card 1, count and badge updated); X, Escape and a backdrop tap discard
+      unapplied ticks and keep the current card and scroll position; "Clear all filters" in the
+      sheet clears the draft only; Show with no change keeps the card; the empty state's Clear
+      button restores all projects.
 - [ ] Footer year is current.
 
 ## 2. Responsive
@@ -42,6 +50,9 @@ the wide-shell steps. Languages: EN and HU at every width that changes layout.
 - [ ] Split layouts collapse at the documented breakpoints; grid tracks with long words use
       `minmax(0, 1fr)`.
 - [ ] Wide desktop (1760, 2200): shell steps, h1 step, stage bleed still balanced.
+- [ ] Portfolio on phones (320, 360, 390, 430; EN + HU): order heading › subtitle › count + Filter ›
+      deck › nav › stats › note › CTA; no sheet label clipped or wrapped; Show button inside the
+      viewport; page does not move when filters are applied; vertical scrolling over a card works.
 - [ ] Browser text size 200%: nav switches to the menu, no overlap, no clipped text.
 - [ ] iOS Safari (or emulation): toolbar show/hide does not make the stage jump.
 
@@ -58,6 +69,11 @@ the wide-shell steps. Languages: EN and HU at every width that changes layout.
 - [ ] Focus is always visible and never hidden under the fixed header or the sticky stage.
 - [ ] Touch targets ≥ 44px on coarse pointers, with ≥ 8px between targets.
 - [ ] `lang` attribute updates on `<html>`; links opening a new tab announce it.
+- [ ] Portfolio filter sheet (phones): Filter exposes `aria-expanded` and, with filters applied,
+      "Filter, 2 selected"; opening focuses an option; Tab stays inside the sheet; Space ticks;
+      Escape closes; focus returns to Filter; page scroll is locked while open; the live region
+      announces the result count after Show and after the empty state's Clear, and the position
+      after arrows or swipe; non-front cards are `inert`.
 - [ ] Automated pass (axe or Lighthouse accessibility) with no serious or critical issues; manual
       keyboard-only walkthrough of both pages; screen-reader spot check (NVDA or Narrator) of hero,
       story and form.
@@ -206,6 +222,7 @@ DevTools > Lighthouse can produce one locally), real devices, and field data (no
 
 - **No field data** until the site is live; all numbers above are lab numbers from one machine.
 - **No real-device testing** from this environment; iOS behaviour is checked by emulation only.
+  Safari and Firefox are not tested; all browser checks ran in Edge (Chromium).
 - **Copy to confirm with the user:** the new stage, map and proof lines (EN + HU,
   `implementation-plan.md` §6); the "4+ years" figure's source ("Practice to date"); the footer
   tagline ("AI-powered data analytics for modern businesses."), which the finish review flags as
@@ -214,6 +231,15 @@ DevTools > Lighthouse can produce one locally), real devices, and field data (no
 - **Language switch** still costs one long task (~240 ms at 4× CPU) right after the click has painted;
   shared `i18n.js` was not changed for D, because A uses it too.
 - **`DESIGN.md`** still describes Version A; refresh it if D is promoted.
+- **Mobile portfolio, 320×568 HU:** the front card (494 px) is taller than the space under the
+  count bar, so the arrows sit ~130 px below the fold (EN 320: ~61 px); from 360 px up the card
+  and arrows fit. At 320×568 the sheet's type list scrolls (one option below the fold, scroll
+  shadow) and the backdrop strip above the sheet is 24 px tall; X and Escape still close it.
+- **Mobile portfolio, untested paths:** the status group and the empty state cannot occur with the
+  current data (one status; every type matches a project); both were checked only by changing the
+  data in the test page's memory. Browsers without `<dialog>` `showModal` get no Filter button on
+  phones (the deck still works). Live-region announcements were checked as DOM text, not with a
+  screen reader.
 - **Open questions inherited from `CLAUDE.md` §12** remain open.
 
 ### Refinement check (2026-11-18)
@@ -269,3 +295,48 @@ DevTools > Lighthouse can produce one locally), real devices, and field data (no
 | Final CTA | h2 = invitation ("Kezdjük egy ingyenes konzultációval"), h3 = "Miről szól az ingyenes konzultáció?" over the list; reads cleanly at 1440 and 320 |
 | Package consistency | homepage and services use the same title/meta keys for every package; package texts appear only on services; no homepage copy contradicts them |
 | Versions A, B, C | no file changed |
+
+### Post-commit quality gate and pause-button fix (2026-11-19)
+
+| Check | Result |
+|---|---|
+| Defect (P2, confirmed by hit-testing and a manual real-browser test) | on wide screens (≥ 60em) the hero pause button did not respond to a mouse click while the hero was in view; keyboard worked, and the mouse worked after scrolling ~200 px |
+| Root cause | the wide-screen `.hero` spans the stage column (`grid-column: text-start / stage-end`) at `z-index: 1`, above the sticky `.stage` (`z-index: 0`); the button's `z-index: 3` only applies inside the stage's stacking context, so the hero's empty box intercepted pointer events meant for the button |
+| Fix | `versions/d/style.css`, inside the existing `@media (min-width: 60em)` block: `.hero { pointer-events: none; }` and `.hero__copy { pointer-events: auto; }` (headline, lead, CTAs and byline all sit in `.hero__copy`); no z-index, layout, visual, animation or JavaScript change |
+| Regression (real CDP mouse, wheel and key input, headless Edge; EN + HU) | 10 of 10 runs pass: 1024×768, 1280×800, 1440×900, 768×1024, 390×844 in both languages. Pause hit-test lands on the button at scrollY 0; click pauses (`aria-pressed`, canvas still, no story frames) and resumes; works after scrolling; both CTAs clickable; text selectable by drag and double-click; Tab reaches both CTAs and pause with visible, uncovered 2px rings; Space/Enter toggle pause; Enter on a CTA navigates; story steps 1→4 down and 4→1 up |
+| Before the fix (same script, 1440, EN) | 3 failures: hit-test (`SECTION.hero`), mouse pause, pause focus ring covered by the hero |
+| Phone and tablet (390, 768) | unchanged: the rule is scoped to ≥ 60em, the hero computes `pointer-events: auto` there |
+| Lab re-measure (clean runs, paired with Version A, same profile as round 2) | homepage phone LCP 1.44 s EN / 1.34 s HU (A: 1.46 s), CLS 0, INP proxy 32 ms (A: 216 ms); desktop LCP 0.54 s (A: 0.61 s); no regression; story frame cost ≤ 2.3 ms desktop, ≤ 5.8 ms at 4× CPU; no DOM or listener growth across repeated interaction |
+| Status | P2 resolved. Version D is ready for deployment preparation, subject to final real-device checks (Safari, Firefox and real devices not yet tested) |
+
+### Mobile explorer order (2026-11-19)
+
+| Check | Result |
+|---|---|
+| Change | single-column layout (`max-width: 900px`, phones and portrait tablets): heading, lead, chart, the four questions (2×2), text, caption – the chart stays above the thumb while switching. The chart (`aria-hidden`, not focusable) now sits outside the `<figure>`; `.modes__side` (plain div) gets `display: contents` and the chart is ordered above the questions. Desktop grid places chart and figure in the right column as before. No copy, JS, animation or highlight change |
+| Reading and Tab order | Chromium accessibility tree identical to before (heading, lead, question group, text, caption); Tab visits the four questions with visible rings, then the next section |
+| Phones 320×568, 360×640, 390×844, 430×932, EN + HU (real touch) | chart above the questions; all four views switch, page does not scroll on tap; chart + questions fit under the sticky header (129–453 px to spare); tabs ≥ 76 px tall; no horizontal overflow; no clipped or overlapping chart labels in any view |
+| Desktop 1024, 1280, 1440, EN + HU | section screenshots byte-identical to before; element positions, reading order and Tab order identical |
+| Fallbacks | no script: the four texts as a list, same 48 px gap under the lead as before; reduced motion: same order, points jump, fades only; 768: same order, no overflow |
+| Not tested | Safari/iOS, Firefox, real phones, a real screen reader |
+
+### Mobile portfolio: card deck and filter sheet (2026-11-19 – 2026-11-20)
+
+All runs: headless Edge (Chromium) over CDP with real touch, mouse and key input, DPR 2;
+`versions/d/index.html` served by the local preview server.
+
+| Check | Result |
+|---|---|
+| Change | ≤ 840 px only: single-card deck (two stacked layers, finite, arrows + "n / total", swipe, no auto-rotation) and a count + Filter bar opening a native `<dialog>` bottom sheet with multi-select types; transactional draft (only "Show {n} projects" applies). Desktop portfolio unchanged |
+| Layout, 320×568 / 360×640 / 390×844 / 430×932, EN + HU | order heading › subtitle › bar › deck › nav › stats › note › CTA; desktop-only parts hidden; no horizontal overflow before or after interaction; no clipped or wrapped sheet labels; sheet targets ≥ 44 px; Show button 46 px tall and inside the viewport |
+| Deck | arrows step 1 → 3 and stop (no wrap), `aria-disabled` at both ends; swipe left/right turns the card; a vertical drag over the card scrolls the page (145–267 px); front card unchanged after 5 s (no autoplay); non-front cards `inert`; live region reads "Project 2 of 3: …" / "Projekt 2 / 3: …" |
+| Transactional sheet, 320 / 360 / 390, EN + HU (122 checks, all pass after one test-expectation fix: the desktop "All" chip label) | X, Escape and backdrop tap each discard two ticked types: count, badge, card (2 / 3) and scroll position unchanged, no announcement, focus on Filter; reopen shows the applied ticks; Show applies (count "2 of 3 projects" / "3 projektből 2", badge 2, "Filter, 2 selected" / "Szűrés, 2 kiválasztva", deck 1 / 2, announced, page does not move); unticking then X keeps the applied pair and card 2 / 2; Clear empties the draft only (Escape afterwards keeps the filters); Clear + Show clears and announces "3 projects" / "3 projekt"; Show with no change keeps the card and stays silent; keyboard: Enter opens with focus on the first option, Space ticks, Escape discards |
+| Empty state (forced by removing a type from the data in page memory; cannot occur with current data), 320 / 360 / 390, EN + HU | message + 44 px "Clear all filters" / "Szűrők törlése" button, count "0 of 3 projects" / "3 projektből 0"; tapping Clear restores 3 cards at 1 / 3, the live region announces "3 projects" / "3 projekt", focus moves to Filter |
+| Status group (forced: a second status in page memory), 390 HU | sheet shows "Szűrés állapot szerint" above the types; ticking a status narrows the types to that status's projects; X discards it |
+| Breakpoint crossing with the sheet open (390 → 1280) | sheet closes, scroll lock released, draft discarded, desktop chips show "All", no `inert` cards left; desktop chips still filter directly |
+| Rendered contrast (viewport screenshots; background = darkest/brightest pixel 2–5 px around the text line, text = computed colour, cross-checked with glyph pixels) | Show button (gold `.btn--primary`, ink `--on-gold`): EN 8.49–9.01:1, HU 7.65–8.40:1 at 320–430; Clear all filters active 12.61:1, inactive (muted) 8.5:1; type labels 15.33:1; count 13.27:1; Filter label 14.85:1; counter 16.29:1; arrow icon enabled 11.8:1, disabled 3.4:1 (opacity 0.45) |
+| Reduced motion, 390 EN + HU | all 42 transactional, empty-state, status and desktop checks pass; arrows and swipe pass; a swipe turns the card without the card following the finger |
+| No script, 390 | no count bar, sheet closed and hidden, no horizontal overflow |
+| Desktop 900 / 1024 / 1280 / 1440, EN + HU | portfolio section screenshots pixel-identical to a pre-change baseline (run-to-run noise in the baselines themselves: up to 686 px in the sticky filter column); section tops, heights and document heights identical |
+| Fixed during testing | an 11 px page shift after Show at HU 360 (scroll anchoring on the stats, which precede the deck in the DOM: `overflow-anchor: none` on stats and note); disabled arrows raised from 2.9:1 to 3.4:1; the empty state's Clear now announces the count |
+| Not tested | Safari/iOS, Firefox, real phones and tablets, a real screen reader (NVDA, Narrator, VoiceOver, TalkBack) |

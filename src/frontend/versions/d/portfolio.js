@@ -1,6 +1,9 @@
 // Version D copy of Version A's portfolio module (copied, not imported across
-// versions, so D stands alone at promotion). Only change from A: the expand
-// icon image is lazy-loaded (performance fix allowed for the protected deck).
+// versions, so D stands alone at promotion). Changes from A: the expand icon
+// image is lazy-loaded (performance fix), and at phone widths (<= 840px) the
+// deck shows one card at a time with arrows, a counter and swipe, and the
+// filters move into a bottom sheet (user-approved mobile redesign,
+// 2026-11-19). Desktop behaviour is A's, unchanged.
 //
 // Version A's portfolio: the SAME deck-carousel mechanic as the original build
 // (DESIGN.md marks this component's structure protected - filters, 3D card
@@ -34,6 +37,33 @@ let portfolioDetailOpener = null;
 // the visitor presses the pause control (WCAG 2.2.2).
 let isPortfolioFocusWithin = false;
 let isPortfolioRotationPaused = false;
+
+// Phones (the stylesheet's portfolio breakpoint): one card at a time, a
+// finite stack with no wrap-around, no auto-rotation, and the filters in a
+// bottom sheet instead of the chip rows. Above it everything is unchanged.
+const mobileDeckQuery = window.matchMedia('(max-width: 840px)');
+const isMobileDeck = () => mobileDeckQuery.matches;
+// The sheet edits a draft copy of the filters; only its Show button applies it,
+// every other way out (close, Escape, backdrop) discards it.
+const portfolioDraftStatus = new Set();
+const portfolioDraftCategories = new Set();
+const isSameSet = (a, b) => a.size === b.size && [...a].every((id) => b.has(id));
+
+const fillTemplate = (template, values) =>
+  template.replace(/\{(\w+)\}/g, (match, key) => (key in values ? String(values[key]) : match));
+
+// The status group only means something once projects differ in status.
+const getPortfolioStatusIds = () => [...new Set(portfolioProjects.map((project) => project.status))];
+
+const getActivePortfolioFilterCount = () => activePortfolioCategoryFilters.size
+  + (getPortfolioStatusIds().length > 1 ? activePortfolioStatusFilters.size : 0);
+
+const announcePortfolio = (text) => {
+  const live = document.getElementById('portfolioLive');
+  if (live) {
+    live.textContent = text;
+  }
+};
 
 const closePortfolioDetails = () => {
   const modal = document.getElementById('portfolioDetailModal');
@@ -172,10 +202,13 @@ const renderPortfolioStats = (lang, t) => {
   });
 };
 
-const getFilteredProjects = () => portfolioProjects.filter((project) => {
-  const matchesStatus = activePortfolioStatusFilters.size === 0 || activePortfolioStatusFilters.has(project.status);
-  const matchesCategory = activePortfolioCategoryFilters.size === 0
-    || project.categories.some((categoryId) => activePortfolioCategoryFilters.has(categoryId));
+const getFilteredProjects = (
+  statuses = activePortfolioStatusFilters,
+  categories = activePortfolioCategoryFilters,
+) => portfolioProjects.filter((project) => {
+  const matchesStatus = statuses.size === 0 || statuses.has(project.status);
+  const matchesCategory = categories.size === 0
+    || project.categories.some((categoryId) => categories.has(categoryId));
   return matchesStatus && matchesCategory;
 });
 
@@ -202,14 +235,17 @@ const renderPortfolioFilterRow = (host, { activeSet, ids, getLabelFn, lang, onSe
   });
 };
 
-const pruneCategoryFilters = () => {
-  const statusScopedProjects = activePortfolioStatusFilters.size === 0
+const pruneCategoryFilters = (
+  statuses = activePortfolioStatusFilters,
+  categories = activePortfolioCategoryFilters,
+) => {
+  const statusScopedProjects = statuses.size === 0
     ? portfolioProjects
-    : portfolioProjects.filter((project) => activePortfolioStatusFilters.has(project.status));
+    : portfolioProjects.filter((project) => statuses.has(project.status));
   const validCategoryIds = new Set(statusScopedProjects.flatMap((project) => project.categories));
-  Array.from(activePortfolioCategoryFilters).forEach((categoryId) => {
+  Array.from(categories).forEach((categoryId) => {
     if (!validCategoryIds.has(categoryId)) {
-      activePortfolioCategoryFilters.delete(categoryId);
+      categories.delete(categoryId);
     }
   });
 };
@@ -222,6 +258,73 @@ const updatePortfolioClearAllButton = (t) => {
   const hasActiveFilters = activePortfolioStatusFilters.size > 0 || activePortfolioCategoryFilters.size > 0;
   btn.textContent = t('portfolio.clearAllFilters');
   btn.disabled = !hasActiveFilters;
+};
+
+// Phones: result count + the Filter button's selected-count badge.
+const renderPortfolioBar = (t) => {
+  const count = document.getElementById('portfolioCount');
+  const button = document.getElementById('portfolioFilterOpen');
+  const badge = document.getElementById('portfolioFilterBadge');
+  if (!count || !button || !badge) {
+    return;
+  }
+
+  const active = getActivePortfolioFilterCount();
+  const total = portfolioProjects.length;
+  count.textContent = active
+    ? fillTemplate(t('portfolio.countFilteredD'), { n: getFilteredProjects().length, total })
+    : fillTemplate(t('portfolio.countAllD'), { n: total });
+  badge.hidden = !active;
+  badge.textContent = String(active);
+  button.classList.toggle('is-active', active > 0);
+  if (active) {
+    button.setAttribute('aria-label', `${t('portfolio.filterButtonD')}, ${fillTemplate(t('portfolio.filterSelectedD'), { n: active })}`);
+  } else {
+    button.removeAttribute('aria-label');
+  }
+};
+
+const updatePortfolioSheetActions = (t) => {
+  const apply = document.getElementById('portfolioSheetApply');
+  const clear = document.getElementById('portfolioSheetClear');
+  const matches = getFilteredProjects(portfolioDraftStatus, portfolioDraftCategories).length;
+  if (apply) {
+    apply.textContent = matches === 1 ? t('portfolio.applyOneD') : fillTemplate(t('portfolio.applyD'), { n: matches });
+  }
+  if (clear) {
+    clear.setAttribute('aria-disabled', String(!portfolioDraftStatus.size && !portfolioDraftCategories.size));
+  }
+};
+
+// The sheet's checkboxes show the draft. Applied, it lands in the same filter
+// sets as the desktop chips, so selections carry over between widths.
+const renderPortfolioSheet = (t) => {
+  const body = document.getElementById('portfolioSheetBody');
+  if (!body) {
+    return;
+  }
+
+  const statusIds = getPortfolioStatusIds();
+  const statusScopedProjects = portfolioDraftStatus.size === 0
+    ? portfolioProjects
+    : portfolioProjects.filter((project) => portfolioDraftStatus.has(project.status));
+  const categoryIds = [...new Set(statusScopedProjects.flatMap((project) => project.categories))];
+  const group = (legend, name, ids, activeSet, labels) => `
+    <fieldset class="portfolio-sheet-group">
+      <legend>${legend}</legend>
+      ${ids.map((id) => `
+        <label class="portfolio-sheet-option">
+          <input type="checkbox" name="${name}" value="${id}"${activeSet.has(id) ? ' checked' : ''}>
+          <span class="portfolio-sheet-box" aria-hidden="true"></span>
+          <span>${getLabel(labels, id, currentLang)}</span>
+        </label>`).join('')}
+    </fieldset>`;
+
+  body.innerHTML = (statusIds.length > 1
+    ? group(t('portfolio.statusFiltersTitle'), 'status', statusIds, portfolioDraftStatus, portfolioStatusLabels)
+    : '')
+    + group(t('portfolio.filtersTitle'), 'category', categoryIds, portfolioDraftCategories, portfolioCategoryLabels);
+  updatePortfolioSheetActions(t);
 };
 
 const renderPortfolioFilters = (lang, t) => {
@@ -360,6 +463,8 @@ const renderPortfolioNavDots = (count, t) => {
   }
 
   nav.style.visibility = count > 1 ? '' : 'hidden';
+  // Phones drop the row entirely rather than leave an empty band.
+  nav.classList.toggle('is-single', count <= 1);
   dotsHost.innerHTML = '';
 
   const labelTemplate = t('portfolio.navDotLabel') || 'Go to project {n}';
@@ -379,7 +484,8 @@ let lastT = (key) => key;
 
 const renderPortfolio = (lang, t, options = {}) => {
   lastT = t;
-  const { animateIn = false } = options;
+  // dealIn: phones only, after the filter sheet changed the set.
+  const { animateIn = false, dealIn = false } = options;
   const track = document.getElementById('portfolioTrack');
   if (!track) {
     return;
@@ -389,6 +495,7 @@ const renderPortfolio = (lang, t, options = {}) => {
 
   renderPortfolioStats(lang, t);
   renderPortfolioFilters(lang, t);
+  renderPortfolioBar(t);
   track.innerHTML = '';
   const projectsToRender = getFilteredProjects();
 
@@ -400,6 +507,25 @@ const renderPortfolio = (lang, t, options = {}) => {
       empty.classList.add('is-from-deck');
     }
     track.appendChild(empty);
+    // Phones have no chip rows to undo the filters from, so the empty state
+    // carries its own way back.
+    if (isMobileDeck()) {
+      const clear = document.createElement('button');
+      clear.type = 'button';
+      clear.className = 'portfolio-filter-btn portfolio-empty-clear';
+      clear.textContent = t('portfolio.clearAllFilters');
+      clear.addEventListener('click', () => {
+        activePortfolioStatusFilters.clear();
+        activePortfolioCategoryFilters.clear();
+        renderPortfolio(currentLang, t, { dealIn: true });
+        announcePortfolio(document.getElementById('portfolioCount')?.textContent || '');
+        const opener = document.getElementById('portfolioFilterOpen');
+        if (opener) {
+          opener.focus({ preventScroll: true });
+        }
+      });
+      track.appendChild(clear);
+    }
     renderPortfolioNavDots(0, t);
     clearInterval(portfolioAutoRotateTimer);
 
@@ -489,6 +615,14 @@ const renderPortfolio = (lang, t, options = {}) => {
   renderPortfolioNavDots(projectsToRender.length, t);
   updatePortfolioClasses();
 
+  if (dealIn && isMobileDeck()) {
+    const front = track.querySelector('.portfolio-card');
+    if (front) {
+      front.classList.add('is-dealt');
+      front.addEventListener('animationend', () => front.classList.remove('is-dealt'), { once: true });
+    }
+  }
+
   if (animateIn && !window.matchMedia('(max-width: 840px)').matches) {
     window.requestAnimationFrame(() => {
       const cards = track.querySelectorAll('.portfolio-card');
@@ -523,17 +657,18 @@ const updatePortfolioClasses = () => {
     return;
   }
 
+  const mobile = isMobileDeck();
   cards.forEach((card, index) => {
     let distance = index - activePortfolioIndex;
-    if (distance > total / 2) {
+    if (!mobile && distance > total / 2) {
       distance -= total;
-    } else if (distance < -total / 2) {
+    } else if (!mobile && distance < -total / 2) {
       distance += total;
     }
 
     const absDistance = Math.abs(distance);
     const isActive = distance === 0;
-    const isBeyondDepth = absDistance > PORTFOLIO_MAX_VISIBLE_DEPTH;
+    const isBeyondDepth = !mobile && absDistance > PORTFOLIO_MAX_VISIBLE_DEPTH;
 
     card.classList.toggle('is-active', isActive);
     card.classList.toggle('is-beyond-depth', isBeyondDepth);
@@ -546,7 +681,34 @@ const updatePortfolioClasses = () => {
       card.removeAttribute('aria-current');
     }
 
-    card.tabIndex = isBeyondDepth ? -1 : 0;
+    if (mobile) {
+      // Cards already passed leave to the left; the next two show as edges
+      // under the active card. Only the active card can be reached at all.
+      card.dataset.deck = distance < 0 ? 'past' : distance === 0 ? 'front' : distance <= 2 ? `layer${distance}` : 'rest';
+      card.inert = !isActive;
+      card.tabIndex = -1;
+    } else {
+      delete card.dataset.deck;
+      card.inert = false;
+      card.tabIndex = isBeyondDepth ? -1 : 0;
+    }
+  });
+
+  // Phones: "2 / 3" between the arrows, which stop at either end.
+  const counter = document.getElementById('portfolioNavCount');
+  if (counter) {
+    counter.textContent = `${activePortfolioIndex + 1} / ${total}`;
+  }
+  [['portfolioNavPrev', activePortfolioIndex === 0], ['portfolioNavNext', activePortfolioIndex === total - 1]].forEach(([id, atEnd]) => {
+    const arrow = document.getElementById(id);
+    if (!arrow) {
+      return;
+    }
+    if (mobile && atEnd) {
+      arrow.setAttribute('aria-disabled', 'true');
+    } else {
+      arrow.removeAttribute('aria-disabled');
+    }
   });
 
   const dots = document.querySelectorAll('#portfolioNavDots .portfolio-nav-dot');
@@ -572,9 +734,236 @@ const setPortfolioFocus = (index) => {
     return;
   }
 
-  activePortfolioIndex = ((index % cards.length) + cards.length) % cards.length;
+  if (isMobileDeck()) {
+    if (index < 0 || index >= cards.length) {
+      return;
+    }
+    activePortfolioIndex = index;
+  } else {
+    activePortfolioIndex = ((index % cards.length) + cards.length) % cards.length;
+  }
   updatePortfolioClasses();
   startPortfolioAutoRotate();
+};
+
+// Arrows and swipe. Returns whether the active card changed.
+const stepPortfolio = (delta) => {
+  const before = activePortfolioIndex;
+  setPortfolioFocus(activePortfolioIndex + delta);
+  if (activePortfolioIndex === before) {
+    return false;
+  }
+  if (isMobileDeck()) {
+    const cards = document.querySelectorAll('#portfolioTrack .portfolio-card');
+    const heading = cards[activePortfolioIndex] && cards[activePortfolioIndex].querySelector('h3');
+    announcePortfolio(`${fillTemplate(lastT('portfolio.positionD'), { n: activePortfolioIndex + 1, total: cards.length })}: ${heading ? heading.textContent : ''}`);
+  }
+  return true;
+};
+
+// Phones: a horizontal swipe on the active card turns it like the arrows.
+// touch-action: pan-y on the track leaves vertical scrolling to the browser,
+// which cancels the pointer as soon as a gesture turns out to be a scroll.
+const PORTFOLIO_SWIPE_THRESHOLD = 56;
+
+const initPortfolioSwipe = (track) => {
+  let pointerId = null;
+  let startX = 0;
+  let startY = 0;
+  let deltaX = 0;
+  let front = null;
+  let swallowClick = false;
+
+  const release = () => {
+    pointerId = null;
+    const card = front;
+    front = null;
+    if (card) {
+      card.classList.remove('is-dragging');
+    }
+    return card;
+  };
+
+  track.addEventListener('pointerdown', (event) => {
+    swallowClick = false;
+    if (!isMobileDeck() || !event.isPrimary || event.button !== 0 || event.target.closest('a, button')
+      || track.querySelectorAll('.portfolio-card').length < 2) {
+      return;
+    }
+    pointerId = event.pointerId;
+    startX = event.clientX;
+    startY = event.clientY;
+    deltaX = 0;
+  });
+
+  track.addEventListener('pointermove', (event) => {
+    if (event.pointerId !== pointerId) {
+      return;
+    }
+    const dx = event.clientX - startX;
+    const dy = event.clientY - startY;
+    if (!front) {
+      if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) {
+        pointerId = null;
+        return;
+      }
+      if (Math.abs(dx) < 10) {
+        return;
+      }
+      front = track.querySelector('.portfolio-card[data-deck="front"]');
+      if (!front) {
+        pointerId = null;
+        return;
+      }
+      track.setPointerCapture(event.pointerId);
+      front.classList.add('is-dragging');
+    }
+    deltaX = dx;
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // Resistance where there is no card to turn to.
+      const total = track.querySelectorAll('.portfolio-card').length;
+      const atEnd = (dx < 0 && activePortfolioIndex === total - 1) || (dx > 0 && activePortfolioIndex === 0);
+      front.style.transform = `translateX(${atEnd ? dx * 0.3 : dx}px)`;
+    }
+  });
+
+  track.addEventListener('pointerup', (event) => {
+    if (event.pointerId !== pointerId) {
+      return;
+    }
+    const card = release();
+    if (!card) {
+      return;
+    }
+    swallowClick = true;
+    const turned = Math.abs(deltaX) >= PORTFOLIO_SWIPE_THRESHOLD && stepPortfolio(deltaX < 0 ? 1 : -1);
+    if (!turned) {
+      // Springs back through the card's own transition.
+      card.style.removeProperty('transform');
+      return;
+    }
+    // The turned card fades out where the finger left it, then drops the offset.
+    window.setTimeout(() => card.style.removeProperty('transform'), 320);
+  });
+
+  track.addEventListener('pointercancel', (event) => {
+    if (event.pointerId !== pointerId) {
+      return;
+    }
+    const card = release();
+    if (card) {
+      card.style.removeProperty('transform');
+    }
+  });
+
+  // The click that ends a drag must not also act on the card it began on.
+  track.addEventListener('click', (event) => {
+    if (swallowClick) {
+      swallowClick = false;
+      event.stopPropagation();
+      event.preventDefault();
+    }
+  }, true);
+};
+
+const initPortfolioSheet = () => {
+  const sheet = document.getElementById('portfolioFilterSheet');
+  const opener = document.getElementById('portfolioFilterOpen');
+  const body = document.getElementById('portfolioSheetBody');
+  if (!sheet || !opener || !body) {
+    return;
+  }
+  if (typeof sheet.showModal !== 'function') {
+    opener.hidden = true;
+    return;
+  }
+
+  const copySet = (from, to) => {
+    to.clear();
+    from.forEach((id) => to.add(id));
+  };
+
+  opener.addEventListener('click', () => {
+    copySet(activePortfolioStatusFilters, portfolioDraftStatus);
+    copySet(activePortfolioCategoryFilters, portfolioDraftCategories);
+    renderPortfolioSheet(lastT);
+    // Locks page scroll behind the modal sheet.
+    document.documentElement.classList.add('portfolio-sheet-open');
+    sheet.showModal();
+    opener.setAttribute('aria-expanded', 'true');
+    const first = body.querySelector('input:checked') || body.querySelector('input');
+    if (first) {
+      first.focus();
+    }
+  });
+
+  // Close, Escape and backdrop end here without touching the applied filters,
+  // so the deck keeps its card; the draft is rebuilt on the next open.
+  sheet.addEventListener('close', () => {
+    document.documentElement.classList.remove('portfolio-sheet-open');
+    opener.setAttribute('aria-expanded', 'false');
+    if (isMobileDeck()) {
+      opener.focus({ preventScroll: true });
+    }
+  });
+
+  sheet.addEventListener('click', (event) => {
+    if (event.target !== sheet) {
+      return;
+    }
+    const box = sheet.getBoundingClientRect();
+    if (event.clientY < box.top || event.clientY > box.bottom || event.clientX < box.left || event.clientX > box.right) {
+      sheet.close();
+    }
+  });
+
+  body.addEventListener('change', (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) {
+      return;
+    }
+    const set = input.name === 'status' ? portfolioDraftStatus : portfolioDraftCategories;
+    if (input.checked) {
+      set.add(input.value);
+    } else {
+      set.delete(input.value);
+    }
+    if (input.name === 'status') {
+      // The type list depends on the status scope: rebuild it, keep the place.
+      pruneCategoryFilters(portfolioDraftStatus, portfolioDraftCategories);
+      const scrollTop = body.scrollTop;
+      renderPortfolioSheet(lastT);
+      body.scrollTop = scrollTop;
+      const again = body.querySelector(`input[name="status"][value="${input.value}"]`);
+      if (again) {
+        again.focus();
+      }
+    } else {
+      updatePortfolioSheetActions(lastT);
+    }
+  });
+
+  // Clears the draft only; Show applies it.
+  document.getElementById('portfolioSheetClear')?.addEventListener('click', () => {
+    if (!portfolioDraftStatus.size && !portfolioDraftCategories.size) {
+      return;
+    }
+    portfolioDraftStatus.clear();
+    portfolioDraftCategories.clear();
+    renderPortfolioSheet(lastT);
+  });
+  document.getElementById('portfolioSheetClose')?.addEventListener('click', () => sheet.close());
+  // The deck re-renders, back at its first card, only if the selection changed.
+  document.getElementById('portfolioSheetApply')?.addEventListener('click', () => {
+    if (!isSameSet(portfolioDraftStatus, activePortfolioStatusFilters)
+      || !isSameSet(portfolioDraftCategories, activePortfolioCategoryFilters)) {
+      copySet(portfolioDraftStatus, activePortfolioStatusFilters);
+      copySet(portfolioDraftCategories, activePortfolioCategoryFilters);
+      renderPortfolio(currentLang, lastT, { dealIn: true });
+      announcePortfolio(document.getElementById('portfolioCount')?.textContent || '');
+    }
+    sheet.close();
+  });
 };
 
 const startPortfolioAutoRotate = () => {
@@ -584,6 +973,7 @@ const startPortfolioAutoRotate = () => {
     isPortfolioTrackHovered ||
     isPortfolioFocusWithin ||
     isPortfolioRotationPaused ||
+    isMobileDeck() ||
     window.matchMedia('(prefers-reduced-motion: reduce)').matches
   ) {
     return;
@@ -633,15 +1023,29 @@ export function initPortfolioInteraction() {
 
   if (prevBtn) {
     prevBtn.addEventListener('click', () => {
-      setPortfolioFocus(activePortfolioIndex - 1);
+      stepPortfolio(-1);
     });
   }
 
   if (nextBtn) {
     nextBtn.addEventListener('click', () => {
-      setPortfolioFocus(activePortfolioIndex + 1);
+      stepPortfolio(1);
     });
   }
+
+  initPortfolioSheet();
+  if (track) {
+    initPortfolioSwipe(track);
+  }
+
+  // Crossing the breakpoint switches deck behaviour (and rotation) over.
+  mobileDeckQuery.addEventListener('change', () => {
+    const sheet = document.getElementById('portfolioFilterSheet');
+    if (sheet && sheet.open) {
+      sheet.close();
+    }
+    renderPortfolio(currentLang, lastT);
+  });
 
   if (track) {
     track.addEventListener('mouseenter', () => {

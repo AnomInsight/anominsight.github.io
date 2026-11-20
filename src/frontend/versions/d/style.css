@@ -1213,6 +1213,13 @@ html:not(.js) .stage__frame::before {
     display: flex;
     align-items: center;
     padding-block: var(--space-8);
+    /* The hero box spans the stage column above the stage layer; let pointer
+       events through its empty area so the stage's pause button is clickable. */
+    pointer-events: none;
+  }
+
+  .hero__copy {
+    pointer-events: auto;
   }
 
   /* --plot-left repeats the grid's own arithmetic (100% is the stage width,
@@ -1679,7 +1686,10 @@ html:not(.js) .stage__frame::before {
 .modes {
   display: grid;
   grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-  gap: var(--space-6) var(--space-8);
+  /* Right column: the chart, then the figure (text + caption); the side
+     spans both rows, so its height never pushes the text down. */
+  grid-template-rows: auto 1fr;
+  column-gap: var(--space-8);
   align-items: start;
   margin-top: var(--space-8);
   padding-top: var(--space-7);
@@ -1753,7 +1763,18 @@ html:not(.js) .stage__frame::before {
   }
 }
 
+.modes__side {
+  grid-row: 1 / span 2;
+}
+
+.modes__plot {
+  grid-column: 2;
+  grid-row: 1;
+}
+
 .modes__figure {
+  grid-column: 2;
+  grid-row: 2;
   margin: 0;
 }
 
@@ -1924,6 +1945,39 @@ html:not(.js) .modes__copy + .modes__copy {
 @media (max-width: 900px) {
   .modes {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+  }
+
+  /* One column: heading, lead, chart, the questions right under it (the
+     chart stays above the thumb while switching), then the text. The side
+     box dissolves (a plain div); the chart is aria-hidden, so reading and
+     Tab order stay heading, lead, questions, text. */
+  .modes__side {
+    display: contents;
+  }
+
+  .modes__plot,
+  .modes__figure {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .modes__plot {
+    order: 1;
+    margin-top: var(--space-6);
+  }
+
+  .modes__tabs {
+    order: 2;
+  }
+
+  .modes__figure {
+    order: 3;
+  }
+
+  /* Without script the texts follow the lead: keep the old gap above them. */
+  html:not(.js) .modes__figure {
+    margin-top: var(--space-6);
   }
 
   .modes__tabs {
@@ -3355,6 +3409,417 @@ body.portfolio-detail-open {
 .portfolio-nav-pause .icon-play { display: none; }
 .portfolio-nav-pause[aria-pressed='true'] .icon-pause { display: none; }
 .portfolio-nav-pause[aria-pressed='true'] .icon-play { display: block; }
+
+/* --- Portfolio on phones: one-card deck + filter sheet (2026-11-19) ------- */
+
+/* Phone-only parts: nothing of this shows above 840px. */
+.portfolio-bar,
+.portfolio-nav-count {
+  display: none;
+}
+
+/* Native modal <dialog>, opened from #portfolioFilterOpen (phones only). */
+.portfolio-sheet {
+  width: min(100%, 34rem);
+  max-width: none;
+  max-height: calc(100vh - 1.5rem);
+  max-height: calc(100dvh - 1.5rem);
+  margin: auto auto 0;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid rgba(var(--accent-rgb), 0.34);
+  border-radius: 1.375rem 1.375rem 0 0;
+  background: var(--surface);
+  color: var(--text);
+  overflow: hidden;
+}
+
+/* Only while open: a display value on the closed dialog would show it. */
+.portfolio-sheet[open] {
+  display: flex;
+  flex-direction: column;
+  animation: portfolio-sheet-in 280ms var(--ease-out);
+}
+
+/* ::backdrop does not inherit custom properties in every browser yet, so
+   the ground colour also appears as var()'s fallback. */
+.portfolio-sheet::backdrop {
+  background: rgba(var(--ground-rgb, 11, 10, 9), 0.72);
+}
+
+.portfolio-sheet[open]::backdrop {
+  animation: portfolio-fade-in 220ms ease;
+}
+
+@keyframes portfolio-sheet-in {
+  from { transform: translateY(100%); }
+}
+
+@keyframes portfolio-fade-in {
+  from { opacity: 0; }
+}
+
+@keyframes portfolio-deal-in {
+  from { opacity: 0; transform: translateY(0.5rem); }
+}
+
+html.portfolio-sheet-open {
+  overflow: hidden;
+}
+
+.portfolio-sheet-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-3) var(--space-2) var(--space-5);
+}
+
+.portfolio-sheet-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 1.1875rem;
+  line-height: 1.2;
+}
+
+.portfolio-sheet-clear {
+  min-height: 2.75rem;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--accent-2);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Nothing to clear: still readable, plainly inactive (muted ivory, not gold). */
+.portfolio-sheet-clear[aria-disabled='true'] {
+  color: var(--muted);
+  cursor: default;
+}
+
+.portfolio-sheet-close {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
+  border-radius: 50%;
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+}
+
+/* Scrolls only where the list outgrows a short screen; the faint gold edges
+   show only then (local backgrounds cover them at either end). */
+.portfolio-sheet-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 var(--space-5);
+  background:
+    linear-gradient(var(--surface) 40%, rgba(var(--surface-rgb), 0)) top / 100% 2.25rem no-repeat local,
+    linear-gradient(rgba(var(--surface-rgb), 0), var(--surface) 60%) bottom / 100% 2.25rem no-repeat local,
+    radial-gradient(farthest-side at 50% 0, rgba(var(--accent-rgb), 0.24), transparent) top / 100% 0.75rem no-repeat scroll,
+    radial-gradient(farthest-side at 50% 100%, rgba(var(--accent-rgb), 0.24), transparent) bottom / 100% 0.75rem no-repeat scroll;
+}
+
+.portfolio-sheet-group {
+  min-width: 0;
+  margin: 0 0 var(--space-2);
+  padding: 0;
+  border: 0;
+}
+
+.portfolio-sheet-group legend {
+  margin: var(--space-1) 0;
+  padding: 0;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.portfolio-sheet-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  min-height: 2.875rem;
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.1);
+  overflow-wrap: break-word;
+  cursor: pointer;
+}
+
+/* The real checkbox lies invisibly over the drawn box, so touch, keyboard
+   and screen readers all work the native control. */
+.portfolio-sheet-option input {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 1.375rem;
+  height: 1.375rem;
+  margin: -0.6875rem 0 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.portfolio-sheet-box {
+  flex: none;
+  display: grid;
+  place-content: center;
+  width: 1.375rem;
+  height: 1.375rem;
+  border: 1.5px solid rgba(var(--accent-rgb), 0.55);
+  border-radius: 0.375rem;
+  transition: background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+
+.portfolio-sheet-option input:checked + .portfolio-sheet-box {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+.portfolio-sheet-option input:checked + .portfolio-sheet-box::after {
+  content: '';
+  width: 0.625rem;
+  height: 0.3125rem;
+  border-left: 2px solid var(--on-gold);
+  border-bottom: 2px solid var(--on-gold);
+  transform: translateY(-1px) rotate(-45deg);
+}
+
+.portfolio-sheet-option input:focus-visible + .portfolio-sheet-box {
+  outline: 2px solid var(--gold-hi);
+  outline-offset: 3px;
+}
+
+.portfolio-sheet-foot {
+  padding: var(--space-3) var(--space-5) calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--line);
+}
+
+/* The sheet's one primary action: the site's brushed-gold primary button
+   (dark on-gold ink), full width. */
+.portfolio-sheet-apply {
+  width: 100%;
+  font-size: 1rem;
+}
+
+@media (max-width: 840px) {
+  /* One column: heading, filter bar, deck, arrows, then the figures, note
+     and CTA. Only static text moves visually; focus order is unchanged. */
+  .portfolio-shell {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .portfolio-sticky,
+  .portfolio-main {
+    display: contents;
+  }
+
+  .portfolio-sticky h2 { order: 1; }
+  .portfolio-sticky .section-subtitle { order: 2; }
+  .portfolio-bar { order: 3; }
+  .portfolio-rotator { order: 4; }
+  .portfolio-nav { order: 5; }
+  .portfolio-stats { order: 6; }
+  .portfolio-note { order: 7; }
+  .portfolio-cta { order: 8; }
+
+  /* Stats and note come before the deck in the DOM but sit below it here; as scroll
+     anchors they would shift the page when a filter changes the deck's height. */
+  .portfolio-stats,
+  .portfolio-note { overflow-anchor: none; }
+
+  /* The chip rows and the "click any card" hint belong to the desktop deck. */
+  .portfolio-filter-header,
+  .portfolio-filter-title,
+  .portfolio-filters,
+  .portfolio-focus-hint {
+    display: none;
+  }
+
+  .portfolio-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+  }
+
+  html:not(.js) .portfolio-bar {
+    display: none;
+  }
+
+  .portfolio-count {
+    min-width: 0;
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--accent-2);
+  }
+
+  .portfolio-filter-btn {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 2.75rem;
+    padding: 0 var(--space-4);
+    border: 1px solid rgba(var(--accent-rgb), 0.34);
+    border-radius: 999px;
+    background: rgba(var(--accent-rgb), 0.06);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+  }
+
+  .portfolio-filter-btn svg {
+    flex: none;
+    color: var(--accent-2);
+  }
+
+  .portfolio-filter-btn.is-active {
+    border-color: rgba(var(--accent-2-rgb), 0.6);
+    background: rgba(var(--accent-rgb), 0.14);
+  }
+
+  .portfolio-filter-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.375rem;
+    border-radius: 999px;
+    background: var(--gold);
+    color: var(--on-gold);
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .portfolio-filter-badge[hidden] {
+    display: none;
+  }
+
+  /* Every card shares one grid cell, so the deck is as tall as its tallest
+     card and nothing below it moves when the card changes. The bottom
+     padding holds the stacked edges. */
+  .portfolio-rotator {
+    margin-top: var(--space-3);
+    padding-bottom: 1.25rem;
+    border-radius: 0;
+    touch-action: pan-y pinch-zoom;
+  }
+
+  .portfolio-card {
+    grid-area: 1 / 1;
+    transform-origin: 50% 100%;
+    transition: opacity 220ms ease, transform 260ms var(--ease-out), border-color 210ms ease;
+  }
+
+  .portfolio-card[data-deck='front'] { z-index: 3; }
+
+  .portfolio-card[data-deck='layer1'] {
+    z-index: 2;
+    opacity: 0.75;
+    transform: translateY(0.5625rem) scale(0.95);
+  }
+
+  .portfolio-card[data-deck='layer2'] {
+    z-index: 1;
+    opacity: 0.5;
+    transform: translateY(1.125rem) scale(0.9);
+  }
+
+  .portfolio-card[data-deck='rest'] {
+    z-index: 0;
+    opacity: 0;
+    transform: translateY(1.125rem) scale(0.9);
+  }
+
+  /* A turned card leaves to the left, above the stack, as it fades. */
+  .portfolio-card[data-deck='past'] {
+    z-index: 4;
+    opacity: 0;
+    transform: translateX(-2.5rem);
+    pointer-events: none;
+  }
+
+  /* Below the active card only the edges show. */
+  .portfolio-card > * {
+    transition: opacity 160ms ease;
+  }
+
+  .portfolio-card[data-deck^='layer'] > *,
+  .portfolio-card[data-deck='rest'] > * {
+    opacity: 0;
+  }
+
+  .portfolio-card.is-dragging {
+    transition: none;
+  }
+
+  .portfolio-card.is-dealt {
+    animation: portfolio-deal-in 260ms var(--ease-out);
+  }
+
+  .portfolio-empty-clear {
+    justify-self: start;
+    margin-top: var(--space-3);
+  }
+
+  .portfolio-nav {
+    display: flex;
+    gap: var(--space-5);
+    margin-top: var(--space-2);
+  }
+
+  .portfolio-nav.is-single,
+  .portfolio-nav-dots,
+  .portfolio-nav-pause {
+    display: none;
+  }
+
+  .portfolio-nav-arrow {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .portfolio-nav-arrow[aria-disabled='true'] {
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  .portfolio-nav-count {
+    display: block;
+    min-width: 3rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    color: var(--text);
+  }
+
+  .portfolio-stats {
+    margin-top: var(--space-6);
+  }
+
+  .portfolio-cta {
+    margin-top: var(--space-6);
+  }
+}
 
 /* --- Responsive ------------------------------------------------------------- */
 
